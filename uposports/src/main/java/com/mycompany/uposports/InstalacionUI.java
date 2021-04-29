@@ -1,5 +1,6 @@
-package adri;
+package com.mycompany.uposports;
 
+import clases.Instalacion;
 import com.vaadin.annotations.PreserveOnRefresh;
 import javax.servlet.annotation.WebServlet;
 
@@ -41,8 +42,8 @@ public class InstalacionUI extends UI {
             crearInstalacion(vaadinRequest);//Accedemos al método crearInstalación
         });
 
-        Button buttonInstalacion = new Button("Abonos", FontAwesome.MONEY);//Botón para acceder a la entidad abono
-        buttonInstalacion.addClickListener(e -> {//Acción del botón
+        Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);//Botón para acceder a la entidad abono
+        buttonAbonos.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Abono");//Accedemos a la entidad abono
         });
 
@@ -53,7 +54,7 @@ public class InstalacionUI extends UI {
         });
 
         if (layoutMostrarInstalaciones.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
-            layoutH.addComponents(crearInstalacion, buttonInstalacion, buttonLogout);//Añadimos los componentes al layout horizontal
+            layoutH.addComponents(crearInstalacion, buttonAbonos, buttonLogout);//Añadimos los componentes al layout horizontal
             //Le metemos margen y espaciado, para mostrarlo posteriormente.
             layoutH.setMargin(true);
             layoutH.setSpacing(true);

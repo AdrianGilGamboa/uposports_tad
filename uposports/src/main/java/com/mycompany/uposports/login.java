@@ -1,5 +1,6 @@
-package adri;
+package com.mycompany.uposports;
 
+import log.Broadcaster;
 import com.vaadin.annotations.Push;
 import javax.servlet.annotation.WebServlet;
 
@@ -74,6 +75,8 @@ public class login extends UI implements Broadcaster.BroadcastListener {
         //Creamos 3 botones
         Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);
         Button buttonInstalaciones = new Button("Instalaciones", FontAwesome.BUILDING);
+        Button botonClientes = new Button("Gestionar Clientes"); //Boton para ir a la página de gestión de clientes
+
         Button buttonLogout = new Button("Cerrar Sesión", FontAwesome.SIGN_OUT);
 
         buttonAbonos.addClickListener(a -> {//Acción del botón
@@ -84,13 +87,17 @@ public class login extends UI implements Broadcaster.BroadcastListener {
             getUI().getPage().setLocation("/Instalacion");//Redirección a página instalación
         });
 
+        botonClientes.addClickListener(e -> {  //Establecemos lo que hace el boton clientes
+            getUI().getPage().setLocation("/gestionaCliente"); //Redirige a la clase de gestionar clientes
+        });
+
         buttonLogout.addClickListener(a -> {//Acción del botón logout
             session.invalidate();//Se destruye la sesion
             getUI().getPage().setLocation("/");//Página principal (login)
         });
 
         //Añadimos los componentes al layout y le ponemos margen y espaciado
-        layoutEntidades.addComponents(buttonAbonos, buttonInstalaciones, buttonLogout);
+        layoutEntidades.addComponents(buttonAbonos, buttonInstalaciones, botonClientes, buttonLogout);
         layoutEntidades.setMargin(true);
         layoutEntidades.setSpacing(true);
 

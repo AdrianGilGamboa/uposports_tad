@@ -1,6 +1,6 @@
-package adri;
+package log;
 
-import adri.Broadcaster.BroadcastListener;
+import log.Broadcaster.BroadcastListener;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Push;
 import javax.servlet.annotation.WebServlet;

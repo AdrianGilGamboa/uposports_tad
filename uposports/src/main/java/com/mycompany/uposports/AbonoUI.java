@@ -1,5 +1,6 @@
-package adri;
+package com.mycompany.uposports;
 
+import clases.Abono;
 import com.vaadin.annotations.PreserveOnRefresh;
 import javax.servlet.annotation.WebServlet;
 
@@ -10,6 +11,7 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -35,10 +37,27 @@ public class AbonoUI extends UI {
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layoutMostrarAbonos = new VerticalLayout();//Creamos un layout vertical
         final HorizontalLayout layoutH = new HorizontalLayout();//Creamos un layout horizontal
+        final HorizontalLayout layoutHLabelabelTitulo = new HorizontalLayout();//Creamos un layout horizontal
+        final HorizontalLayout layoutH2 = new HorizontalLayout();//Creamos un layout horizontal
 
         Button crearAbono = new Button("Crear Abono", FontAwesome.PLUS_CIRCLE);//Botón para crear abono
         crearAbono.addClickListener(e -> {//Acción del botón
             crearAbono(vaadinRequest);//Accedemos al método crearAbono
+        });
+        
+        Label l = new Label("<h1 style='text-weight:bold;text-align:center;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
+        Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Abonos - </h2>", ContentMode.HTML);
+        layoutHLabelabelTitulo.addComponent(l);
+
+        
+                Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);//Botón para acceder a la entidad abono
+        buttonAbonos.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Abono");//Accedemos a la entidad abono
+        });
+        
+        Button buttonCliente = new Button("Clientes", FontAwesome.USERS);//Botón para acceder a la entidad instalaciones
+        buttonCliente.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Cliente");//Accedemos a la entidad abono
         });
 
         Button buttonInstalacion = new Button("Instalaciones", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
@@ -53,11 +72,12 @@ public class AbonoUI extends UI {
         });
 
         if (layoutMostrarAbonos.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
-            layoutH.addComponents(crearAbono, buttonInstalacion, buttonLogout);//Añadimos los componentes al layout horizontal
+            layoutH.addComponents(layoutHLabelabelTitulo,buttonInstalacion,buttonCliente,buttonAbonos, buttonLogout);//Añadimos los componentes al layout horizontal
             //Le metemos margen y espaciado, para mostrarlo posteriormente.
-            layoutH.setMargin(true);
-            layoutH.setSpacing(true);
-            layoutMostrarAbonos.addComponent(layoutH);
+            layoutH2.setMargin(true);
+            layoutH2.setSpacing(true);
+            layoutH2.addComponents(labelEntidad,crearAbono);
+            layoutMostrarAbonos.addComponents(layoutH, layoutH2);
         }
 
         Table table = new Table();//Creamos la tabla donde meteremos las instancias
