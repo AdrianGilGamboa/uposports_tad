@@ -22,6 +22,9 @@ public class Empleado {
         this.telefono = telefono;
     }
 
+    public Empleado() {
+    }
+
    
 
     public String getDni() {
