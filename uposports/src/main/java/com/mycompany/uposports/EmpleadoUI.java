@@ -64,6 +64,8 @@ public class EmpleadoUI extends UI {
                 tf3.addValidator(new NullValidator("Campo obligatorio", false));
                 TextField tf4 = (new TextField("Teléfono"));
                 form.addComponent(tf4);
+                tf4.setRequired(true);
+                tf4.addValidator(new NullValidator("Campo obligatorio", false));
                 //Una vez terminado, creamos el boton de añadir
                 Button b2 = new Button("Añadir");
                 b2.addClickListener(new Button.ClickListener() {
