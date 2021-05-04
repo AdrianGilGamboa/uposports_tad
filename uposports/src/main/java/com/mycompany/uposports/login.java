@@ -75,10 +75,10 @@ public class login extends UI implements Broadcaster.BroadcastListener {
         //Creamos 3 botones
         Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);
         Button buttonInstalaciones = new Button("Instalaciones", FontAwesome.BUILDING);
-        Button buttonClientes = new Button("Gestionar Clientes"); //Boton para ir a la página de gestión de clientes
-        Button buttonEmpleado = new Button("Gestionar Empleados");
-        Button buttonMaterial = new Button("Gestionar Materiales");
-        Button buttonReserva = new Button("Gestionar Reservas");
+        Button buttonClientes = new Button("Clientes"); //Boton para ir a la página de gestión de clientes
+        Button buttonEmpleado = new Button("Empleados");
+        Button buttonMaterial = new Button("Materiales");
+        Button buttonReserva = new Button("Reservas");
 
         Button buttonLogout = new Button("Cerrar Sesión", FontAwesome.SIGN_OUT);
 
@@ -119,6 +119,7 @@ public class login extends UI implements Broadcaster.BroadcastListener {
         setContent(layoutEntidades);//Mostramos le contenido del layout
 
     }
+    
 
     //Se ejecuta el método access para el log que recibe el push (en este caso no realiza nada, se realiza en el log)
     @Override
