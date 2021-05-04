@@ -179,7 +179,7 @@ public class ClienteUI extends UI {
         layout.setSpacing(true);
     }
 
-    @WebServlet(urlPatterns = {"/Cliente*"}, name = "gestionaClienteServlet", asyncSupported = true)
+    @WebServlet(urlPatterns = {"/Cliente/*"}, name = "gestionaClienteServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = ClienteUI.class, productionMode = false)
     public static class gestionaClienteServlet extends VaadinServlet {
 

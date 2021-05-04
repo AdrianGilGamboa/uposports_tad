@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.epd_evaluable;
+package clases;
 
 /**
  *
@@ -18,6 +18,10 @@ public class Material {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.unidades = unidades;
+    }
+
+    public Material() {
+
     }
   
 

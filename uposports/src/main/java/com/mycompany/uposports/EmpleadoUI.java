@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.epd_evaluable_tad;
+package com.mycompany.uposports;
 
-import com.mycompany.epd_evaluable.Empleado;
+import clases.Empleado;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
@@ -27,14 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 
-/**
- *
- * @author manum
- */
+
 @Theme("mytheme")
 @Title("Inicio")
 @PreserveOnRefresh
-public class Principal extends UI {
+public class EmpleadoUI extends UI {
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -225,8 +222,8 @@ public class Principal extends UI {
         setContent(form);
     }
 
-    @WebServlet(urlPatterns = "/Principal/*", name = "ServletPrincipal", asyncSupported = true)
-    @VaadinServletConfiguration(ui = Principal.class, productionMode = false)
+    @WebServlet(urlPatterns = "/Empleado/*", name = "ServletPrincipal", asyncSupported = true)
+    @VaadinServletConfiguration(ui = EmpleadoUI.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {
     }
 }

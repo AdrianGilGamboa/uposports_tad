@@ -75,7 +75,9 @@ public class login extends UI implements Broadcaster.BroadcastListener {
         //Creamos 3 botones
         Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);
         Button buttonInstalaciones = new Button("Instalaciones", FontAwesome.BUILDING);
-        Button botonClientes = new Button("Gestionar Clientes"); //Boton para ir a la página de gestión de clientes
+        Button buttonClientes = new Button("Gestionar Clientes"); //Boton para ir a la página de gestión de clientes
+        Button buttonEmpleado = new Button("Gestionar Empleado");
+        Button buttonMaterial = new Button("Gestionar Material");
 
         Button buttonLogout = new Button("Cerrar Sesión", FontAwesome.SIGN_OUT);
 
@@ -87,8 +89,16 @@ public class login extends UI implements Broadcaster.BroadcastListener {
             getUI().getPage().setLocation("/Instalacion");//Redirección a página instalación
         });
 
-        botonClientes.addClickListener(e -> {  //Establecemos lo que hace el boton clientes
-            getUI().getPage().setLocation("/gestionaCliente"); //Redirige a la clase de gestionar clientes
+        buttonClientes.addClickListener(e -> {  //Establecemos lo que hace el boton clientes
+            getUI().getPage().setLocation("/Cliente"); //Redirige a la clase de gestionar clientes
+        });
+
+        buttonEmpleado.addClickListener(e -> {  //Establecemos lo que hace el boton clientes
+            getUI().getPage().setLocation("/Empleado"); //Redirige a la clase de gestionar clientes
+        });
+
+        buttonMaterial.addClickListener(e -> {  //Establecemos lo que hace el boton clientes
+            getUI().getPage().setLocation("/Material"); //Redirige a la clase de gestionar clientes
         });
 
         buttonLogout.addClickListener(a -> {//Acción del botón logout
@@ -97,7 +107,7 @@ public class login extends UI implements Broadcaster.BroadcastListener {
         });
 
         //Añadimos los componentes al layout y le ponemos margen y espaciado
-        layoutEntidades.addComponents(buttonAbonos, buttonInstalaciones, botonClientes, buttonLogout);
+        layoutEntidades.addComponents(buttonAbonos, buttonInstalaciones, buttonClientes, buttonEmpleado, buttonMaterial, buttonLogout);
         layoutEntidades.setMargin(true);
         layoutEntidades.setSpacing(true);
 

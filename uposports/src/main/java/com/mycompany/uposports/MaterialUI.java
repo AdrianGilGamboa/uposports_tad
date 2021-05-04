@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package manu;
+package com.mycompany.uposports;
 
+import clases.Material;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
@@ -30,7 +31,7 @@ import javax.servlet.annotation.WebServlet;
  */
 @Theme("mytheme")
 @Title("Inicio")
-public class gestionMaterial extends UI {
+public class MaterialUI extends UI {
      @Override
     protected void init(VaadinRequest vaadinRequest) {
         //Empezamos obteniendo la sesión y creando una lista de empleados para
@@ -239,8 +240,8 @@ public class gestionMaterial extends UI {
         }
     }
 
-    @WebServlet(urlPatterns = "/gestionMaterial/*", name = "ServletGestionMaterial", asyncSupported = true)
-    @VaadinServletConfiguration(ui = gestionMaterial.class, productionMode = false)
+    @WebServlet(urlPatterns = "/Material/*", name = "ServletGestionMaterial", asyncSupported = true)
+    @VaadinServletConfiguration(ui = MaterialUI.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {
     }
 }
