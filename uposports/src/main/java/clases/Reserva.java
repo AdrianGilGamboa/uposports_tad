@@ -1,5 +1,5 @@
 
-package javi;
+package clases;
 
 import java.util.Date;
 

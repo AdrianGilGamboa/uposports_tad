@@ -1,5 +1,6 @@
-package javi;
+package com.mycompany.uposports;
 
+import clases.Reserva;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.FontAwesome;
@@ -23,7 +24,7 @@ import javax.servlet.annotation.WebServlet;
 import java.util.*;
 
 @Theme("mytheme")
-public class gestionaReserva extends UI {
+public class ReservaUI extends UI {
 
     public static ArrayList<Reserva> listaReservas = new ArrayList(); //LISTA DONDE ESTARÁN ALMACENADOS TODAS LAS RESERVAS QUE CREEMOS
     public VerticalLayout layout = new VerticalLayout(); //LAYOUT PRINCIPAL
@@ -149,7 +150,7 @@ public class gestionaReserva extends UI {
             getUI().getPage().setLocation("/gestionaReserva");
         });
         Button volver = new Button("Volver", FontAwesome.ARROW_LEFT);
-        //REDIRECCIONA A LA CLASE gestionaReserva
+        //REDIRECCIONA A LA CLASE ReservaUI
         volver.addClickListener(e -> {
             getUI().getPage().setLocation("/gestionaReserva");
         });
@@ -164,8 +165,8 @@ public class gestionaReserva extends UI {
         layout.setSpacing(true);
     }
 
-    @WebServlet(urlPatterns = {"/gestionaReserva/*"}, name = "gestionaReservaServlet", asyncSupported = true)
-    @VaadinServletConfiguration(ui = gestionaReserva.class, productionMode = false)
+    @WebServlet(urlPatterns = {"/Reserva/*"}, name = "gestionaReservaServlet", asyncSupported = true)
+    @VaadinServletConfiguration(ui = ReservaUI.class, productionMode = false)
     public static class gestionaReservaServlet extends VaadinServlet {
 
     }

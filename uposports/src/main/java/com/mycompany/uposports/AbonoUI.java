@@ -44,17 +44,16 @@ public class AbonoUI extends UI {
         crearAbono.addClickListener(e -> {//Acción del botón
             crearAbono(vaadinRequest);//Accedemos al método crearAbono
         });
-        
+
         Label l = new Label("<h1 style='text-weight:bold;text-align:center;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
         Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Abonos - </h2>", ContentMode.HTML);
         layoutHLabelabelTitulo.addComponent(l);
 
-        
-                Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);//Botón para acceder a la entidad abono
+        Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);//Botón para acceder a la entidad abono
         buttonAbonos.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Abono");//Accedemos a la entidad abono
         });
-        
+
         Button buttonCliente = new Button("Clientes", FontAwesome.USERS);//Botón para acceder a la entidad instalaciones
         buttonCliente.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Cliente");//Accedemos a la entidad abono
@@ -65,6 +64,21 @@ public class AbonoUI extends UI {
             getUI().getPage().setLocation("/Instalacion");//Accedemos a la entidad abono
         });
 
+        Button buttonEmpleados = new Button("Empleados", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
+        buttonEmpleados.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Empleado");//Accedemos a la entidad abono
+        });
+
+        Button buttonMateriales = new Button("Materiales", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
+        buttonMateriales.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Material");//Accedemos a la entidad abono
+        });
+
+        Button buttonReservas = new Button("Reservas", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
+        buttonReservas.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Material");//Accedemos a la entidad abono
+        });
+
         Button buttonLogout = new Button("Cerrar Sesión", FontAwesome.SIGN_OUT);//Botón para cerrar sesión
         buttonLogout.addClickListener(e -> {//Acción del botón
             VaadinSession.getCurrent().getSession().invalidate();//Eliminamos la sesión
@@ -72,11 +86,11 @@ public class AbonoUI extends UI {
         });
 
         if (layoutMostrarAbonos.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
-            layoutH.addComponents(layoutHLabelabelTitulo,buttonInstalacion,buttonCliente,buttonAbonos, buttonLogout);//Añadimos los componentes al layout horizontal
+            layoutH.addComponents(layoutHLabelabelTitulo, buttonInstalacion, buttonCliente, buttonAbonos, buttonLogout);//Añadimos los componentes al layout horizontal
             //Le metemos margen y espaciado, para mostrarlo posteriormente.
             layoutH2.setMargin(true);
             layoutH2.setSpacing(true);
-            layoutH2.addComponents(labelEntidad,crearAbono);
+            layoutH2.addComponents(labelEntidad, crearAbono);
             layoutMostrarAbonos.addComponents(layoutH, layoutH2);
         }
 

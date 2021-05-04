@@ -76,8 +76,9 @@ public class login extends UI implements Broadcaster.BroadcastListener {
         Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);
         Button buttonInstalaciones = new Button("Instalaciones", FontAwesome.BUILDING);
         Button buttonClientes = new Button("Gestionar Clientes"); //Boton para ir a la página de gestión de clientes
-        Button buttonEmpleado = new Button("Gestionar Empleado");
-        Button buttonMaterial = new Button("Gestionar Material");
+        Button buttonEmpleado = new Button("Gestionar Empleados");
+        Button buttonMaterial = new Button("Gestionar Materiales");
+        Button buttonReserva = new Button("Gestionar Reservas");
 
         Button buttonLogout = new Button("Cerrar Sesión", FontAwesome.SIGN_OUT);
 
@@ -99,6 +100,10 @@ public class login extends UI implements Broadcaster.BroadcastListener {
 
         buttonMaterial.addClickListener(e -> {  //Establecemos lo que hace el boton clientes
             getUI().getPage().setLocation("/Material"); //Redirige a la clase de gestionar clientes
+        });
+        
+                buttonReserva.addClickListener(e -> {  //Establecemos lo que hace el boton clientes
+            getUI().getPage().setLocation("/Reserva"); //Redirige a la clase de gestionar clientes
         });
 
         buttonLogout.addClickListener(a -> {//Acción del botón logout
