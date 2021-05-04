@@ -4,6 +4,7 @@ import clases.Cliente;
 import com.mycompany.uposports.*;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.data.validator.NullValidator;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -20,6 +21,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.MenuItem;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
@@ -44,6 +46,7 @@ public class ClienteUI extends UI {
         }
           
         //CREAMOS UNA TABLA DONDE APARECERÁ LA LISTA DE CLIENTES
+        layout.removeAllComponents();
         Table tabla = new Table();
         tabla.addContainerProperty("Nombre", String.class, null);
         tabla.addContainerProperty("Apellidos", String.class, null);
@@ -97,16 +100,30 @@ public class ClienteUI extends UI {
         Label l = new Label("<h2 style='text-weight:bold;'>Nuevo Cliente</h2>", ContentMode.HTML);
         layout.addComponent(l);
         TextField nombre = new TextField("Introduzca el nombre");
+        nombre.setRequired(true);
+        nombre.addValidator(new NullValidator("Campo obligatorio",false));
         TextField apellidos = new TextField("Introduzca los Apellidos");
+        apellidos.setRequired(true);
+        apellidos.addValidator(new NullValidator("Campo obligatorio",false));
         TextField dni = new TextField("Introduzca el DNI");
+        dni.setRequired(true);
+        dni.addValidator(new NullValidator("Campo obligatorio",false));
         TextField telef = new TextField("Introduzca el Telefono");
+        telef.setRequired(true);
+        telef.addValidator(new NullValidator("Campo obligatorio",false));
         TextField cp = new TextField("Introduzca el Código Postal");
+        cp.setRequired(true);
+        cp.addValidator(new NullValidator("Campo obligatorio",true));
         datos.addComponents(nombre, apellidos, dni, telef, cp);
         datos.setMargin(true);
         datos.setSpacing(true);
         Button enviar = new Button("Guardar", FontAwesome.SEND);
 
         enviar.addClickListener(e -> { //UNA VEZ PULSADO EL BOTÓN SE CREA EL CLIENTE Y LO AÑADIMOS A LA LISTA
+            if(nombre.getValue().equals("") || apellidos.getValue().equals("") || dni.getValue().equals("") || telef.getValue().equals("") || cp.getValue().equals("")){
+                Notification.show("Campo vacío", "No se permiten campos vacíos",
+                            Notification.Type.WARNING_MESSAGE);
+            }else{
             Cliente aux = new Cliente();
             aux.setNombre(nombre.getValue());
             aux.setApellidos(apellidos.getValue());
@@ -118,6 +135,7 @@ public class ClienteUI extends UI {
             // getUI().getPage().setLocation("/gestionaCliente");
             listaClientes.add(aux);
             init(request);
+            }
         });
         Button volver = new Button("Volver", FontAwesome.ARROW_LEFT);
         volver.addClickListener(e -> {
@@ -141,14 +159,24 @@ public class ClienteUI extends UI {
         Label l = new Label("<h2>Editar Cliente</h2>", ContentMode.HTML);
         layout.addComponent(l);
         TextField nombre = new TextField("Introduzca el nombre");
+        nombre.setRequired(true);
+        nombre.addValidator(new NullValidator("Campo obligatorio",false));
         nombre.setValue(cliente.getNombre());
         TextField apellidos = new TextField("Introduzca los Apellidos");
+        apellidos.setRequired(true);
+        apellidos.addValidator(new NullValidator("Campo obligatorio",false));
         apellidos.setValue(cliente.getApellidos());
         TextField dni = new TextField("Introduzca el DNI");
+        dni.setRequired(true);
+        dni.addValidator(new NullValidator("Campo obligatorio",false));
         dni.setValue(cliente.getDni());
         TextField telef = new TextField("Introduzca el Telefono");
+        telef.setRequired(true);
+        telef.addValidator(new NullValidator("Campo obligatorio",false));
         telef.setValue(cliente.getTelefono());
         TextField cp = new TextField("Introduzca el Código Postal");
+        cp.setRequired(true);
+        cp.addValidator(new NullValidator("Campo obligatorio",false));
         cp.setValue(cliente.getCodigoPostal());
         datos.addComponents(nombre, apellidos, dni, telef, cp);
         datos.setMargin(true);
@@ -156,7 +184,11 @@ public class ClienteUI extends UI {
         Button enviar = new Button("Enviar", FontAwesome.SEND);
         //EDITAMOS TODOS LOS CAMPOS QUE HAYA MODIFICADO EL USUARIO Y VOLVEMOS A INSERTAR EL CLIENTE EN LA LISTA
         enviar.addClickListener(e -> {
-            cliente.setNombre(nombre.getValue());
+            if(nombre.getValue().equals("") || apellidos.getValue().equals("") || dni.getValue().equals("") || telef.getValue().equals("") || cp.getValue().equals("")){
+                Notification.show("Campo vacío", "No se permiten campos vacíos",
+                            Notification.Type.WARNING_MESSAGE);
+            }else{
+                cliente.setNombre(nombre.getValue());
             cliente.setApellidos(apellidos.getValue());
             cliente.setDni(dni.getValue());
             cliente.setTelefono(telef.getValue());
@@ -164,6 +196,8 @@ public class ClienteUI extends UI {
             //listaClientes.remove(cliente);
             //addCliente(aux);
             init(request);
+            }            
+            
         });
         Button volver = new Button("Volver", FontAwesome.ARROW_LEFT);
         //REDIRECCIONA A LA CLASE gestionaCLiente

@@ -14,6 +14,7 @@ import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -65,7 +66,7 @@ public class ReservaUI extends UI {
             });
 
             editar.addClickListener(e -> { //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
-                editarReserva(aux); //EJECUTA LA FUNCION EDITARCLIENTE
+                editarReserva(aux); //EJECUTA LA FUNCION EDITAR CLIENTE
             });
         }
         Button volver = new Button("Volver", FontAwesome.ARROW_LEFT);
@@ -163,7 +164,7 @@ public class ReservaUI extends UI {
         layout.addComponents(datos, horiz);
         layout.setMargin(true);
         layout.setSpacing(true);
-    }
+    } 
 
     @WebServlet(urlPatterns = {"/Reserva/*"}, name = "gestionaReservaServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = ReservaUI.class, productionMode = false)
