@@ -52,10 +52,16 @@ public class EmpleadoUI extends UI {
                 //Añadimos por cada atributo del empleado su textfield
                 TextField tf1 = (new TextField("DNI"));
                 form.addComponent(tf1);
+                tf1.setRequired(true);
+                tf1.addValidator(new NullValidator("Campo obligatorio", false));
                 TextField tf2 = (new TextField("Nombre"));
                 form.addComponent(tf2);
+                tf2.setRequired(true);
+                tf2.addValidator(new NullValidator("Campo obligatorio", false));
                 TextField tf3 = (new TextField("Apellidos"));
                 form.addComponent(tf3);
+                tf3.setRequired(true);
+                tf3.addValidator(new NullValidator("Campo obligatorio", false));
                 TextField tf4 = (new TextField("Teléfono"));
                 form.addComponent(tf4);
                 //Una vez terminado, creamos el boton de añadir
