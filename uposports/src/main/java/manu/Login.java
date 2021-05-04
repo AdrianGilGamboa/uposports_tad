@@ -1,6 +1,6 @@
 package manu;
 
-import adri.Broadcaster;
+import log.Broadcaster;
 import javax.servlet.annotation.WebServlet;
 
 import com.vaadin.annotations.Theme;
