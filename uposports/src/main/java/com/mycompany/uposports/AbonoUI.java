@@ -21,6 +21,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,7 @@ import java.util.List;
 
 public class AbonoUI extends UI {
 
-    final static List<Abono> listaAbonos = new ArrayList<>();//Creamos una lista de abonos, donde se irán guardando y será compartida por todos los usuarios, necesario recargar la pag para ver cambios de otros usuarios
+    public final static List<Abono> listaAbonos = new ArrayList<>();//Creamos una lista de abonos, donde se irán guardando y será compartida por todos los usuarios, necesario recargar la pag para ver cambios de otros usuarios
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -38,8 +39,8 @@ public class AbonoUI extends UI {
         final HorizontalLayout layoutH = new HorizontalLayout();//Creamos un layout horizontal
         final HorizontalLayout layoutHLabelabelTitulo = new HorizontalLayout();//Creamos un layout horizontal
         final HorizontalLayout layoutH2 = new HorizontalLayout();//Creamos un layout horizontal
-        
-                //RECUPERAMOS LA SESION Y SI NO HAY SESION NOS REDIRIGE A LA PÁGINA DE INICIO DE SESIÓN
+
+        //RECUPERAMOS LA SESION Y SI NO HAY SESION NOS REDIRIGE A LA PÁGINA DE INICIO DE SESIÓN
         WrappedSession session = getSession().getSession();
         if (session.getAttribute("nombreUsuario") == null) {
             getUI().getPage().setLocation("/login");
@@ -100,8 +101,11 @@ public class AbonoUI extends UI {
         }
 
         Table table = new Table();//Creamos la tabla donde meteremos las instancias
-
+        table.setSizeFull();
+        Label label = new Label("<h2 style='margin-top:0'> Abonos Registrados </h2>", ContentMode.HTML);
+        
         if (listaAbonos.size() > 0) {//Si hay elementos en la lista de abonos
+            layoutMostrarAbonos.addComponent(label);
             //Añadimos las columnas de la tabla
             table.addContainerProperty("Tipo", String.class, "");
             table.addContainerProperty("Duración(meses)", Integer.class, "");
@@ -125,7 +129,6 @@ public class AbonoUI extends UI {
                 });
                 //Añadimos la fila a la tabla
                 table.addItem(new Object[]{abono.getTipo(), abono.getDuracion(), abono.getCoste(), buttonModificar, buttonEliminar}, i);
-
                 layoutMostrarAbonos.addComponent(table);//Lo añadimos al layout vertical
             }
         }
