@@ -217,7 +217,8 @@ public class MaterialUI extends UI {
         buttonCancelar.addClickListener(e -> {
             init(vaadinRequest);
         });
-
+layoutBotones.addComponents(buttonCancelar,buttonRegistrar);
+        layoutBotones.setSpacing(true);
         layout.addComponents(nombre, descripcion, unidades, buttonRegistrar, buttonCancelar);
         layout.setMargin(true);
         layout.setSpacing(true);
@@ -246,7 +247,7 @@ public class MaterialUI extends UI {
         //Comprobamos si algún campo está vacío
         if ((String) vaadinRequest.getAttribute("nombre") != "" && (String) vaadinRequest.getAttribute("descripcion") != "" && (String) vaadinRequest.getAttribute("unidades") != "") {
             //Comprobamos si la capacidad es numérica llamando al métdo isInteger
-            if (isInteger((String) vaadinRequest.getAttribute("unidades")) == true && isFloat((String) vaadinRequest.getAttribute("coste")) == true) {
+            if (isInteger((String) vaadinRequest.getAttribute("unidades")) == true) {
                 b = true;//Si se satisface todas las condiciones, la variables es true
             } else {//Si la duración o el coste no es numérica
                 if (layout.getComponentIndex(errorTipo) == -1) {//Si no se ha añadido el componente al layout
@@ -280,14 +281,6 @@ public class MaterialUI extends UI {
         }
     }
 
-    protected static boolean isFloat(String cadena) {
-        try {//Intentamos parsear el la cadena a float, si se satisface, devolvemos true
-            Float.parseFloat(cadena);
-            return true;
-        } catch (NumberFormatException nfe) {//De lo contrario, captura la excepción y devolvemos false
-            return false;
-        }
-    }
 
 
     @WebServlet(urlPatterns = "/Material/*", name = "ServletGestionMaterial", asyncSupported = true)
