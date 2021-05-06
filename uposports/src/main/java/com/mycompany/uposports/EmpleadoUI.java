@@ -70,17 +70,17 @@ public class EmpleadoUI extends UI {
             getUI().getPage().setLocation("/Instalacion");//Accedemos a la entidad abono
         });
 
-        Button buttonEmpleados = new Button("Empleados", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
+        Button buttonEmpleados = new Button("Empleados", FontAwesome.MALE);//Botón para acceder a la entidad instalaciones
         buttonEmpleados.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Empleado");//Accedemos a la entidad abono
         });
 
-        Button buttonMateriales = new Button("Materiales", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
+        Button buttonMateriales = new Button("Materiales", FontAwesome.ARCHIVE);//Botón para acceder a la entidad instalaciones
         buttonMateriales.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Material");//Accedemos a la entidad abono
         });
 
-        Button buttonReservas = new Button("Reservas", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
+        Button buttonReservas = new Button("Reservas", FontAwesome.CALENDAR);//Botón para acceder a la entidad instalaciones
         buttonReservas.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Reserva");//Accedemos a la entidad abono
         });

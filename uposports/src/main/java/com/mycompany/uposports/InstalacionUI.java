@@ -46,7 +46,30 @@ public class InstalacionUI extends UI {
         buttonAbonos.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Abono");//Accedemos a la entidad abono
         });
+        Button buttonCliente = new Button("Clientes", FontAwesome.USERS);//Botón para acceder a la entidad instalaciones
+        buttonCliente.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Cliente");//Accedemos a la entidad abono
+        });
 
+        Button buttonInstalacion = new Button("Instalaciones", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
+        buttonInstalacion.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Instalacion");//Accedemos a la entidad abono
+        });
+
+        Button buttonEmpleados = new Button("Empleados", FontAwesome.MALE);//Botón para acceder a la entidad instalaciones
+        buttonEmpleados.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Empleado");//Accedemos a la entidad abono
+        });
+
+        Button buttonMateriales = new Button("Materiales", FontAwesome.ARCHIVE);//Botón para acceder a la entidad instalaciones
+        buttonMateriales.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Material");//Accedemos a la entidad abono
+        });
+
+        Button buttonReservas = new Button("Reservas", FontAwesome.CALENDAR);//Botón para acceder a la entidad instalaciones
+        buttonReservas.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Reserva");//Accedemos a la entidad abono
+        });
         Button buttonLogout = new Button("Cerrar Sesión", FontAwesome.SIGN_OUT);//Botón para acceder a la entidad abono
         buttonLogout.addClickListener(e -> {
             VaadinSession.getCurrent().getSession().invalidate();//Eliminamos la sesión
