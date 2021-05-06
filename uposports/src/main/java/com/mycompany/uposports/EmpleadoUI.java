@@ -229,14 +229,14 @@ public class EmpleadoUI extends UI {
         empleado.setDni((String) vaadinRequest.getAttribute("dni"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
         empleado.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
         empleado.setApellidos((String) vaadinRequest.getAttribute("apellidos"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
-        empleado.setTelefono((vaadinRequest.getAttribute("telefono")));
+        empleado.setTelefono((Integer)(vaadinRequest.getAttribute("telefono")));
     }
     protected void registrarEmpleado(VaadinRequest vaadinRequest) {//Método para registrar los datos en memoria, no hay persistencia de momento
         Empleado empleado = new Empleado();//Creamos un nuevo objeto abono
         empleado.setDni((String) vaadinRequest.getAttribute("dni"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
         empleado.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
         empleado.setApellidos((String) vaadinRequest.getAttribute("apellidos"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
-        empleado.setTelefono((vaadinRequest.getAttribute("telefono")));
+        empleado.setTelefono((Integer)(vaadinRequest.getAttribute("telefono")));
 //Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
         listaEmpleados.add(empleado);//Añadimos el objeto a la lista de abonos
 
