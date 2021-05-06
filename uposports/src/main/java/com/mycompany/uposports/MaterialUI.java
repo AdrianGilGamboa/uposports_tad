@@ -10,17 +10,22 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.data.validator.NullValidator;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.server.WrappedSession;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
@@ -30,207 +35,243 @@ import javax.servlet.annotation.WebServlet;
  * @author manum
  */
 @Theme("mytheme")
-@Title("Inicio")
+@Title("Material")
 public class MaterialUI extends UI {
-     @Override
+     
+      final static List<Material> listaMateriales = new ArrayList<>();//Creamos una lista de materiales, donde se irán guardando y será compartida por todos los usuarios, necesario recargar la pag para ver cambios de otros usuarios
+    Label errorTipo = new Label("La duracion y el coste deben ser numéricos");//Etiqueta error de tipo 
+    Label errorCampoVacio = new Label("Los campos no pueden estar vacíos");//Etiqueta derror de campo vacío
+
+    @Override
     protected void init(VaadinRequest vaadinRequest) {
-        //Empezamos obteniendo la sesión y creando una lista de empleados para
-        //ir mentiendo cuando se vayan creando
-        WrappedSession sesion = getSession().getSession();
-        Material e = new Material();
-        List<Material> lista = new ArrayList<Material>();
-        final FormLayout form = new FormLayout();
-        //Añadimos el Label de bienvenida
-        form.addComponent(new Label("Bienvenido: " + (String) sesion.getAttribute("Usuario") + ". ¿Que operación desea realizar?. Si quiere ver la lista de empleados, pulse en ver empleados"));
+        final VerticalLayout layoutMostrarMateriales = new VerticalLayout();//Creamos un layout vertical
+        final HorizontalLayout layoutH = new HorizontalLayout();//Creamos un layout horizontal
+        final HorizontalLayout layoutHLabelabelTitulo = new HorizontalLayout();//Creamos un layout horizontal
+        final HorizontalLayout layoutH2 = new HorizontalLayout();//Creamos un layout horizontal
 
-        //Creamos el boton "Crear empleado" donde implementaremos la funcion de crear un empleado
-        Button b = new Button(" Crear Material");
-        Label aux = new Label();
-        b.addClickListener(new Button.ClickListener() {
-            public void buttonClick(Button.ClickEvent event) {
-                //Añadimos por cada atributo del empleado su textfield
-                TextField tf1 = (new TextField("Nombre"));
-                form.addComponent(tf1);
-                tf1.setRequired(true);
-                tf1.addValidator(new NullValidator("Campo obligatorio", false));
-
-                TextField tf2 = (new TextField("Descripcion"));
-                form.addComponent(tf2);
-                tf2.setRequired(true);
-                tf2.addValidator(new NullValidator("Campo obligatorio", false));
-
-                TextField tf3 = (new TextField("Unidades"));
-                form.addComponent(tf3);
-                tf3.setRequired(true);
-                tf3.addValidator(new NullValidator("Campo obligatorio", false));
-               
-                
-                //Una vez terminado, creamos el boton de añadir
-                Button b2 = new Button("Añadir");
-                b2.addClickListener(new Button.ClickListener() {
-                    public void buttonClick(Button.ClickEvent event) {
-                        //Con este boton, vamos a guardar al empleado
-                        //en la lista de empleados
-                        Material e = new Material();
-                        e.setNombre(tf1.getValue());
-                        e.setDescripcion(tf2.getValue());
-                         if(isInteger(tf3.getValue())== false){
-                tf3.setCaption("Unidades");
-                form.addComponent(tf3);
-                tf3.addValidator(new NullValidator("Campo obligatorio", false));
-                Notification.show("Error Datos Introducidos", "Las unidades deben ser numericos",
-                        Notification.Type.WARNING_MESSAGE);
-                }
-                        e.setUnidades(Integer.parseInt(tf3.getValue()));
-                        //con el add añadimos al empleado en la lista
-                        lista.add(e);
-                        //Mostramos una notificación avisando de que
-                        //la creación del empelado se ha realizado correctamente
-                        Notification notif = new Notification("Material creado correctamente", Notification.Type.HUMANIZED_MESSAGE);
-                        notif.show(Page.getCurrent());
-
-                        notif.setDelayMsec(4000);
-                        //Eliminamos los componentes de la vista
-                        //cuando se ha acabado de interactuar con el formulario
-                        //para que sea mas comodo y dinámico el manejo de la página
-                        form.removeComponent(tf1);
-                        form.removeComponent(tf2);
-                        form.removeComponent(tf3);
-                        form.removeComponent(b2);
-
-                    }
-                });
-                form.addComponent(b2);
-
-            }
+        Button crearMaterial = new Button("Crear Material", FontAwesome.PLUS_CIRCLE);//Botón para crear abono
+        crearMaterial.addClickListener(e -> {//Acción del botón
+            crearAbono(vaadinRequest);//Accedemos al método crearAbono
         });
-//Se crea el boton de ver empleados el cual, al pulsarse, imprimirá la lista de todos los 
-//empleados disponibles
-        Button b3 = new Button("Ver material");
-        b3.addClickListener(new Button.ClickListener() {
-            public void buttonClick(Button.ClickEvent event) {
-                Label l1 = (new Label("<b>MATERIALES DISPONIBLES</b>", ContentMode.HTML));
-                form.addComponent(l1);
-                //Recorremos la lista de empleados para mostrarlos a todos
-                for (Object o : lista) {
-                    //Cast del Objeto a la Clase Empleado
-                    Material e = (Material) o;
-                    Label l2 = (new Label("Nombre: " + (e.getNombre() + " Descripcion: " + e.getDescripcion()) + " Unidades: " + e.getUnidades()));
-                    form.addComponent(l2);
 
-                }
+        Label l = new Label("<h1 style='text-weight:bold;text-align:center;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
+        Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Material - </h2>", ContentMode.HTML);
+        layoutHLabelabelTitulo.addComponent(l);
 
-            }
+        Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);//Botón para acceder a la entidad abono
+        buttonAbonos.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Abono");//Accedemos a la entidad abono
+        });
 
+        Button buttonCliente = new Button("Clientes", FontAwesome.USERS);//Botón para acceder a la entidad instalaciones
+        buttonCliente.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Cliente");//Accedemos a la entidad abono
+        });
+
+        Button buttonInstalacion = new Button("Instalaciones", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
+        buttonInstalacion.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Instalacion");//Accedemos a la entidad abono
+        });
+
+        Button buttonEmpleados = new Button("Empleados", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
+        buttonEmpleados.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Empleado");//Accedemos a la entidad abono
+        });
+
+        Button buttonMateriales = new Button("Materiales", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
+        buttonMateriales.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Material");//Accedemos a la entidad abono
+        });
+
+        Button buttonReservas = new Button("Reservas", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
+        buttonReservas.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Reservas");//Accedemos a la entidad abono
+        });
+
+        Button buttonLogout = new Button("Cerrar Sesión", FontAwesome.SIGN_OUT);//Botón para cerrar sesión
+        buttonLogout.addClickListener(e -> {//Acción del botón
+            VaadinSession.getCurrent().getSession().invalidate();//Eliminamos la sesión
+            getUI().getPage().setLocation("/");//Accedemos a la página principal
+        });
+
+        if (layoutMostrarMateriales.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
+            layoutH.addComponents(layoutHLabelabelTitulo, buttonInstalacion, buttonCliente, buttonAbonos,buttonEmpleados,buttonMateriales,buttonReservas, buttonLogout);//Añadimos los componentes al layout horizontal
+            //Le metemos margen y espaciado, para mostrarlo posteriormente.
+            layoutH2.setMargin(true);
+            layoutH2.setSpacing(true);
+            layoutH2.addComponents(labelEntidad, crearMaterial);
+            layoutMostrarMateriales.addComponents(layoutH, layoutH2);
         }
-        );
-        //Este boton elimina un empleado de la lista de empleados
-        Button b4 = new Button("Eliminar material");
-        b4.addClickListener(new Button.ClickListener() {
-            public void buttonClick(Button.ClickEvent event) {
-                Label l1 = (new Label("<b>MATERIAL DISPONIBLES PARA BORRAR</b>", ContentMode.HTML));
-                form.addComponent(l1);
-                for (Object o : lista) {
-                    Material e = (Material) o;
-                    // Cast del Objeto a la Clase Empleado
-                    Label l2 = new Label("Nombre: " + (e.getNombre() + " Descripcion: " + e.getDescripcion()) + " Unidades: " + e.getUnidades());
-                    form.addComponent(l2);
-                    //Cuando eliminamos, eliminamos tambien tanto al empleado de la vista
-                    //como sus diferentes componentes para que la página se vea mas limpia
-                    Button b5 = new Button("Eliminar");
-                    b5.addClickListener(new Button.ClickListener() {
-                        public void buttonClick(Button.ClickEvent event) {
-                            lista.remove(e);
-                            form.removeComponent(l2);
-                            form.removeComponent(b5);
-                        }
-                    });
-                    form.addComponent(b5);
 
-                }
+        Table table = new Table();//Creamos la tabla donde meteremos las instancias
 
+        if (listaMateriales.size() > 0) {//Si hay elementos en la lista de abonos
+            //Añadimos las columnas de la tabla
+            table.addContainerProperty("Nombre", String.class, "");
+            table.addContainerProperty("Descripción)", String.class, "");
+            table.addContainerProperty("Jnidades", Integer.class, "");
+            table.addContainerProperty("Editar", Button.class, "");
+            table.addContainerProperty("Eliminar", Button.class, "");
+            for (int i = 0; i < listaMateriales.size(); i++) {//Mientras haya elementos por recorrer
+                Material material = listaMateriales.get(i);//Obtenemos el objeto de la lista
+
+                Button buttonModificar = new Button("Modificar", FontAwesome.EDIT);//Creamos el botón modificar
+                buttonModificar.addClickListener(e -> {//Acción del botón
+                    editarAbono(vaadinRequest, material);//Método para editar la instalación
+                });
+
+                Button buttonEliminar = new Button("Eliminar", FontAwesome.CLOSE);//Creamos el botón eliminar
+                buttonEliminar.addClickListener(e -> {//Acción del botón
+                    listaMateriales.remove(material);//Eliminamos el objeto de la lista de instalaciones
+                    init(vaadinRequest);//Volvemos a ejecutar el método principal
+                    Notification.show("Material - Nombre: " + material.getNombre(), "Eliminado con éxito",
+                            Notification.Type.TRAY_NOTIFICATION);
+                });
+                //Añadimos la fila a la tabla
+                table.addItem(new Object[]{material.getNombre(), material.getDescripcion(), material.getUnidades(), buttonModificar, buttonEliminar}, i);
+
+                layoutMostrarMateriales.addComponent(table);//Lo añadimos al layout vertical
             }
-
         }
-        );
+        //Le añadimos margen y espciado, para mostrarlo posteriormente.
+         layoutMostrarMateriales.setMargin(true);
+         layoutMostrarMateriales.setSpacing(true);
+        setContent( layoutMostrarMateriales);
 
-        //Este boton muestra todos los empleados disponibles para ser modificados
-        //y modificarlos si se cree conveniente
-        Button b6 = new Button("Modificar material");
-        b6.addClickListener(new Button.ClickListener() {
-            public void buttonClick(Button.ClickEvent event) {
-                for (Object o : lista) {
-                    Label l1 = (new Label("<b>MATERIAL DISPONIBLES PARA MODIFICAR</b>", ContentMode.HTML));
-                    form.addComponent(l1);
-                    //Cast del Objeto a la Clase Empleado
-                    Material e = (Material) o;
-                    Label l = (new Label("Nombre: " + (e.getNombre() + " Descripcion: " + e.getDescripcion()) + " Descripcion: " + e.getDescripcion()));
-                    form.addComponent(l);
-                    //Al darle al boton de modificar, se muestra el formulario
-                    Button b7 = new Button("Modificar");
-                    b7.addClickListener(new Button.ClickListener() {
-                        public void buttonClick(Button.ClickEvent event) {
-                            TextField tf1 = (new TextField("NOmbre"));
-                            form.addComponent(tf1);
-                            TextField tf2 = (new TextField("Descripción"));
-                            form.addComponent(tf2);
-                            TextField tf3 = (new TextField("Unidades"));
-                            form.addComponent(tf3);
-                            form.removeComponent(l);
-//Al aceptar la modificación, se reemplaza los datos del empleado anterior por los datos
-//introducidos en la modificación y, como anteriormente, se eliminan los componentes
-//para un mejor aspecto y manejo de la página
-                            Button b8 = new Button("Modificar");
-                            b8.addClickListener(new Button.ClickListener() {
-                                public void buttonClick(Button.ClickEvent event) {
-
-                                    e.setNombre(tf1.getValue());
-                                    e.setDescripcion(tf2.getValue());
-                                    e.setUnidades(Integer.parseInt(tf3.getValue()));
-                                    
-                                    form.removeComponent(tf1);
-                                    form.removeComponent(tf2);
-                                    form.removeComponent(tf3);
-                                    form.removeComponent(b8);
-                                    form.removeComponent(b7);
-                                    form.removeComponent(l);
-                                }
-                            });
-                            form.addComponent(b8);
-
-                        }
-                    });
-                    form.addComponent(b7);
-
-                }
-            }
-
-        }
-        );
-        //Con este boton, cerramos la sesión y volvemos a la página de Login
-        Button finSesion = new Button("Cerrar Sesión");
-        finSesion.addClickListener(new Button.ClickListener() {
-            public void buttonClick(Button.ClickEvent event) {
-                sesion.invalidate();
-                getUI().getPage().setLocation("/Login");
-
-            }
-
-        }
-        );
-        form.addComponent(finSesion);
-        form.addComponent(b);
-        form.addComponent(b3);
-        form.addComponent(b4);
-        form.addComponent(b6);
-        form.setMargin(
-                true);
-        form.setSpacing(
-                true);
-
-        setContent(form);
     }
-    
+
+    protected void crearAbono(VaadinRequest vaadinRequest) {//Método para crear abonos
+        final VerticalLayout layout = new VerticalLayout();//Creamos un vertical layout
+        final HorizontalLayout layoutBotones = new HorizontalLayout();//Creamos un vertical layout
+        final TextField nombre = new TextField();//Campo para insertar el tipo
+        nombre.setCaption("Nombre:");//Texto que se muestra en dicho campo
+        nombre.setIcon(FontAwesome.TAG);//Icono
+        final TextField descripcion = new TextField();//Campo para insertar la duracion
+        descripcion.setCaption("Descripción:");//Texto que se muestra en dicho campo
+        descripcion.setIcon(FontAwesome.PARAGRAPH);
+        final TextField unidades = new TextField();//Campo para insertar el coste
+        unidades.setCaption("Unidades:");//Texto que se muestra en dicho campo
+        unidades.setIcon(FontAwesome.STACK_OVERFLOW);
+        Button buttonRegistrar = new Button("Registrar", FontAwesome.CHECK);//Creamo el botón para registrar 
+        buttonRegistrar.addClickListener(e -> {//Acción del botón
+            vaadinRequest.setAttribute("nombre", nombre.getValue());//Añadimos en la petición el valor del campo tipo
+            vaadinRequest.setAttribute("descripcion", descripcion.getValue());//Añadimos en la petición el valor del campo duración
+            vaadinRequest.setAttribute("unidades", unidades.getValue());//Añadimos en la petición el valor del campo coste
+            if (comprobarDatos(vaadinRequest, layout) == true) {//Se comprueban los datos, y si son correctos...
+                registrarAbono(vaadinRequest);//Se envían los datos a registro de abono
+
+                init(vaadinRequest);//Se lanza el método principal
+                //Notificacion de tipo bandeja para notificar la correcta operación.
+                Notification.show("Material - Nombre: " + nombre.getValue(), "Registrado con éxito",
+                        Notification.Type.TRAY_NOTIFICATION);
+            }
+
+        });
+        Button buttonCancelar = new Button("Cancelar", FontAwesome.CLOSE);//Nuevo botón para cancelar
+        buttonCancelar.addClickListener(e -> {//Acción del botón
+            init(vaadinRequest);//Se lanza el método principal
+        });
+
+        layoutBotones.addComponents(buttonCancelar,buttonRegistrar);
+        layoutBotones.setSpacing(true);
+        layout.addComponents(nombre, descripcion, unidades, buttonRegistrar, buttonCancelar);//Añadimos los componentes al layout
+        //Le añadimos margen y espciado, para mostrarlo posteriormente
+         
+        layout.setMargin(true);
+        layout.setSpacing(true);
+
+        setContent(layout);
+
+    }
+
+    //Exactamente igual que el método de crear abono, con la peculiaridad de que a este se le pasa el objeto abono y se prerellenan los campos con sus valores actuales.
+    //Ya se ha comentado en el método anterior que realiza cada línea de código.
+    protected void editarAbono(VaadinRequest vaadinRequest, Material material) {
+        final VerticalLayout layout = new VerticalLayout();
+        final HorizontalLayout layoutBotones = new HorizontalLayout();//Creamos un vertical layout
+        final TextField nombre = new TextField();//Campo para insertar el tipo
+        nombre.setCaption("Nombre:");//Texto que se muestra en dicho campo
+        nombre.setIcon(FontAwesome.TAG);//Icono
+        final TextField descripcion = new TextField();//Campo para insertar la duracion
+        descripcion.setCaption("Descripción:");//Texto que se muestra en dicho campo
+        descripcion.setIcon(FontAwesome.PARAGRAPH);
+        final TextField unidades = new TextField();//Campo para insertar el coste
+        unidades.setCaption("Unidades:");//Texto que se muestra en dicho campo
+        unidades.setIcon(FontAwesome.STACK_OVERFLOW);
+        Button buttonRegistrar = new Button("Modificar", FontAwesome.EDIT);
+
+        buttonRegistrar.addClickListener(e -> {
+             vaadinRequest.setAttribute("nombre", nombre.getValue());//Añadimos en la petición el valor del campo tipo
+            vaadinRequest.setAttribute("descripcion", descripcion.getValue());//Añadimos en la petición el valor del campo duración
+            vaadinRequest.setAttribute("unidades", unidades.getValue());//Añadimos en la petición el valor del campo coste
+            if (comprobarDatos(vaadinRequest, layout) == true) {
+                modificarAbono(vaadinRequest, material);//Se lanza el método modificar abono
+                init(vaadinRequest);
+                //Notificacion de tipo bandeja para notificar la correcta operación.
+                Notification.show("Material - Nombre: " + nombre.getValue(), "Modificado con éxito",
+                        Notification.Type.TRAY_NOTIFICATION);
+            }
+
+        });
+        Button buttonCancelar = new Button("Cancelar", FontAwesome.CLOSE);
+        buttonCancelar.addClickListener(e -> {
+            init(vaadinRequest);
+        });
+layoutBotones.addComponents(buttonCancelar,buttonRegistrar);
+        layoutBotones.setSpacing(true);
+        layout.addComponents(nombre, descripcion, unidades, buttonRegistrar, buttonCancelar);
+        layout.setMargin(true);
+        layout.setSpacing(true);
+
+        setContent(layout);
+    }
+
+    protected void modificarAbono(VaadinRequest vaadinRequest, Material material) {//Método para guardar los datos modificados en memoria, no hay persistencia de momento
+        material.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
+        material.setDescripcion((String) vaadinRequest.getAttribute("descripcion"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
+        material.setUnidades(Integer.parseInt((String)vaadinRequest.getAttribute("unidades")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
+    }
+
+    protected void registrarAbono(VaadinRequest vaadinRequest) {//Método para registrar los datos en memoria, no hay persistencia de momento
+        Material material = new Material();//Creamos un nuevo objeto abono
+        material.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
+        material.setDescripcion((String) vaadinRequest.getAttribute("descripcion"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
+        material.setUnidades(Integer.parseInt((String)vaadinRequest.getAttribute("unidades")));
+        listaMateriales.add(material);//Añadimos el objeto a la lista de abonos
+
+    }
+
+    //Método para comprobar los datos introducidos en los formularios
+    protected boolean comprobarDatos(VaadinRequest vaadinRequest, VerticalLayout layout) {
+        boolean b = false;//Variable booleana inicializada a false
+        //Comprobamos si algún campo está vacío
+        if ((String) vaadinRequest.getAttribute("nombre") != "" && (String) vaadinRequest.getAttribute("descripcion") != "" && (String) vaadinRequest.getAttribute("unidades") != "") {
+            //Comprobamos si la capacidad es numérica llamando al métdo isInteger
+            if (isInteger((String) vaadinRequest.getAttribute("unidades")) == true) {
+                b = true;//Si se satisface todas las condiciones, la variables es true
+            } else {//Si la duración o el coste no es numérica
+                if (layout.getComponentIndex(errorTipo) == -1) {//Si no se ha añadido el componente al layout
+
+                    layout.addComponentAsFirst(errorTipo);//Añadimos el camponente al layout
+                }
+                //Notificacion de tipo Warning interactiva para el usuario.
+                Notification.show("Error Datos Introducidos", "Las unidades deben ser númericas",
+                        Notification.Type.WARNING_MESSAGE);
+
+            }
+        } else {//En caso de campo vacío, mostramos 2 tipos de error uno fijo y otro interactivo (para el proyecto final debatiremos este aspecto)
+            if (layout.getComponentIndex(errorCampoVacio) == -1) {//Si no se ha añadido el componente al layout
+
+                layout.addComponentAsFirst(errorCampoVacio);//Añadimos el camponente al layout
+            }
+            //Notificacion de tipo Warning interactiva para el usuario.
+            Notification.show("Campo vacío", "Debe rellenar todos los campos",
+                    Notification.Type.WARNING_MESSAGE);
+        }
+        return b;
+    }
+
+    //Método para comprobar valor numérico
     protected static boolean isInteger(String cadena) {
         try {//Intentamos parsear el la cadena a entero, si se satisface, devolvemos true
             Integer.parseInt(cadena);
@@ -239,6 +280,8 @@ public class MaterialUI extends UI {
             return false;
         }
     }
+
+
 
     @WebServlet(urlPatterns = "/Material/*", name = "ServletGestionMaterial", asyncSupported = true)
     @VaadinServletConfiguration(ui = MaterialUI.class, productionMode = false)

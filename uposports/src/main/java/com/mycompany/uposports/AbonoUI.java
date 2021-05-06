@@ -64,17 +64,17 @@ public class AbonoUI extends UI {
             getUI().getPage().setLocation("/Instalacion");//Accedemos a la entidad abono
         });
 
-        Button buttonEmpleados = new Button("Empleados", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
+        Button buttonEmpleados = new Button("Empleados", FontAwesome.GROUP);//Botón para acceder a la entidad instalaciones
         buttonEmpleados.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Empleado");//Accedemos a la entidad abono
         });
 
-        Button buttonMateriales = new Button("Materiales", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
+        Button buttonMateriales = new Button("Materiales", FontAwesome.ARCHIVE);//Botón para acceder a la entidad instalaciones
         buttonMateriales.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Material");//Accedemos a la entidad abono
         });
 
-        Button buttonReservas = new Button("Reservas", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
+        Button buttonReservas = new Button("Reservas", FontAwesome.CALENDAR);//Botón para acceder a la entidad instalaciones
         buttonReservas.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Material");//Accedemos a la entidad abono
         });
@@ -133,6 +133,7 @@ public class AbonoUI extends UI {
 
     protected void crearAbono(VaadinRequest vaadinRequest) {//Método para crear abonos
         final VerticalLayout layout = new VerticalLayout();//Creamos un vertical layout
+        final HorizontalLayout layoutBotones = new HorizontalLayout();//Creamos un vertical layout
         final TextField tipo = new TextField();//Campo para insertar el tipo
         tipo.setCaption("Tipo:");//Texto que se muestra en dicho campo
         tipo.setIcon(FontAwesome.TAG);//Icono
@@ -161,8 +162,10 @@ public class AbonoUI extends UI {
         buttonCancelar.addClickListener(e -> {//Acción del botón
             init(vaadinRequest);//Se lanza el método principal
         });
+        layoutBotones.addComponents(buttonCancelar,buttonRegistrar);
+        layoutBotones.setSpacing(true);
 
-        layout.addComponents(tipo, duracion, coste, buttonRegistrar, buttonCancelar);//Añadimos los componentes al layout
+        layout.addComponents(tipo, duracion, coste, layoutBotones);//Añadimos los componentes al layout
         //Le añadimos margen y espciado, para mostrarlo posteriormente
         layout.setMargin(true);
         layout.setSpacing(true);

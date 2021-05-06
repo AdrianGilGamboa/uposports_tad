@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 
-
 @Theme("mytheme")
 @Title("Inicio")
 @PreserveOnRefresh
@@ -41,7 +40,6 @@ public class EmpleadoUI extends UI {
     Label errorTipo = new Label("El telefono debe ser un entero");//Etiqueta error de tipo 
     Label errorCampoVacio = new Label("Los campos no pueden estar vacíos");//Etiqueta derror de campo vacío
 
-       
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         //Empezamos obteniendo la sesión y creando una lista de empleados para
@@ -55,9 +53,9 @@ public class EmpleadoUI extends UI {
             crearEmpleado(vaadinRequest);//Accedemos al método crearAbono
         });
         Label l = new Label("<h1 style='text-weight:bold;text-align:center;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
-        Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Abonos - </h2>", ContentMode.HTML);
+        Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Empleados - </h2>", ContentMode.HTML);
         layoutHLabelabelTitulo.addComponent(l);
-        
+
         Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);//Botón para acceder a la entidad abono
         buttonAbonos.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Abono");//Accedemos a la entidad abono
@@ -92,7 +90,7 @@ public class EmpleadoUI extends UI {
             VaadinSession.getCurrent().getSession().invalidate();//Eliminamos la sesión
             getUI().getPage().setLocation("/");//Accedemos a la página principal
         });
-         if (layoutMostrarEmpleados.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
+        if (layoutMostrarEmpleados.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
             layoutH.addComponents(layoutHLabelabelTitulo, buttonInstalacion, buttonCliente, buttonAbonos, buttonLogout);//Añadimos los componentes al layout horizontal
             //Le metemos margen y espaciado, para mostrarlo posteriormente.
             layoutH2.setMargin(true);
@@ -100,14 +98,14 @@ public class EmpleadoUI extends UI {
             layoutH2.addComponents(labelEntidad, crearEmpleado);
             layoutMostrarEmpleados.addComponents(layoutH, layoutH2);
         }
-          Table table = new Table();//Creamos la tabla donde meteremos las instancias
+        Table table = new Table();//Creamos la tabla donde meteremos las instancias
 
         if (listaEmpleados.size() > 0) {//Si hay elementos en la lista de abonos
             //Añadimos las columnas de la tabla
-            table.addContainerProperty("Dni", String.class, "");
+            table.addContainerProperty("DNI", String.class, "");
             table.addContainerProperty("Nombre", String.class, "");
             table.addContainerProperty("Apellidos", String.class, "");
-            table.addContainerProperty("Telefono", int.class, "");
+            table.addContainerProperty("Telefono", Integer.class, "");
 
             table.addContainerProperty("Editar", Button.class, "");
             table.addContainerProperty("Eliminar", Button.class, "");
@@ -132,13 +130,15 @@ public class EmpleadoUI extends UI {
                 layoutMostrarEmpleados.addComponent(table);//Lo añadimos al layout vertical
             }
         }
-         layoutMostrarEmpleados.setMargin(true);
+        layoutMostrarEmpleados.setMargin(true);
         layoutMostrarEmpleados.setSpacing(true);
         setContent(layoutMostrarEmpleados);
-        
+
     }
+
     protected void crearEmpleado(VaadinRequest vaadinRequest) {//Método para crear abonos
         final VerticalLayout layout = new VerticalLayout();//Creamos un vertical layout
+        final HorizontalLayout layoutBotones = new HorizontalLayout();
         final TextField dni = new TextField();//Campo para insertar el tipo
         dni.setCaption("DNI:");//Texto que se muestra en dicho campo
         dni.setIcon(FontAwesome.ADN);//Icono
@@ -172,8 +172,14 @@ public class EmpleadoUI extends UI {
         buttonCancelar.addClickListener(e -> {//Acción del botón
             init(vaadinRequest);//Se lanza el método principal
         });
+        layoutBotones.addComponents(buttonCancelar, buttonRegistrar);
+        layoutBotones.setSpacing(true);
 
-        layout.addComponents(dni, nombre, apellidos,telefono, buttonRegistrar, buttonCancelar);//Añadimos los componentes al layout
+        layout.addComponents(dni, nombre, apellidos, telefono, layoutBotones);
+        layout.setMargin(true);
+        layout.setSpacing(true);
+
+        layout.addComponents(dni, nombre, apellidos, telefono, layoutBotones);//Añadimos los componentes al layout
         //Le añadimos margen y espciado, para mostrarlo posteriormente
         layout.setMargin(true);
         layout.setSpacing(true);
@@ -181,10 +187,11 @@ public class EmpleadoUI extends UI {
         setContent(layout);
 
     }
-    
+
     protected void editarEmpleado(VaadinRequest vaadinRequest, Empleado empleado) {
         final VerticalLayout layout = new VerticalLayout();
-       final TextField dni = new TextField();//Campo para insertar el tipo
+        final HorizontalLayout layoutBotones = new HorizontalLayout();
+        final TextField dni = new TextField();//Campo para insertar el tipo
         dni.setCaption("DNI:");//Texto que se muestra en dicho campo
         dni.setIcon(FontAwesome.ADN);//Icono
         final TextField nombre = new TextField();//Campo para insertar la duracion
@@ -217,34 +224,38 @@ public class EmpleadoUI extends UI {
         buttonCancelar.addClickListener(e -> {
             init(vaadinRequest);
         });
+        layoutBotones.addComponents(buttonCancelar, buttonRegistrar);
+        layoutBotones.setSpacing(true);
 
-        layout.addComponents(dni, nombre, apellidos,telefono, buttonRegistrar, buttonCancelar);
+        layout.addComponents(dni, nombre, apellidos, telefono, layoutBotones);
         layout.setMargin(true);
         layout.setSpacing(true);
 
         setContent(layout);
     }
-    
-     protected void modificarEmpleado(VaadinRequest vaadinRequest, Empleado empleado) {//Método para guardar los datos modificados en memoria, no hay persistencia de momento
+
+    protected void modificarEmpleado(VaadinRequest vaadinRequest, Empleado empleado) {//Método para guardar los datos modificados en memoria, no hay persistencia de momento
         empleado.setDni((String) vaadinRequest.getAttribute("dni"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
         empleado.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
         empleado.setApellidos((String) vaadinRequest.getAttribute("apellidos"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
-        empleado.setTelefono((Integer)(vaadinRequest.getAttribute("telefono")));
+        empleado.setTelefono(Integer.parseInt((String) (vaadinRequest.getAttribute("telefono"))));
     }
+
     protected void registrarEmpleado(VaadinRequest vaadinRequest) {//Método para registrar los datos en memoria, no hay persistencia de momento
         Empleado empleado = new Empleado();//Creamos un nuevo objeto abono
         empleado.setDni((String) vaadinRequest.getAttribute("dni"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
         empleado.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
         empleado.setApellidos((String) vaadinRequest.getAttribute("apellidos"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
-        empleado.setTelefono((Integer)(vaadinRequest.getAttribute("telefono")));
+        empleado.setTelefono(Integer.parseInt((String) (vaadinRequest.getAttribute("telefono"))));
 //Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
         listaEmpleados.add(empleado);//Añadimos el objeto a la lista de abonos
 
     }
-     protected boolean comprobarDatos(VaadinRequest vaadinRequest, VerticalLayout layout) {
+
+    protected boolean comprobarDatos(VaadinRequest vaadinRequest, VerticalLayout layout) {
         boolean b = false;//Variable booleana inicializada a false
         //Comprobamos si algún campo está vacío
-        if ((String) vaadinRequest.getAttribute("dni") != "" && (String) vaadinRequest.getAttribute("nombre") != "" && (String) vaadinRequest.getAttribute("apellidos") != ""  && (String) vaadinRequest.getAttribute("telefono") != "") {
+        if ((String) vaadinRequest.getAttribute("dni") != "" && (String) vaadinRequest.getAttribute("nombre") != "" && (String) vaadinRequest.getAttribute("apellidos") != "" && (String) vaadinRequest.getAttribute("telefono") != "") {
             //Comprobamos si la capacidad es numérica llamando al métdo isInteger
             if (isInteger((String) vaadinRequest.getAttribute("telefono")) == true) {
                 b = true;//Si se satisface todas las condiciones, la variables es true
@@ -254,7 +265,7 @@ public class EmpleadoUI extends UI {
                     layout.addComponentAsFirst(errorTipo);//Añadimos el camponente al layout
                 }
                 //Notificacion de tipo Warning interactiva para el usuario.
-                Notification.show("Error Datos Introducidos", "La duracion y el coste deben ser numéricos",
+                Notification.show("Error Datos Introducidos", "El teléfono debe ser numéricos",
                         Notification.Type.WARNING_MESSAGE);
 
             }
@@ -269,7 +280,8 @@ public class EmpleadoUI extends UI {
         }
         return b;
     }
-      protected static boolean isInteger(String cadena) {
+
+    protected static boolean isInteger(String cadena) {
         try {//Intentamos parsear el la cadena a entero, si se satisface, devolvemos true
             Integer.parseInt(cadena);
             return true;
