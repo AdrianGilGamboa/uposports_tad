@@ -15,14 +15,18 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.server.WrappedSession;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
@@ -33,201 +37,245 @@ import javax.servlet.annotation.WebServlet;
 @PreserveOnRefresh
 public class EmpleadoUI extends UI {
 
+    final static List<Empleado> listaEmpleados = new ArrayList<>();//Creamos una lista de abonos, donde se irán guardando y será compartida por todos los usuarios, necesario recargar la pag para ver cambios de otros usuarios
+    Label errorTipo = new Label("El telefono debe ser un entero");//Etiqueta error de tipo 
+    Label errorCampoVacio = new Label("Los campos no pueden estar vacíos");//Etiqueta derror de campo vacío
+
+       
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         //Empezamos obteniendo la sesión y creando una lista de empleados para
         //ir mentiendo cuando se vayan creando
-        WrappedSession sesion = getSession().getSession();
-        Empleado e = new Empleado();
-        List<Empleado> lista = new ArrayList<Empleado>();
-        final FormLayout form = new FormLayout();
-        //Añadimos el Label de bienvenida
-        form.addComponent(new Label("Bienvenido: " + (String) sesion.getAttribute("Usuario") + ". ¿Que operación desea realizar?. Si quiere ver la lista de empleados, pulse en ver empleados"));
-
-        //Creamos el boton "Crear empleado" donde implementaremos la funcion de crear un empleado
-        Button b = new Button(" Crear Empleado");
-        Label aux = new Label();
-        b.addClickListener(new Button.ClickListener() {
-            public void buttonClick(Button.ClickEvent event) {
-                //Añadimos por cada atributo del empleado su textfield
-                TextField tf1 = (new TextField("DNI"));
-                form.addComponent(tf1);
-                tf1.setRequired(true);
-                tf1.addValidator(new NullValidator("Campo obligatorio", false));
-                TextField tf2 = (new TextField("Nombre"));
-                form.addComponent(tf2);
-                tf2.setRequired(true);
-                tf2.addValidator(new NullValidator("Campo obligatorio", false));
-                TextField tf3 = (new TextField("Apellidos"));
-                form.addComponent(tf3);
-                tf3.setRequired(true);
-                tf3.addValidator(new NullValidator("Campo obligatorio", false));
-                TextField tf4 = (new TextField("Teléfono"));
-                form.addComponent(tf4);
-                tf4.setRequired(true);
-                tf4.addValidator(new NullValidator("Campo obligatorio", false));
-                //Una vez terminado, creamos el boton de añadir
-                Button b2 = new Button("Añadir");
-                b2.addClickListener(new Button.ClickListener() {
-                    public void buttonClick(Button.ClickEvent event) {
-                        //Con este boton, vamos a guardar al empleado
-                        //en la lista de empleados
-                        Empleado e = new Empleado();
-                        e.setDni(tf1.getValue());
-                        e.setNombre(tf2.getValue());
-                        e.setApellidos(tf3.getValue());
-                        e.setTelefono(tf4.getValue());
-                        //con el add añadimos al empleado en la lista
-                        lista.add(e);
-                        //Mostramos una notificación avisando de que
-                        //la creación del empelado se ha realizado correctamente
-                        Notification notif = new Notification("Empleado creado correctamente", Notification.Type.HUMANIZED_MESSAGE);
-                        notif.show(Page.getCurrent());
-
-                        notif.setDelayMsec(4000);
-                        //Eliminamos los componentes de la vista
-                        //cuando se ha acabado de interactuar con el formulario
-                        //para que sea mas comodo y dinámico el manejo de la página
-                        form.removeComponent(tf1);
-                        form.removeComponent(tf2);
-                        form.removeComponent(tf3);
-                        form.removeComponent(tf4);
-                        form.removeComponent(b2);
-
-                    }
-                });
-                form.addComponent(b2);
-
-            }
+        final VerticalLayout layoutMostrarEmpleados = new VerticalLayout();//Creamos un layout vertical
+        final HorizontalLayout layoutH = new HorizontalLayout();//Creamos un layout horizontal
+        final HorizontalLayout layoutHLabelabelTitulo = new HorizontalLayout();//Creamos un layout horizontal
+        final HorizontalLayout layoutH2 = new HorizontalLayout();//Creamos un layout horizontal
+        Button crearEmpleado = new Button("Crear Empleado", FontAwesome.PLUS_CIRCLE);//Botón para crear abono
+        crearEmpleado.addClickListener(e -> {//Acción del botón
+            crearEmpleado(vaadinRequest);//Accedemos al método crearAbono
         });
-//Se crea el boton de ver empleados el cual, al pulsarse, imprimirá la lista de todos los 
-//empleados disponibles
-        Button b3 = new Button("Ver empleados");
-        b3.addClickListener(new Button.ClickListener() {
-            public void buttonClick(Button.ClickEvent event) {
-                Label l1 = (new Label("<b>EMPLEADOS DISPONIBLES</b>", ContentMode.HTML));
-                form.addComponent(l1);
-                //Recorremos la lista de empleados para mostrarlos a todos
-                for (Object o : lista) {
-                    //Cast del Objeto a la Clase Empleado
-                    Empleado e = (Empleado) o;
-                    Label l2 = (new Label("Nombre: " + (e.getNombre() + " Apellidos: " + e.getApellidos()) + " DNI: " + e.getDni() + " Teléfono: " + e.getTelefono()));
-                    form.addComponent(l2);
+        Label l = new Label("<h1 style='text-weight:bold;text-align:center;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
+        Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Abonos - </h2>", ContentMode.HTML);
+        layoutHLabelabelTitulo.addComponent(l);
+        
+        Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);//Botón para acceder a la entidad abono
+        buttonAbonos.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Abono");//Accedemos a la entidad abono
+        });
+        Button buttonCliente = new Button("Clientes", FontAwesome.USERS);//Botón para acceder a la entidad instalaciones
+        buttonCliente.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Cliente");//Accedemos a la entidad abono
+        });
 
+        Button buttonInstalacion = new Button("Instalaciones", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
+        buttonInstalacion.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Instalacion");//Accedemos a la entidad abono
+        });
+
+        Button buttonEmpleados = new Button("Empleados", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
+        buttonEmpleados.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Empleado");//Accedemos a la entidad abono
+        });
+
+        Button buttonMateriales = new Button("Materiales", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
+        buttonMateriales.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Material");//Accedemos a la entidad abono
+        });
+
+        Button buttonReservas = new Button("Reservas", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
+        buttonReservas.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Material");//Accedemos a la entidad abono
+        });
+
+        Button buttonLogout = new Button("Cerrar Sesión", FontAwesome.SIGN_OUT);//Botón para cerrar sesión
+        buttonLogout.addClickListener(e -> {//Acción del botón
+            VaadinSession.getCurrent().getSession().invalidate();//Eliminamos la sesión
+            getUI().getPage().setLocation("/");//Accedemos a la página principal
+        });
+         if (layoutMostrarEmpleados.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
+            layoutH.addComponents(layoutHLabelabelTitulo, buttonInstalacion, buttonCliente, buttonAbonos, buttonLogout);//Añadimos los componentes al layout horizontal
+            //Le metemos margen y espaciado, para mostrarlo posteriormente.
+            layoutH2.setMargin(true);
+            layoutH2.setSpacing(true);
+            layoutH2.addComponents(labelEntidad, crearEmpleado);
+            layoutMostrarEmpleados.addComponents(layoutH, layoutH2);
+        }
+          Table table = new Table();//Creamos la tabla donde meteremos las instancias
+
+        if (listaEmpleados.size() > 0) {//Si hay elementos en la lista de abonos
+            //Añadimos las columnas de la tabla
+            table.addContainerProperty("Nombre", String.class, "");
+            table.addContainerProperty("Nombre", String.class, "");
+            table.addContainerProperty("Apellidos", String.class, "");
+            table.addContainerProperty("Telefono", int.class, "");
+
+            table.addContainerProperty("Editar", Button.class, "");
+            table.addContainerProperty("Eliminar", Button.class, "");
+            for (int i = 0; i < listaEmpleados.size(); i++) {//Mientras haya elementos por recorrer
+                Empleado empleado = listaEmpleados.get(i);//Obtenemos el objeto de la lista
+
+                Button buttonModificar = new Button("Modificar", FontAwesome.EDIT);//Creamos el botón modificar
+                buttonModificar.addClickListener(e -> {//Acción del botón
+                    editarEmpleado(vaadinRequest, empleado);//Método para editar la instalación
+                });
+
+                Button buttonEliminar = new Button("Eliminar", FontAwesome.CLOSE);//Creamos el botón eliminar
+                buttonEliminar.addClickListener(e -> {//Acción del botón
+                    listaEmpleados.remove(empleado);//Eliminamos el objeto de la lista de instalaciones
+                    init(vaadinRequest);//Volvemos a ejecutar el método principal
+                    Notification.show("Empleado - Dni: " + empleado.getDni(), "Eliminado con éxito",
+                            Notification.Type.TRAY_NOTIFICATION);
+                });
+                //Añadimos la fila a la tabla
+                table.addItem(new Object[]{empleado.getDni(), empleado.getNombre(), empleado.getApellidos(), empleado.getTelefono(), buttonModificar, buttonEliminar}, i);
+
+                layoutMostrarEmpleados.addComponent(table);//Lo añadimos al layout vertical
+            }
+        }
+         layoutMostrarEmpleados.setMargin(true);
+        layoutMostrarEmpleados.setSpacing(true);
+        setContent(layoutMostrarEmpleados);
+        
+    }
+    protected void crearEmpleado(VaadinRequest vaadinRequest) {//Método para crear abonos
+        final VerticalLayout layout = new VerticalLayout();//Creamos un vertical layout
+        final TextField dni = new TextField();//Campo para insertar el tipo
+        dni.setCaption("DNI:");//Texto que se muestra en dicho campo
+        dni.setIcon(FontAwesome.ADN);//Icono
+        final TextField nombre = new TextField();//Campo para insertar la duracion
+        nombre.setCaption("Nombre:");//Texto que se muestra en dicho campo
+        nombre.setIcon(FontAwesome.USER);
+        final TextField apellidos = new TextField();//Campo para insertar el coste
+        apellidos.setCaption("Apellidos:");//Texto que se muestra en dicho campo
+        apellidos.setIcon(FontAwesome.USER);
+        final TextField telefono = new TextField();//Campo para insertar el coste
+        telefono.setCaption("Telefono:");//Texto que se muestra en dicho campo
+        telefono.setIcon(FontAwesome.PHONE);
+        Button buttonRegistrar = new Button("Registrar", FontAwesome.CHECK);//Creamo el botón para registrar 
+        buttonRegistrar.addClickListener(e -> {//Acción del botón
+            vaadinRequest.setAttribute("dni", dni.getValue());//Añadimos en la petición el valor del campo tipo
+            vaadinRequest.setAttribute("nombre", nombre.getValue());//Añadimos en la petición el valor del campo duración
+            vaadinRequest.setAttribute("apellidos", apellidos.getValue());//Añadimos en la petición el valor del campo coste
+            vaadinRequest.setAttribute("telefono", telefono.getValue());//Añadimos en la petición el valor del campo telefono
+
+            if (comprobarDatos(vaadinRequest, layout) == true) {//Se comprueban los datos, y si son correctos...
+                registrarEmpleado(vaadinRequest);//Se envían los datos a registro de abono
+
+                init(vaadinRequest);//Se lanza el método principal
+                //Notificacion de tipo bandeja para notificar la correcta operación.
+                Notification.show("Empleado - Dni " + dni.getValue(), "Registrado con éxito",
+                        Notification.Type.TRAY_NOTIFICATION);
+            }
+
+        });
+        Button buttonCancelar = new Button("Cancelar", FontAwesome.CLOSE);//Nuevo botón para cancelar
+        buttonCancelar.addClickListener(e -> {//Acción del botón
+            init(vaadinRequest);//Se lanza el método principal
+        });
+
+        layout.addComponents(dni, nombre, apellidos,telefono, buttonRegistrar, buttonCancelar);//Añadimos los componentes al layout
+        //Le añadimos margen y espciado, para mostrarlo posteriormente
+        layout.setMargin(true);
+        layout.setSpacing(true);
+
+        setContent(layout);
+
+    }
+    
+    protected void editarEmpleado(VaadinRequest vaadinRequest, Empleado empleado) {
+        final VerticalLayout layout = new VerticalLayout();
+       final TextField dni = new TextField();//Campo para insertar el tipo
+        dni.setCaption("DNI:");//Texto que se muestra en dicho campo
+        dni.setIcon(FontAwesome.ADN);//Icono
+        final TextField nombre = new TextField();//Campo para insertar la duracion
+        nombre.setCaption("Nombre:");//Texto que se muestra en dicho campo
+        nombre.setIcon(FontAwesome.USER);
+        final TextField apellidos = new TextField();//Campo para insertar el coste
+        apellidos.setCaption("Apellidos:");//Texto que se muestra en dicho campo
+        apellidos.setIcon(FontAwesome.USER);
+        final TextField telefono = new TextField();//Campo para insertar el coste
+        telefono.setCaption("Telefono:");//Texto que se muestra en dicho campo
+        telefono.setIcon(FontAwesome.PHONE);
+        Button buttonRegistrar = new Button("Modificar", FontAwesome.EDIT);
+
+        buttonRegistrar.addClickListener(e -> {
+            vaadinRequest.setAttribute("dni", dni.getValue());//Añadimos en la petición el valor del campo tipo
+            vaadinRequest.setAttribute("nombre", nombre.getValue());//Añadimos en la petición el valor del campo duración
+            vaadinRequest.setAttribute("apellidos", apellidos.getValue());//Añadimos en la petición el valor del campo coste
+            vaadinRequest.setAttribute("telefono", telefono.getValue());//Añadimos en la petición el valor del campo telefono
+
+            if (comprobarDatos(vaadinRequest, layout) == true) {
+                modificarEmpleado(vaadinRequest, empleado);//Se lanza el método modificar abono
+                init(vaadinRequest);
+                //Notificacion de tipo bandeja para notificar la correcta operación.
+                Notification.show("Empleado - DNI: " + dni.getValue(), "Modificado con éxito",
+                        Notification.Type.TRAY_NOTIFICATION);
+            }
+
+        });
+        Button buttonCancelar = new Button("Cancelar", FontAwesome.CLOSE);
+        buttonCancelar.addClickListener(e -> {
+            init(vaadinRequest);
+        });
+
+        layout.addComponents(dni, nombre, apellidos,telefono, buttonRegistrar, buttonCancelar);
+        layout.setMargin(true);
+        layout.setSpacing(true);
+
+        setContent(layout);
+    }
+    
+     protected void modificarEmpleado(VaadinRequest vaadinRequest, Empleado empleado) {//Método para guardar los datos modificados en memoria, no hay persistencia de momento
+        empleado.setDni((String) vaadinRequest.getAttribute("dni"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
+        empleado.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
+        empleado.setApellidos((String) vaadinRequest.getAttribute("apellidos"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
+        empleado.setTelefono((vaadinRequest.getAttribute("telefono")));
+    }
+    protected void registrarEmpleado(VaadinRequest vaadinRequest) {//Método para registrar los datos en memoria, no hay persistencia de momento
+        Empleado empleado = new Empleado();//Creamos un nuevo objeto abono
+        empleado.setDni((String) vaadinRequest.getAttribute("dni"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
+        empleado.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
+        empleado.setApellidos((String) vaadinRequest.getAttribute("apellidos"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
+        empleado.setTelefono((vaadinRequest.getAttribute("telefono")));
+//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
+        listaEmpleados.add(empleado);//Añadimos el objeto a la lista de abonos
+
+    }
+     protected boolean comprobarDatos(VaadinRequest vaadinRequest, VerticalLayout layout) {
+        boolean b = false;//Variable booleana inicializada a false
+        //Comprobamos si algún campo está vacío
+        if ((String) vaadinRequest.getAttribute("dni") != "" && (String) vaadinRequest.getAttribute("nombre") != "" && (String) vaadinRequest.getAttribute("apellidos") != ""  && (String) vaadinRequest.getAttribute("telefono") != "") {
+            //Comprobamos si la capacidad es numérica llamando al métdo isInteger
+            if (isInteger((String) vaadinRequest.getAttribute("telefono")) == true) {
+                b = true;//Si se satisface todas las condiciones, la variables es true
+            } else {//Si la duración o el coste no es numérica
+                if (layout.getComponentIndex(errorTipo) == -1) {//Si no se ha añadido el componente al layout
+
+                    layout.addComponentAsFirst(errorTipo);//Añadimos el camponente al layout
                 }
+                //Notificacion de tipo Warning interactiva para el usuario.
+                Notification.show("Error Datos Introducidos", "La duracion y el coste deben ser numéricos",
+                        Notification.Type.WARNING_MESSAGE);
 
             }
+        } else {//En caso de campo vacío, mostramos 2 tipos de error uno fijo y otro interactivo (para el proyecto final debatiremos este aspecto)
+            if (layout.getComponentIndex(errorCampoVacio) == -1) {//Si no se ha añadido el componente al layout
 
-        }
-        );
-        //Este boton elimina un empleado de la lista de empleados
-        Button b4 = new Button("Eliminar empleados");
-        b4.addClickListener(new Button.ClickListener() {
-            public void buttonClick(Button.ClickEvent event) {
-                Label l1 = (new Label("<b>EMPLEADOS DISPONIBLES PARA BORRAR</b>", ContentMode.HTML));
-                form.addComponent(l1);
-                for (Object o : lista) {
-                    Empleado e = (Empleado) o;
-                    // Cast del Objeto a la Clase Empleado
-                    Label l2 = new Label("Nombre: " + (e.getNombre() + " Apellidos: " + e.getApellidos()) + " DNI: " + e.getDni() + " Teléfono: " + e.getTelefono());
-                    form.addComponent(l2);
-                    //Cuando eliminamos, eliminamos tambien tanto al empleado de la vista
-                    //como sus diferentes componentes para que la página se vea mas limpia
-                    Button b5 = new Button("Eliminar");
-                    b5.addClickListener(new Button.ClickListener() {
-                        public void buttonClick(Button.ClickEvent event) {
-                            lista.remove(e);
-                            form.removeComponent(l2);
-                            form.removeComponent(b5);
-                        }
-                    });
-                    form.addComponent(b5);
-
-                }
-
+                layout.addComponentAsFirst(errorCampoVacio);//Añadimos el camponente al layout
             }
-
+            //Notificacion de tipo Warning interactiva para el usuario.
+            Notification.show("Campo vacío", "Debe rellenar todos los campos",
+                    Notification.Type.WARNING_MESSAGE);
         }
-        );
-
-        //Este boton muestra todos los empleados disponibles para ser modificados
-        //y modificarlos si se cree conveniente
-        Button b6 = new Button("Modificar empleados");
-        b6.addClickListener(new Button.ClickListener() {
-            public void buttonClick(Button.ClickEvent event) {
-                for (Object o : lista) {
-                    Label l1 = (new Label("<b>EMPLEADOS DISPONIBLES PARA MODIFICAR</b>", ContentMode.HTML));
-                    form.addComponent(l1);
-                    //Cast del Objeto a la Clase Empleado
-                    Empleado e = (Empleado) o;
-                    Label l = (new Label("Nombre: " + (e.getNombre() + " Apellidos: " + e.getApellidos()) + " DNI: " + e.getDni() + " Teléfono: " + e.getTelefono()));
-                    form.addComponent(l);
-                    //Al darle al boton de modificar, se muestra el formulario
-                    Button b7 = new Button("Modificar");
-                    b7.addClickListener(new Button.ClickListener() {
-                        public void buttonClick(Button.ClickEvent event) {
-                            TextField tf1 = (new TextField("DNI"));
-                            form.addComponent(tf1);
-                            TextField tf2 = (new TextField("Nombre"));
-                            form.addComponent(tf2);
-                            TextField tf3 = (new TextField("Apellidos"));
-                            form.addComponent(tf3);
-                            TextField tf4 = (new TextField("Teléfono"));
-                            form.addComponent(tf4);
-                            form.removeComponent(l);
-//Al aceptar la modificación, se reemplaza los datos del empleado anterior por los datos
-//introducidos en la modificación y, como anteriormente, se eliminan los componentes
-//para un mejor aspecto y manejo de la página
-                            Button b8 = new Button("Modificar");
-                            b8.addClickListener(new Button.ClickListener() {
-                                public void buttonClick(Button.ClickEvent event) {
-
-                                    e.setDni(tf1.getValue());
-                                    e.setNombre(tf2.getValue());
-                                    e.setApellidos(tf3.getValue());
-                                    e.setTelefono(tf4.getValue());
-                                    form.removeComponent(tf1);
-                                    form.removeComponent(tf2);
-                                    form.removeComponent(tf3);
-                                    form.removeComponent(tf4);
-                                    form.removeComponent(b8);
-                                    form.removeComponent(b7);
-                                    form.removeComponent(l);
-                                }
-                            });
-                            form.addComponent(b8);
-
-                        }
-                    });
-                    form.addComponent(b7);
-
-                }
-            }
-
+        return b;
+    }
+      protected static boolean isInteger(String cadena) {
+        try {//Intentamos parsear el la cadena a entero, si se satisface, devolvemos true
+            Integer.parseInt(cadena);
+            return true;
+        } catch (NumberFormatException nfe) {//De lo contrario, captura la excepción y devolvemos false
+            return false;
         }
-        );
-        //Con este boton, cerramos la sesión y volvemos a la página de Login
-        Button finSesion = new Button("Cerrar Sesión");
-        finSesion.addClickListener(new Button.ClickListener() {
-            public void buttonClick(Button.ClickEvent event) {
-                sesion.invalidate();
-                getUI().getPage().setLocation("/Login");
-
-            }
-
-        }
-        );
-        form.addComponent(finSesion);
-        form.addComponent(b);
-        form.addComponent(b3);
-        form.addComponent(b4);
-        form.addComponent(b6);
-        form.setMargin(
-                true);
-        form.setSpacing(
-                true);
-
-        setContent(form);
     }
 
     @WebServlet(urlPatterns = "/Empleado/*", name = "ServletPrincipal", asyncSupported = true)
