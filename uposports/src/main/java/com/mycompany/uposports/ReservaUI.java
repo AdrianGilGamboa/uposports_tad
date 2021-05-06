@@ -56,8 +56,8 @@ public class ReservaUI extends UI {
         tabla.addContainerProperty("Fecha Reserva", String.class, null);
         tabla.addContainerProperty("Hora Inicio", String.class, null);
         tabla.addContainerProperty("Hora Fin", String.class, null);
-        tabla.addContainerProperty("Eliminar", Button.class, null);
         tabla.addContainerProperty("Editar", Button.class, null);
+        tabla.addContainerProperty("Eliminar", Button.class, null);
         tabla.setWidth("50%"); //ESTABLECEMOS EL ANCHO DE LA TABLA
         Button botonAdd = new Button("Crear Reserva", FontAwesome.PLUS_CIRCLE); //BOTÓN PARA AÑADIR RESERVA 
         layout.addComponent(botonAdd);
@@ -75,7 +75,7 @@ public class ReservaUI extends UI {
                 Reserva aux = (Reserva) it.next();
                 DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                 DateFormat horaFormat = new SimpleDateFormat("HH:mm");
-                tabla.addItem(new Object[]{dateFormat.format(aux.getInicioReserva()), horaFormat.format(aux.getInicioReserva()), horaFormat.format(aux.getFinReserva()), eliminar, editar}, i);
+                tabla.addItem(new Object[]{dateFormat.format(aux.getInicioReserva()), horaFormat.format(aux.getInicioReserva()), horaFormat.format(aux.getFinReserva()), editar,eliminar }, i);
                 i++;
                 eliminar.addClickListener(e -> {  //AÑADIMOS EL BOTON DE ELIMINAR POR CADA Reserva
                     listaReservas.remove(aux); //Elimina la reserva de la lista
@@ -115,7 +115,7 @@ public class ReservaUI extends UI {
         datos.addComponents(inicioReserva, finReserva);
         datos.setMargin(true);
         datos.setSpacing(true);
-        Button enviar = new Button("Guardar", FontAwesome.EDIT);
+        Button enviar = new Button("Guardar", FontAwesome.CHECK);
 
         enviar.addClickListener(e -> { //UNA VEZ PULSADO EL BOTÓN SE CREA LA RESERVA Y LA AÑADIMOS A LA LISTA
             Reserva aux = new Reserva();
@@ -154,7 +154,7 @@ public class ReservaUI extends UI {
         datos.addComponents(inicioReserva, finReserva);
         datos.setMargin(true);
         datos.setSpacing(true);
-        Button enviar = new Button("Guardar", FontAwesome.EDIT);
+        Button enviar = new Button("Guardar", FontAwesome.CHECK);
         //EDITAMOS TODOS LOS CAMPOS QUE HAYA MODIFICADO EL USUARIO Y VOLVEMOS A INSERTAR EL CLIENTE EN LA LISTA
         enviar.addClickListener(e -> {
             Reserva aux = new Reserva();
