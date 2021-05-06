@@ -104,7 +104,7 @@ public class EmpleadoUI extends UI {
 
         if (listaEmpleados.size() > 0) {//Si hay elementos en la lista de abonos
             //Añadimos las columnas de la tabla
-            table.addContainerProperty("Nombre", String.class, "");
+            table.addContainerProperty("Dni", String.class, "");
             table.addContainerProperty("Nombre", String.class, "");
             table.addContainerProperty("Apellidos", String.class, "");
             table.addContainerProperty("Telefono", int.class, "");
