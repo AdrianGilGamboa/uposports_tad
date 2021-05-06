@@ -51,7 +51,7 @@ public class MaterialUI extends UI {
 
         Button crearMaterial = new Button("Crear Material", FontAwesome.PLUS_CIRCLE);//Botón para crear abono
         crearMaterial.addClickListener(e -> {//Acción del botón
-            crearAbono(vaadinRequest);//Accedemos al método crearAbono
+            crearMaterial(vaadinRequest);//Accedemos al método crearAbono
         });
 
         Label l = new Label("<h1 style='text-weight:bold;text-align:center;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
@@ -140,7 +140,7 @@ public class MaterialUI extends UI {
 
     }
 
-    protected void crearAbono(VaadinRequest vaadinRequest) {//Método para crear abonos
+    protected void crearMaterial(VaadinRequest vaadinRequest) {//Método para crear abonos
         final VerticalLayout layout = new VerticalLayout();//Creamos un vertical layout
         final HorizontalLayout layoutBotones = new HorizontalLayout();//Creamos un vertical layout
         final TextField nombre = new TextField();//Campo para insertar el tipo
@@ -174,7 +174,7 @@ public class MaterialUI extends UI {
 
         layoutBotones.addComponents(buttonCancelar,buttonRegistrar);
         layoutBotones.setSpacing(true);
-        layout.addComponents(nombre, descripcion, unidades, buttonRegistrar, buttonCancelar);//Añadimos los componentes al layout
+        layout.addComponents(nombre, descripcion, unidades, layoutBotones);//Añadimos los componentes al layout
         //Le añadimos margen y espciado, para mostrarlo posteriormente
          
         layout.setMargin(true);
@@ -219,7 +219,7 @@ public class MaterialUI extends UI {
         });
 layoutBotones.addComponents(buttonCancelar,buttonRegistrar);
         layoutBotones.setSpacing(true);
-        layout.addComponents(nombre, descripcion, unidades, buttonRegistrar, buttonCancelar);
+        layout.addComponents(nombre, descripcion, unidades, layoutBotones);
         layout.setMargin(true);
         layout.setSpacing(true);
 
