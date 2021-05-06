@@ -104,10 +104,10 @@ public class EmpleadoUI extends UI {
 
         if (listaEmpleados.size() > 0) {//Si hay elementos en la lista de abonos
             //Añadimos las columnas de la tabla
-            table.addContainerProperty("Dni", String.class, "");
+            table.addContainerProperty("DNI", String.class, "");
             table.addContainerProperty("Nombre", String.class, "");
             table.addContainerProperty("Apellidos", String.class, "");
-            table.addContainerProperty("Telefono", int.class, "");
+            table.addContainerProperty("Telefono", Integer.class, "");
 
             table.addContainerProperty("Editar", Button.class, "");
             table.addContainerProperty("Eliminar", Button.class, "");
@@ -229,14 +229,14 @@ public class EmpleadoUI extends UI {
         empleado.setDni((String) vaadinRequest.getAttribute("dni"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
         empleado.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
         empleado.setApellidos((String) vaadinRequest.getAttribute("apellidos"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
-        empleado.setTelefono((Integer)(vaadinRequest.getAttribute("telefono")));
+        empleado.setTelefono(Integer.parseInt((String)(vaadinRequest.getAttribute("telefono"))));
     }
     protected void registrarEmpleado(VaadinRequest vaadinRequest) {//Método para registrar los datos en memoria, no hay persistencia de momento
         Empleado empleado = new Empleado();//Creamos un nuevo objeto abono
         empleado.setDni((String) vaadinRequest.getAttribute("dni"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
         empleado.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
         empleado.setApellidos((String) vaadinRequest.getAttribute("apellidos"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
-        empleado.setTelefono((Integer)(vaadinRequest.getAttribute("telefono")));
+        empleado.setTelefono(Integer.parseInt((String)(vaadinRequest.getAttribute("telefono"))));
 //Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
         listaEmpleados.add(empleado);//Añadimos el objeto a la lista de abonos
 

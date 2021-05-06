@@ -13,7 +13,7 @@ public class Empleado {
     private String dni;
     private String nombre;
     private String apellidos;
-    private int telefono;
+    private Integer telefono;
 
     public Empleado(String dni, String nombre, String apellidos, int telefono) {
         this.dni = dni;
