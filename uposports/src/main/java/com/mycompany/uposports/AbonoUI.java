@@ -133,7 +133,10 @@ public class AbonoUI extends UI {
 
     protected void crearAbono(VaadinRequest vaadinRequest) {//Método para crear abonos
         final VerticalLayout layout = new VerticalLayout();//Creamos un vertical layout
+        final HorizontalLayout layoutTextField = new HorizontalLayout();
         final HorizontalLayout layoutBotones = new HorizontalLayout();//Creamos un vertical layout
+        Label l = new Label("<h2>Nuevo Abono</h2>", ContentMode.HTML);
+        layout.addComponent(l);
         final TextField tipo = new TextField();//Campo para insertar el tipo
         tipo.setCaption("Tipo:");//Texto que se muestra en dicho campo
         tipo.setIcon(FontAwesome.TAG);//Icono
@@ -164,8 +167,12 @@ public class AbonoUI extends UI {
         });
         layoutBotones.addComponents(buttonCancelar,buttonRegistrar);
         layoutBotones.setSpacing(true);
+        layoutBotones.setMargin(true);
 
-        layout.addComponents(tipo, duracion, coste, layoutBotones);//Añadimos los componentes al layout
+        layoutTextField.addComponents(tipo, duracion, coste);
+        layoutTextField.setSpacing(true);
+        layoutTextField.setMargin(true);
+        layout.addComponents(layoutTextField, layoutBotones);//Añadimos los componentes al layout
         //Le añadimos margen y espciado, para mostrarlo posteriormente
         layout.setMargin(true);
         layout.setSpacing(true);

@@ -76,7 +76,7 @@ public class login extends UI implements Broadcaster.BroadcastListener {
         final VerticalLayout layoutVentana = new VerticalLayout();//Layout vertical
 
         Label saludo = new Label("<h1 style='text-weight:bold;margin:0'>Bienvenido/a " + session.getAttribute("nombreUsuario") + " </h1>"
-                + "<h3> Seleccione una opción: </h3>", ContentMode.HTML);
+                + "<br/><br/><h3> Seleccione una opción: </h3>", ContentMode.HTML);
 //Creamos 3 botones
         Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);
         Button buttonInstalaciones = new Button("Instalaciones", FontAwesome.BUILDING);
