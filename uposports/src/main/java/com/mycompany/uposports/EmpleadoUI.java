@@ -84,7 +84,7 @@ public class EmpleadoUI extends UI {
 
         Button buttonReservas = new Button("Reservas", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
         buttonReservas.addClickListener(e -> {//Acción del botón
-            getUI().getPage().setLocation("/Material");//Accedemos a la entidad abono
+            getUI().getPage().setLocation("/Reserva");//Accedemos a la entidad abono
         });
 
         Button buttonLogout = new Button("Cerrar Sesión", FontAwesome.SIGN_OUT);//Botón para cerrar sesión
