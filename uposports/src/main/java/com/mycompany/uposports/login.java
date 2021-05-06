@@ -76,7 +76,7 @@ public class login extends UI implements Broadcaster.BroadcastListener {
         Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);
         Button buttonInstalaciones = new Button("Instalaciones", FontAwesome.BUILDING);
         Button buttonClientes = new Button("Clientes", FontAwesome.USER); //Boton para ir a la página de gestión de clientes
-        Button buttonEmpleado = new Button("Empleados", FontAwesome.GROUP);
+        Button buttonEmpleado = new Button("Empleados", FontAwesome.MALE);
         Button buttonMaterial = new Button("Materiales", FontAwesome.ARCHIVE);
         Button buttonReserva = new Button("Reservas", FontAwesome.CALENDAR);
 
