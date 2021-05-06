@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package manu;
+package com.mycompany.uposports;
 
 import clases.Pago;
 import com.vaadin.annotations.VaadinServletConfiguration;
@@ -27,7 +27,7 @@ import javax.servlet.annotation.WebServlet;
  *
  * @author manum
  * */
-public class gestionPago extends UI {
+public class PagoUI extends UI {
      @Override
     protected void init(VaadinRequest vaadinRequest) {
         //Empezamos obteniendo la sesión y creando una lista de empleados para
@@ -59,7 +59,7 @@ public class gestionPago extends UI {
     }
 
     @WebServlet(urlPatterns = "/gestionPago/*", name = "ServletGestionPago", asyncSupported = true)
-    @VaadinServletConfiguration(ui = gestionPago.class, productionMode = false)
+    @VaadinServletConfiguration(ui = PagoUI.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {
         
     }
