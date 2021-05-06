@@ -74,8 +74,8 @@ public class ClienteUI extends UI {
         //BUCLE PARA AÑADIR TODOS LOS CLIENTES A LA TABLA
         if (!listaClientes.isEmpty()) {
             while (it.hasNext()) {
-                Button eliminar = new Button("Eliminar");
-                Button editar = new Button("Editar");
+                Button eliminar = new Button("Eliminar", FontAwesome.CLOSE);
+                Button editar = new Button("Editar", FontAwesome.EDIT);
                 Cliente aux = (Cliente) it.next();
                 tabla.addItem(new Object[]{aux.getNombre(), aux.getApellidos(), aux.getDni(), aux.getTelefono(), aux.getCodigoPostal(),editar ,eliminar }, i);
                 i++;
@@ -131,6 +131,8 @@ public class ClienteUI extends UI {
                 //layout.addComponent(new Label("Se va a añadir "+ClienteUI.listaClientes.get(0).getNombre()));
                 // getUI().getPage().setLocation("/gestionaCliente");
                 listaClientes.add(aux);
+                            Notification.show("Cliente - DNI: " + aux.getDni(), "Registrado con éxito",
+                        Notification.Type.TRAY_NOTIFICATION);
                 init(request);
             }
         });

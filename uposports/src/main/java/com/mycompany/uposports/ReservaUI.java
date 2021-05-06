@@ -1,6 +1,8 @@
 package com.mycompany.uposports;
 
 import clases.Reserva;
+import static com.mycompany.uposports.AbonoUI.isFloat;
+import static com.mycompany.uposports.AbonoUI.isInteger;
 import static com.mycompany.uposports.ClienteUI.listaClientes;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
@@ -70,12 +72,12 @@ public class ReservaUI extends UI {
         //BUCLE PARA AÑADIR TODAS LAS RESERVA A LA TABLA
         if (!listaReservas.isEmpty()) {
             while (it.hasNext()) {
-                Button eliminar = new Button("Eliminar");
-                Button editar = new Button("Editar");
+                Button eliminar = new Button("Eliminar", FontAwesome.CLOSE);
+                Button editar = new Button("Editar", FontAwesome.EDIT);
                 Reserva aux = (Reserva) it.next();
                 DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                 DateFormat horaFormat = new SimpleDateFormat("HH:mm");
-                tabla.addItem(new Object[]{dateFormat.format(aux.getInicioReserva()), horaFormat.format(aux.getInicioReserva()), horaFormat.format(aux.getFinReserva()), editar,eliminar }, i);
+                tabla.addItem(new Object[]{dateFormat.format(aux.getInicioReserva()), horaFormat.format(aux.getInicioReserva()), horaFormat.format(aux.getFinReserva()), editar, eliminar}, i);
                 i++;
                 eliminar.addClickListener(e -> {  //AÑADIMOS EL BOTON DE ELIMINAR POR CADA Reserva
                     listaReservas.remove(aux); //Elimina la reserva de la lista
@@ -83,7 +85,7 @@ public class ReservaUI extends UI {
                 });
 
                 editar.addClickListener(e -> { //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
-                    editarReserva(aux,request); //EJECUTA LA FUNCION EDITAR CLIENTE
+                    editarReserva(aux, request); //EJECUTA LA FUNCION EDITAR CLIENTE
                 });
             }
             layout.addComponent(tabla);
@@ -91,7 +93,7 @@ public class ReservaUI extends UI {
         layout.setMargin(true);
         layout.setSpacing(true);
         setContent(layout);
-        
+
         botonAdd.addClickListener(e -> {
             creaReserva(request);
         });
@@ -118,11 +120,16 @@ public class ReservaUI extends UI {
         Button enviar = new Button("Guardar", FontAwesome.CHECK);
 
         enviar.addClickListener(e -> { //UNA VEZ PULSADO EL BOTÓN SE CREA LA RESERVA Y LA AÑADIMOS A LA LISTA
-            Reserva aux = new Reserva();
-            aux.setInicioReserva(inicioReserva.getValue());
-            aux.setFinReserva(finReserva.getValue());
-            addReserva(aux);
-            init(request);
+            if (comprobarDatos((Date) inicioReserva.getValue(), (Date) finReserva.getValue()) == true) {
+                Reserva aux = new Reserva();
+                aux.setInicioReserva(inicioReserva.getValue());
+                aux.setFinReserva(finReserva.getValue());
+                addReserva(aux);
+                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                Notification.show("Reserva - Fecha: " + dateFormat.format(inicioReserva.getValue()), "Registrado con éxito",
+                        Notification.Type.TRAY_NOTIFICATION);
+                init(request);
+            }
         });
         Button volver = new Button("Cancelar", FontAwesome.CLOSE);
         volver.addClickListener(e -> {
@@ -138,11 +145,11 @@ public class ReservaUI extends UI {
         setContent(layout);
     }
 
-    public void editarReserva(Reserva r,VaadinRequest request) {
+    public void editarReserva(Reserva r, VaadinRequest request) {
         layout.removeAllComponents();
         //CREAMOS UN FORMULARIO PARA PODER EDITAR LA RESERVA
         HorizontalLayout datos = new HorizontalLayout();
-        Label l = new Label("<h2>Editar Cliente</h2>", ContentMode.HTML);
+        Label l = new Label("<h2>Editar Reserva</h2>", ContentMode.HTML);
         layout.addComponent(l);
 
         DateField inicioReserva = new DateField("Introduzca el inicio de la reserva");
@@ -178,6 +185,29 @@ public class ReservaUI extends UI {
         layout.addComponents(datos, horiz);
         layout.setMargin(true);
         layout.setSpacing(true);
+    }
+
+    //Método para comprobar los datos introducidos en los formularios
+    protected boolean comprobarDatos(Date ini, Date fin) {
+        boolean b = false;//Variable booleana inicializada a false
+        try {
+            //Comprobamos si algún campo está vacío
+            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            if ((dateFormat.format(ini).equals(dateFormat.format(fin)))) {
+                b = true;
+
+            } else {//En caso de campo vacío, mostramos 2 tipos de error uno fijo y otro interactivo (para el proyecto final debatiremos este aspecto)
+                //Notificacion de tipo Warning interactiva para el usuario.
+                Notification.show("Error Fechas", "La fecha de inicio y fin deben ser iguales",
+                        Notification.Type.WARNING_MESSAGE);
+            }
+            return b;
+        } catch (NullPointerException e) {
+
+            Notification.show("Error Fechas", "Introduzca la fecha y hora haciendo click en el calendario",
+                    Notification.Type.WARNING_MESSAGE);
+        }
+        return b;
     }
 
     @WebServlet(urlPatterns = {"/Reserva/*"}, name = "gestionaReservaServlet", asyncSupported = true)

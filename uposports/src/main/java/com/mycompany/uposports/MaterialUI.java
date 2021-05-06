@@ -39,8 +39,6 @@ import javax.servlet.annotation.WebServlet;
 public class MaterialUI extends UI {
      
       final static List<Material> listaMateriales = new ArrayList<>();//Creamos una lista de materiales, donde se irán guardando y será compartida por todos los usuarios, necesario recargar la pag para ver cambios de otros usuarios
-    Label errorTipo = new Label("La duracion y el coste deben ser numéricos");//Etiqueta error de tipo 
-    Label errorCampoVacio = new Label("Los campos no pueden estar vacíos");//Etiqueta derror de campo vacío
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -49,6 +47,12 @@ public class MaterialUI extends UI {
         final HorizontalLayout layoutHLabelabelTitulo = new HorizontalLayout();//Creamos un layout horizontal
         final HorizontalLayout layoutH2 = new HorizontalLayout();//Creamos un layout horizontal
 
+                //RECUPERAMOS LA SESION Y SI NO HAY SESION NOS REDIRIGE A LA PÁGINA DE INICIO DE SESIÓN
+        WrappedSession session = getSession().getSession();
+        if (session.getAttribute("nombreUsuario") == null) {
+            getUI().getPage().setLocation("/login");
+        }
+        
         Button crearMaterial = new Button("Crear Material", FontAwesome.PLUS_CIRCLE);//Botón para crear abono
         crearMaterial.addClickListener(e -> {//Acción del botón
             crearMaterial(vaadinRequest);//Accedemos al método crearAbono
@@ -250,20 +254,13 @@ layoutBotones.addComponents(buttonCancelar,buttonRegistrar);
             if (isInteger((String) vaadinRequest.getAttribute("unidades")) == true) {
                 b = true;//Si se satisface todas las condiciones, la variables es true
             } else {//Si la duración o el coste no es numérica
-                if (layout.getComponentIndex(errorTipo) == -1) {//Si no se ha añadido el componente al layout
-
-                    layout.addComponentAsFirst(errorTipo);//Añadimos el camponente al layout
-                }
                 //Notificacion de tipo Warning interactiva para el usuario.
                 Notification.show("Error Datos Introducidos", "Las unidades deben ser númericas",
                         Notification.Type.WARNING_MESSAGE);
 
             }
         } else {//En caso de campo vacío, mostramos 2 tipos de error uno fijo y otro interactivo (para el proyecto final debatiremos este aspecto)
-            if (layout.getComponentIndex(errorCampoVacio) == -1) {//Si no se ha añadido el componente al layout
 
-                layout.addComponentAsFirst(errorCampoVacio);//Añadimos el camponente al layout
-            }
             //Notificacion de tipo Warning interactiva para el usuario.
             Notification.show("Campo vacío", "Debe rellenar todos los campos",
                     Notification.Type.WARNING_MESSAGE);

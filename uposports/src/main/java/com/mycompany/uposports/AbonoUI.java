@@ -11,6 +11,7 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.server.WrappedSession;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -30,8 +31,6 @@ import java.util.List;
 public class AbonoUI extends UI {
 
     final static List<Abono> listaAbonos = new ArrayList<>();//Creamos una lista de abonos, donde se irán guardando y será compartida por todos los usuarios, necesario recargar la pag para ver cambios de otros usuarios
-    Label errorTipo = new Label("La duracion y el coste deben ser numéricos");//Etiqueta error de tipo 
-    Label errorCampoVacio = new Label("Los campos no pueden estar vacíos");//Etiqueta derror de campo vacío
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -39,6 +38,12 @@ public class AbonoUI extends UI {
         final HorizontalLayout layoutH = new HorizontalLayout();//Creamos un layout horizontal
         final HorizontalLayout layoutHLabelabelTitulo = new HorizontalLayout();//Creamos un layout horizontal
         final HorizontalLayout layoutH2 = new HorizontalLayout();//Creamos un layout horizontal
+        
+                //RECUPERAMOS LA SESION Y SI NO HAY SESION NOS REDIRIGE A LA PÁGINA DE INICIO DE SESIÓN
+        WrappedSession session = getSession().getSession();
+        if (session.getAttribute("nombreUsuario") == null) {
+            getUI().getPage().setLocation("/login");
+        }
 
         Button crearAbono = new Button("Crear Abono", FontAwesome.PLUS_CIRCLE);//Botón para crear abono
         crearAbono.addClickListener(e -> {//Acción del botón
@@ -76,7 +81,7 @@ public class AbonoUI extends UI {
 
         Button buttonReservas = new Button("Reservas", FontAwesome.CALENDAR);//Botón para acceder a la entidad instalaciones
         buttonReservas.addClickListener(e -> {//Acción del botón
-            getUI().getPage().setLocation("/Material");//Accedemos a la entidad abono
+            getUI().getPage().setLocation("/Reserva");//Accedemos a la entidad abono
         });
 
         Button buttonLogout = new Button("Cerrar Sesión", FontAwesome.SIGN_OUT);//Botón para cerrar sesión
@@ -86,7 +91,7 @@ public class AbonoUI extends UI {
         });
 
         if (layoutMostrarAbonos.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
-            layoutH.addComponents(layoutHLabelabelTitulo, buttonInstalacion, buttonCliente, buttonAbonos,buttonEmpleados,buttonMateriales,buttonReservas, buttonLogout);//Añadimos los componentes al layout horizontal
+            layoutH.addComponents(layoutHLabelabelTitulo, buttonInstalacion, buttonCliente, buttonAbonos, buttonEmpleados, buttonMateriales, buttonReservas, buttonLogout);//Añadimos los componentes al layout horizontal
             //Le metemos margen y espaciado, para mostrarlo posteriormente.
             layoutH2.setMargin(true);
             layoutH2.setSpacing(true);
@@ -165,7 +170,7 @@ public class AbonoUI extends UI {
         buttonCancelar.addClickListener(e -> {//Acción del botón
             init(vaadinRequest);//Se lanza el método principal
         });
-        layoutBotones.addComponents(buttonCancelar,buttonRegistrar);
+        layoutBotones.addComponents(buttonCancelar, buttonRegistrar);
         layoutBotones.setSpacing(true);
         layoutBotones.setMargin(true);
 
@@ -185,7 +190,11 @@ public class AbonoUI extends UI {
     //Ya se ha comentado en el método anterior que realiza cada línea de código.
     protected void editarAbono(VaadinRequest vaadinRequest, Abono abono) {
         final VerticalLayout layout = new VerticalLayout();
+        final HorizontalLayout layoutTextField = new HorizontalLayout();
+        final HorizontalLayout layoutBotones = new HorizontalLayout();//Creamos un vertical layout
         final TextField tipo = new TextField();
+        Label l = new Label("<h2>Modificar Abono</h2>", ContentMode.HTML);
+        layout.addComponent(l);
         tipo.setCaption("Tipo:");
         tipo.setValue(abono.getTipo());//Insertamos en el campo el valor del atributo tipo
         tipo.setIcon(FontAwesome.TAG);//Icono
@@ -217,7 +226,15 @@ public class AbonoUI extends UI {
             init(vaadinRequest);
         });
 
-        layout.addComponents(tipo, duracion, coste, buttonRegistrar, buttonCancelar);
+        layoutBotones.addComponents(buttonCancelar, buttonRegistrar);
+        layoutBotones.setSpacing(true);
+        layoutBotones.setMargin(true);
+
+        layoutTextField.addComponents(tipo, duracion, coste);
+        layoutTextField.setSpacing(true);
+        layoutTextField.setMargin(true);
+        layout.addComponents(layoutTextField, layoutBotones);//Añadimos los componentes al layout
+        //Le añadimos margen y espciado, para mostrarlo posteriormente
         layout.setMargin(true);
         layout.setSpacing(true);
 
@@ -248,20 +265,11 @@ public class AbonoUI extends UI {
             if (isInteger((String) vaadinRequest.getAttribute("duracion")) == true && isFloat((String) vaadinRequest.getAttribute("coste")) == true) {
                 b = true;//Si se satisface todas las condiciones, la variables es true
             } else {//Si la duración o el coste no es numérica
-                if (layout.getComponentIndex(errorTipo) == -1) {//Si no se ha añadido el componente al layout
-
-                    layout.addComponentAsFirst(errorTipo);//Añadimos el camponente al layout
-                }
                 //Notificacion de tipo Warning interactiva para el usuario.
-                Notification.show("Error Datos Introducidos", "La duracion y el coste deben ser numéricos",
+                Notification.show("Error Datos Introducidos", "La duración y el coste deben ser numéricos",
                         Notification.Type.WARNING_MESSAGE);
-
             }
         } else {//En caso de campo vacío, mostramos 2 tipos de error uno fijo y otro interactivo (para el proyecto final debatiremos este aspecto)
-            if (layout.getComponentIndex(errorCampoVacio) == -1) {//Si no se ha añadido el componente al layout
-
-                layout.addComponentAsFirst(errorCampoVacio);//Añadimos el camponente al layout
-            }
             //Notificacion de tipo Warning interactiva para el usuario.
             Notification.show("Campo vacío", "Debe rellenar todos los campos",
                     Notification.Type.WARNING_MESSAGE);
