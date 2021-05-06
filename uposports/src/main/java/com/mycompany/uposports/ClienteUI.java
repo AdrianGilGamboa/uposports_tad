@@ -62,8 +62,8 @@ public class ClienteUI extends UI {
         tabla.addContainerProperty("DNI", String.class, null);
         tabla.addContainerProperty("Teléfono", String.class, null);
         tabla.addContainerProperty("Codigo Postal", String.class, null);
-        tabla.addContainerProperty("Eliminar", Button.class, null);
         tabla.addContainerProperty("Editar", Button.class, null);
+        tabla.addContainerProperty("Eliminar", Button.class, null);
         Button botonAdd = new Button("Crear Cliente", FontAwesome.PLUS_CIRCLE); //BOTÓN PARA AÑADIR CLIENTES 
         layoutH2.setMargin(true);
         layoutH2.setSpacing(true);
@@ -77,7 +77,7 @@ public class ClienteUI extends UI {
                 Button eliminar = new Button("Eliminar");
                 Button editar = new Button("Editar");
                 Cliente aux = (Cliente) it.next();
-                tabla.addItem(new Object[]{aux.getNombre(), aux.getApellidos(), aux.getDni(), aux.getTelefono(), aux.getCodigoPostal(), eliminar, editar}, i);
+                tabla.addItem(new Object[]{aux.getNombre(), aux.getApellidos(), aux.getDni(), aux.getTelefono(), aux.getCodigoPostal(),editar ,eliminar }, i);
                 i++;
                 eliminar.addClickListener(e -> {  //AÑADIMOS EL BOTON DE ELIMINAR POR CADA CLIENTE
                     listaClientes.remove(aux); //Elimina el cliente de la lista
@@ -106,25 +106,15 @@ public class ClienteUI extends UI {
         HorizontalLayout datos = new HorizontalLayout();
         Label l = new Label("<h2 style='text-weight:bold;'>Nuevo Cliente</h2>", ContentMode.HTML);
         layout.addComponent(l);
-        TextField nombre = new TextField("Introduzca el nombre");
-        nombre.setRequired(true);
-        nombre.addValidator(new NullValidator("Campo obligatorio", false));
-        TextField apellidos = new TextField("Introduzca los Apellidos");
-        apellidos.setRequired(true);
-        apellidos.addValidator(new NullValidator("Campo obligatorio", false));
-        TextField dni = new TextField("Introduzca el DNI");
-        dni.setRequired(true);
-        dni.addValidator(new NullValidator("Campo obligatorio", false));
-        TextField telef = new TextField("Introduzca el Telefono");
-        telef.setRequired(true);
-        telef.addValidator(new NullValidator("Campo obligatorio", false));
-        TextField cp = new TextField("Introduzca el Código Postal");
-        cp.setRequired(true);
-        cp.addValidator(new NullValidator("Campo obligatorio", true));
+        TextField nombre = new TextField("Introduzca el nombre:");
+        TextField apellidos = new TextField("Introduzca los Apellidos:");
+        TextField dni = new TextField("Introduzca el DNI:");
+        TextField telef = new TextField("Introduzca el Telefono:");
+        TextField cp = new TextField("Introduzca el Código Postal:");
         datos.addComponents(nombre, apellidos, dni, telef, cp);
         datos.setMargin(true);
         datos.setSpacing(true);
-        Button enviar = new Button("Guardar", FontAwesome.EDIT);
+        Button enviar = new Button("Guardar", FontAwesome.CHECK);
 
         enviar.addClickListener(e -> { //UNA VEZ PULSADO EL BOTÓN SE CREA EL CLIENTE Y LO AÑADIMOS A LA LISTA
             if (nombre.getValue().equals("") || apellidos.getValue().equals("") || dni.getValue().equals("") || telef.getValue().equals("") || cp.getValue().equals("")) {
@@ -166,30 +156,20 @@ public class ClienteUI extends UI {
         HorizontalLayout datos = new HorizontalLayout();
         Label l = new Label("<h2>Editar Cliente</h2>", ContentMode.HTML);
         layout.addComponent(l);
-        TextField nombre = new TextField("Introduzca el nombre");
-        nombre.setRequired(true);
-        nombre.addValidator(new NullValidator("Campo obligatorio", false));
+        TextField nombre = new TextField("Introduzca el nombre:");
         nombre.setValue(cliente.getNombre());
-        TextField apellidos = new TextField("Introduzca los Apellidos");
-        apellidos.setRequired(true);
-        apellidos.addValidator(new NullValidator("Campo obligatorio", false));
+        TextField apellidos = new TextField("Introduzca los Apellidos:");
         apellidos.setValue(cliente.getApellidos());
-        TextField dni = new TextField("Introduzca el DNI");
-        dni.setRequired(true);
-        dni.addValidator(new NullValidator("Campo obligatorio", false));
+        TextField dni = new TextField("Introduzca el DNI:");
         dni.setValue(cliente.getDni());
-        TextField telef = new TextField("Introduzca el Telefono");
-        telef.setRequired(true);
-        telef.addValidator(new NullValidator("Campo obligatorio", false));
+        TextField telef = new TextField("Introduzca el Telefono:");
         telef.setValue(cliente.getTelefono());
-        TextField cp = new TextField("Introduzca el Código Postal");
-        cp.setRequired(true);
-        cp.addValidator(new NullValidator("Campo obligatorio", false));
+        TextField cp = new TextField("Introduzca el Código Postal:");
         cp.setValue(cliente.getCodigoPostal());
         datos.addComponents(nombre, apellidos, dni, telef, cp);
         datos.setMargin(true);
         datos.setSpacing(true);
-        Button enviar = new Button("Enviar", FontAwesome.EDIT);
+        Button enviar = new Button("Enviar", FontAwesome.CHECK);
         //EDITAMOS TODOS LOS CAMPOS QUE HAYA MODIFICADO EL USUARIO Y VOLVEMOS A INSERTAR EL CLIENTE EN LA LISTA
         enviar.addClickListener(e -> {
             if (nombre.getValue().equals("") || apellidos.getValue().equals("") || dni.getValue().equals("") || telef.getValue().equals("") || cp.getValue().equals("")) {
