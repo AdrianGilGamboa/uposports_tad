@@ -13,9 +13,9 @@ public class Empleado {
     private String dni;
     private String nombre;
     private String apellidos;
-    private String telefono;
+    private int telefono;
 
-    public Empleado(String dni, String nombre, String apellidos, String telefono) {
+    public Empleado(String dni, String nombre, String apellidos, int telefono) {
         this.dni = dni;
         this.nombre = nombre;
         this.apellidos = apellidos;
@@ -51,11 +51,11 @@ public class Empleado {
         this.apellidos = apellidos;
     }
 
-    public String getTelefono() {
+    public int getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(String telefono) {
+    public void setTelefono(int telefono) {
         this.telefono = telefono;
     }
      @Override
