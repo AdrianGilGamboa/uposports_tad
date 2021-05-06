@@ -35,9 +35,9 @@ import javax.servlet.annotation.WebServlet;
  * @author manum
  */
 @Theme("mytheme")
-@Title("Inicio")
+@Title("Material")
 public class MaterialUI extends UI {
-     @Override
+     
       final static List<Material> listaMateriales = new ArrayList<>();//Creamos una lista de materiales, donde se irán guardando y será compartida por todos los usuarios, necesario recargar la pag para ver cambios de otros usuarios
     Label errorTipo = new Label("La duracion y el coste deben ser numéricos");//Etiqueta error de tipo 
     Label errorCampoVacio = new Label("Los campos no pueden estar vacíos");//Etiqueta derror de campo vacío
@@ -205,7 +205,7 @@ public class MaterialUI extends UI {
             vaadinRequest.setAttribute("descripcion", descripcion.getValue());//Añadimos en la petición el valor del campo duración
             vaadinRequest.setAttribute("unidades", unidades.getValue());//Añadimos en la petición el valor del campo coste
             if (comprobarDatos(vaadinRequest, layout) == true) {
-                modificarAbono(vaadinRequest, abono);//Se lanza el método modificar abono
+                modificarAbono(vaadinRequest, material);//Se lanza el método modificar abono
                 init(vaadinRequest);
                 //Notificacion de tipo bandeja para notificar la correcta operación.
                 Notification.show("Material - Nombre: " + nombre.getValue(), "Modificado con éxito",
