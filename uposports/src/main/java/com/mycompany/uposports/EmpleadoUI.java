@@ -254,7 +254,7 @@ public class EmpleadoUI extends UI {
                     layout.addComponentAsFirst(errorTipo);//Añadimos el camponente al layout
                 }
                 //Notificacion de tipo Warning interactiva para el usuario.
-                Notification.show("Error Datos Introducidos", "La duracion y el coste deben ser numéricos",
+                Notification.show("Error Datos Introducidos", "El teléfono debe ser numéricos",
                         Notification.Type.WARNING_MESSAGE);
 
             }
