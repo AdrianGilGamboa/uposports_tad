@@ -3,6 +3,7 @@ package com.mycompany.uposports;
 import clases.Cliente;
 import com.mycompany.uposports.*;
 import com.vaadin.annotations.Theme;
+import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.data.validator.NullValidator;
 import com.vaadin.navigator.Navigator;
@@ -31,22 +32,30 @@ import javax.servlet.annotation.WebServlet;
 import java.util.*;
 
 @Theme("mytheme")
+@Title("Cliente")
 public class ClienteUI extends UI {
 
     public static ArrayList<Cliente> listaClientes = new ArrayList(); //LISTA DONDE ESTARÁN ALMACENADOS TODOS LOS CLIENTES QUE CREEMOS
     public VerticalLayout layout = new VerticalLayout(); //LAYOUT PRINCIPAL
-
+    final HorizontalLayout layoutHLabelabelTitulo = new HorizontalLayout();//Creamos un layout horizontal
+    final HorizontalLayout layoutH2 = new HorizontalLayout();//Creamos un layout horizontal
     @Override
-    protected void init(VaadinRequest request) {       
-        //layout.removeAllComponents();
+    protected void init(VaadinRequest request) {
+        layout.removeAllComponents();
+        layoutHLabelabelTitulo.removeAllComponents();
+        layoutH2.removeAllComponents();
         //RECUPERAMOS LA SESION Y SI NO HAY SESION NOS REDIRIGE A LA PÁGINA DE INICIO DE SESIÓN
         WrappedSession session = getSession().getSession();
         if (session.getAttribute("nombreUsuario") == null) {
             getUI().getPage().setLocation("/login");
         }
-          
+        
+        Label l = new Label("<h1 style='text-weight:bold;text-align:center;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
+        Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Clientes - </h2>", ContentMode.HTML);
+        layoutHLabelabelTitulo.addComponent(l);        
+        layout.addComponent(layoutHLabelabelTitulo);
         //CREAMOS UNA TABLA DONDE APARECERÁ LA LISTA DE CLIENTES
-        layout.removeAllComponents();
+        
         Table tabla = new Table();
         tabla.addContainerProperty("Nombre", String.class, null);
         tabla.addContainerProperty("Apellidos", String.class, null);
@@ -55,43 +64,41 @@ public class ClienteUI extends UI {
         tabla.addContainerProperty("Codigo Postal", String.class, null);
         tabla.addContainerProperty("Eliminar", Button.class, null);
         tabla.addContainerProperty("Editar", Button.class, null);
-        Button botonAdd = new Button("Añadir Cliente"); //BOTÓN PARA AÑADIR CLIENTES 
-        layout.addComponent(botonAdd);
+        Button botonAdd = new Button("Crear Cliente", FontAwesome.PLUS_CIRCLE); //BOTÓN PARA AÑADIR CLIENTES 
+        layoutH2.setMargin(true);
+        layoutH2.setSpacing(true);
+        layoutH2.addComponents(labelEntidad, botonAdd);
+        layout.addComponent(layoutH2);
         Iterator it = listaClientes.iterator();
         int i = 0;
         //BUCLE PARA AÑADIR TODOS LOS CLIENTES A LA TABLA
-        while (it.hasNext()) {
-            Button eliminar = new Button("Eliminar");
-            Button editar = new Button("Editar");
-            Cliente aux = (Cliente) it.next();
-            tabla.addItem(new Object[]{aux.getNombre(), aux.getApellidos(), aux.getDni(), aux.getTelefono(), aux.getCodigoPostal(), eliminar, editar}, i);
-            i++;
-            eliminar.addClickListener(e -> {  //AÑADIMOS EL BOTON DE ELIMINAR POR CADA CLIENTE
-                listaClientes.remove(aux); //Elimina el cliente de la lista
-                init(request);
-            });
+        if (!listaClientes.isEmpty()) {
+            while (it.hasNext()) {
+                Button eliminar = new Button("Eliminar");
+                Button editar = new Button("Editar");
+                Cliente aux = (Cliente) it.next();
+                tabla.addItem(new Object[]{aux.getNombre(), aux.getApellidos(), aux.getDni(), aux.getTelefono(), aux.getCodigoPostal(), eliminar, editar}, i);
+                i++;
+                eliminar.addClickListener(e -> {  //AÑADIMOS EL BOTON DE ELIMINAR POR CADA CLIENTE
+                    listaClientes.remove(aux); //Elimina el cliente de la lista
+                    init(request);
+                });
 
-            editar.addClickListener(e -> { //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
-                editarCliente(request, aux); //EJECUTA LA FUNCION EDITARCLIENTE
-            });
+                editar.addClickListener(e -> { //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
+                    editarCliente(request, aux); //EJECUTA LA FUNCION EDITARCLIENTE
+                });
+            }
+            layout.addComponent(tabla);
         }
-        Button volver = new Button("Volver", FontAwesome.ARROW_LEFT);
-        layout.addComponents(tabla, volver);
         layout.setMargin(true);
         layout.setSpacing(true);
         setContent(layout);
-
-        volver.addClickListener(e -> {
-            getUI().getPage().setLocation("/"); //REDIRECCIONA A LA CLASE MENU
-        });
 
         botonAdd.addClickListener(e -> {
             addCliente(request);
             // getUI().getPage().setLocation("/nuevoCliente");  //REDIRECCIONA A LA CLASE nuevoCliente
         });
     }
-    
-
 
     public void addCliente(VaadinRequest request) { //METODO QUE AÑADE UN CLIENTE A LA LISTA
         //CREAMOS UN FORMULARIO PARA QUE EL USUARIO INTRODUZCA LOS DATOS DEL CLIENTE A CREAR
@@ -101,48 +108,49 @@ public class ClienteUI extends UI {
         layout.addComponent(l);
         TextField nombre = new TextField("Introduzca el nombre");
         nombre.setRequired(true);
-        nombre.addValidator(new NullValidator("Campo obligatorio",false));
+        nombre.addValidator(new NullValidator("Campo obligatorio", false));
         TextField apellidos = new TextField("Introduzca los Apellidos");
         apellidos.setRequired(true);
-        apellidos.addValidator(new NullValidator("Campo obligatorio",false));
+        apellidos.addValidator(new NullValidator("Campo obligatorio", false));
         TextField dni = new TextField("Introduzca el DNI");
         dni.setRequired(true);
-        dni.addValidator(new NullValidator("Campo obligatorio",false));
+        dni.addValidator(new NullValidator("Campo obligatorio", false));
         TextField telef = new TextField("Introduzca el Telefono");
         telef.setRequired(true);
-        telef.addValidator(new NullValidator("Campo obligatorio",false));
+        telef.addValidator(new NullValidator("Campo obligatorio", false));
         TextField cp = new TextField("Introduzca el Código Postal");
         cp.setRequired(true);
-        cp.addValidator(new NullValidator("Campo obligatorio",true));
+        cp.addValidator(new NullValidator("Campo obligatorio", true));
         datos.addComponents(nombre, apellidos, dni, telef, cp);
         datos.setMargin(true);
         datos.setSpacing(true);
-        Button enviar = new Button("Guardar", FontAwesome.SEND);
+        Button enviar = new Button("Guardar", FontAwesome.EDIT);
 
         enviar.addClickListener(e -> { //UNA VEZ PULSADO EL BOTÓN SE CREA EL CLIENTE Y LO AÑADIMOS A LA LISTA
-            if(nombre.getValue().equals("") || apellidos.getValue().equals("") || dni.getValue().equals("") || telef.getValue().equals("") || cp.getValue().equals("")){
+            if (nombre.getValue().equals("") || apellidos.getValue().equals("") || dni.getValue().equals("") || telef.getValue().equals("") || cp.getValue().equals("")) {
                 Notification.show("Campo vacío", "No se permiten campos vacíos",
-                            Notification.Type.WARNING_MESSAGE);
-            }else{
-            Cliente aux = new Cliente();
-            aux.setNombre(nombre.getValue());
-            aux.setApellidos(apellidos.getValue());
-            aux.setDni(dni.getValue());
-            aux.setTelefono(telef.getValue());
-            aux.setCodigoPostal(cp.getValue());
-            // ClienteUI.addCliente(aux);
-            //layout.addComponent(new Label("Se va a añadir "+ClienteUI.listaClientes.get(0).getNombre()));
-            // getUI().getPage().setLocation("/gestionaCliente");
-            listaClientes.add(aux);
-            init(request);
+                        Notification.Type.WARNING_MESSAGE);
+            } else {
+                Cliente aux = new Cliente();
+                aux.setNombre(nombre.getValue());
+                aux.setApellidos(apellidos.getValue());
+                aux.setDni(dni.getValue());
+                aux.setTelefono(telef.getValue());
+                aux.setCodigoPostal(cp.getValue());
+                // ClienteUI.addCliente(aux);
+                //layout.addComponent(new Label("Se va a añadir "+ClienteUI.listaClientes.get(0).getNombre()));
+                // getUI().getPage().setLocation("/gestionaCliente");
+                listaClientes.add(aux);
+                init(request);
             }
         });
-        Button volver = new Button("Volver", FontAwesome.ARROW_LEFT);
-        volver.addClickListener(e -> {
+        Button cancelar = new Button("Cancelar", FontAwesome.CLOSE);
+        //REDIRECCIONA A LA CLASE gestionaCLiente
+        cancelar.addClickListener(e -> {
             init(request);
         });
         HorizontalLayout horiz = new HorizontalLayout();
-        horiz.addComponents(volver, enviar);
+        horiz.addComponents(cancelar,enviar);
         horiz.setSpacing(true);
         horiz.setMargin(true);
         layout.addComponents(datos, horiz);
@@ -160,52 +168,52 @@ public class ClienteUI extends UI {
         layout.addComponent(l);
         TextField nombre = new TextField("Introduzca el nombre");
         nombre.setRequired(true);
-        nombre.addValidator(new NullValidator("Campo obligatorio",false));
+        nombre.addValidator(new NullValidator("Campo obligatorio", false));
         nombre.setValue(cliente.getNombre());
         TextField apellidos = new TextField("Introduzca los Apellidos");
         apellidos.setRequired(true);
-        apellidos.addValidator(new NullValidator("Campo obligatorio",false));
+        apellidos.addValidator(new NullValidator("Campo obligatorio", false));
         apellidos.setValue(cliente.getApellidos());
         TextField dni = new TextField("Introduzca el DNI");
         dni.setRequired(true);
-        dni.addValidator(new NullValidator("Campo obligatorio",false));
+        dni.addValidator(new NullValidator("Campo obligatorio", false));
         dni.setValue(cliente.getDni());
         TextField telef = new TextField("Introduzca el Telefono");
         telef.setRequired(true);
-        telef.addValidator(new NullValidator("Campo obligatorio",false));
+        telef.addValidator(new NullValidator("Campo obligatorio", false));
         telef.setValue(cliente.getTelefono());
         TextField cp = new TextField("Introduzca el Código Postal");
         cp.setRequired(true);
-        cp.addValidator(new NullValidator("Campo obligatorio",false));
+        cp.addValidator(new NullValidator("Campo obligatorio", false));
         cp.setValue(cliente.getCodigoPostal());
         datos.addComponents(nombre, apellidos, dni, telef, cp);
         datos.setMargin(true);
         datos.setSpacing(true);
-        Button enviar = new Button("Enviar", FontAwesome.SEND);
+        Button enviar = new Button("Enviar", FontAwesome.EDIT);
         //EDITAMOS TODOS LOS CAMPOS QUE HAYA MODIFICADO EL USUARIO Y VOLVEMOS A INSERTAR EL CLIENTE EN LA LISTA
         enviar.addClickListener(e -> {
-            if(nombre.getValue().equals("") || apellidos.getValue().equals("") || dni.getValue().equals("") || telef.getValue().equals("") || cp.getValue().equals("")){
+            if (nombre.getValue().equals("") || apellidos.getValue().equals("") || dni.getValue().equals("") || telef.getValue().equals("") || cp.getValue().equals("")) {
                 Notification.show("Campo vacío", "No se permiten campos vacíos",
-                            Notification.Type.WARNING_MESSAGE);
-            }else{
+                        Notification.Type.WARNING_MESSAGE);
+            } else {
                 cliente.setNombre(nombre.getValue());
-            cliente.setApellidos(apellidos.getValue());
-            cliente.setDni(dni.getValue());
-            cliente.setTelefono(telef.getValue());
-            cliente.setCodigoPostal(cp.getValue());
-            //listaClientes.remove(cliente);
-            //addCliente(aux);
-            init(request);
-            }            
-            
+                cliente.setApellidos(apellidos.getValue());
+                cliente.setDni(dni.getValue());
+                cliente.setTelefono(telef.getValue());
+                cliente.setCodigoPostal(cp.getValue());
+                //listaClientes.remove(cliente);
+                //addCliente(aux);
+                init(request);
+            }
+
         });
-        Button volver = new Button("Volver", FontAwesome.ARROW_LEFT);
+        Button cancelar = new Button("Cancelar", FontAwesome.CLOSE);
         //REDIRECCIONA A LA CLASE gestionaCLiente
-        volver.addClickListener(e -> {
-            getUI().getPage().setLocation("/gestionaCliente");
+        cancelar.addClickListener(e -> {
+            init(request);
         });
         HorizontalLayout horiz = new HorizontalLayout();
-        horiz.addComponents(volver, enviar);
+        horiz.addComponents(cancelar, enviar);
         horiz.setSpacing(true);
         horiz.setMargin(true);
         layout.addComponents(datos, horiz);
