@@ -12,6 +12,7 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.WrappedSession;
 import com.vaadin.shared.communication.PushMode;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -72,7 +73,11 @@ public class login extends UI implements Broadcaster.BroadcastListener {
     //Mostramos los distintos tipos de entidades que tenemos para acceder
     protected void mostrarEntidades(WrappedSession session) {
         final HorizontalLayout layoutEntidades = new HorizontalLayout();//Creamo layout horizontal
-        //Creamos 3 botones
+        final VerticalLayout layoutVentana = new VerticalLayout();//Layout vertical
+
+        Label saludo = new Label("<h1 style='text-weight:bold;margin:0'>Bienvenido/a " + session.getAttribute("nombreUsuario") + " </h1>"
+                + "<h3> Seleccione una opción: </h3>", ContentMode.HTML);
+//Creamos 3 botones
         Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);
         Button buttonInstalaciones = new Button("Instalaciones", FontAwesome.BUILDING);
         Button buttonClientes = new Button("Clientes"); //Boton para ir a la página de gestión de clientes
@@ -101,8 +106,8 @@ public class login extends UI implements Broadcaster.BroadcastListener {
         buttonMaterial.addClickListener(e -> {  //Establecemos lo que hace el boton clientes
             getUI().getPage().setLocation("/Material"); //Redirige a la clase de gestionar clientes
         });
-        
-                buttonReserva.addClickListener(e -> {  //Establecemos lo que hace el boton clientes
+
+        buttonReserva.addClickListener(e -> {  //Establecemos lo que hace el boton clientes
             getUI().getPage().setLocation("/Reserva"); //Redirige a la clase de gestionar clientes
         });
 
@@ -113,13 +118,15 @@ public class login extends UI implements Broadcaster.BroadcastListener {
 
         //Añadimos los componentes al layout y le ponemos margen y espaciado
         layoutEntidades.addComponents(buttonAbonos, buttonInstalaciones, buttonClientes, buttonEmpleado, buttonMaterial, buttonLogout);
+        layoutVentana.addComponents(saludo, layoutEntidades);
         layoutEntidades.setMargin(true);
         layoutEntidades.setSpacing(true);
+        layoutVentana.setMargin(true);
+        layoutVentana.setSpacing(true);
 
-        setContent(layoutEntidades);//Mostramos le contenido del layout
+        setContent(layoutVentana);//Mostramos le contenido del layout
 
     }
-    
 
     //Se ejecuta el método access para el log que recibe el push (en este caso no realiza nada, se realiza en el log)
     @Override
