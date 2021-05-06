@@ -147,6 +147,8 @@ public class MaterialUI extends UI {
     protected void crearMaterial(VaadinRequest vaadinRequest) {//Método para crear abonos
         final VerticalLayout layout = new VerticalLayout();//Creamos un vertical layout
         final HorizontalLayout layoutBotones = new HorizontalLayout();//Creamos un vertical layout
+        final HorizontalLayout layoutTextField = new HorizontalLayout();
+
         final TextField nombre = new TextField();//Campo para insertar el tipo
         nombre.setCaption("Nombre:");//Texto que se muestra en dicho campo
         nombre.setIcon(FontAwesome.TAG);//Icono
@@ -178,7 +180,10 @@ public class MaterialUI extends UI {
 
         layoutBotones.addComponents(buttonCancelar,buttonRegistrar);
         layoutBotones.setSpacing(true);
-        layout.addComponents(nombre, descripcion, unidades, layoutBotones);//Añadimos los componentes al layout
+         layoutTextField.addComponents(nombre, descripcion, unidades);
+        layoutTextField.setSpacing(true);
+        layoutTextField.setMargin(true);
+        layout.addComponents(layoutTextField, layoutBotones);//Añadimos los componentes al layout
         //Le añadimos margen y espciado, para mostrarlo posteriormente
          
         layout.setMargin(true);

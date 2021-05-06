@@ -144,6 +144,8 @@ public class EmpleadoUI extends UI {
     protected void crearEmpleado(VaadinRequest vaadinRequest) {//Método para crear abonos
         final VerticalLayout layout = new VerticalLayout();//Creamos un vertical layout
         final HorizontalLayout layoutBotones = new HorizontalLayout();
+         final HorizontalLayout layoutTextField = new HorizontalLayout();
+
         final TextField dni = new TextField();//Campo para insertar el tipo
         dni.setCaption("DNI:");//Texto que se muestra en dicho campo
         dni.setIcon(FontAwesome.ADN);//Icono
@@ -180,11 +182,11 @@ public class EmpleadoUI extends UI {
         layoutBotones.addComponents(buttonCancelar, buttonRegistrar);
         layoutBotones.setSpacing(true);
 
-        layout.addComponents(dni, nombre, apellidos, telefono, layoutBotones);
-        layout.setMargin(true);
-        layout.setSpacing(true);
+        layoutTextField.addComponents(dni, nombre, apellidos, telefono);
+        layoutTextField.setSpacing(true);
+        layoutTextField.setMargin(true);
 
-        layout.addComponents(dni, nombre, apellidos, telefono, layoutBotones);//Añadimos los componentes al layout
+        layout.addComponents(layoutTextField, layoutBotones);//Añadimos los componentes al layout
         //Le añadimos margen y espciado, para mostrarlo posteriormente
         layout.setMargin(true);
         layout.setSpacing(true);
