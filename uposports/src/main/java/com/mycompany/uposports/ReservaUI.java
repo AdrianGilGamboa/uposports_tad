@@ -7,6 +7,7 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.server.WrappedSession;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -31,6 +32,7 @@ public class ReservaUI extends UI {
     public VerticalLayout layout = new VerticalLayout(); //LAYOUT PRINCIPAL
     final HorizontalLayout layoutHLabelabelTitulo = new HorizontalLayout();//Creamos un layout horizontal
     final HorizontalLayout layoutH2 = new HorizontalLayout();//Creamos un layout horizontal
+    final HorizontalLayout layoutH = new HorizontalLayout();//Creamos un layout horizontal
 
     @Override
     protected void init(VaadinRequest request) {
@@ -45,8 +47,54 @@ public class ReservaUI extends UI {
 
         Label l = new Label("<h1 style='text-weight:bold;text-align:center;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
         Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Reservas - </h2>", ContentMode.HTML);
+
+        Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);//Botón para acceder a la entidad abono
+        buttonAbonos.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Abono");//Accedemos a la entidad abono
+        });
+
+        Button buttonCliente = new Button("Clientes", FontAwesome.MALE);//Botón para acceder a la entidad instalaciones
+        buttonCliente.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Cliente");//Accedemos a la entidad abono
+        });
+
+        Button buttonInstalacion = new Button("Instalaciones", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
+        buttonInstalacion.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Instalacion");//Accedemos a la entidad abono
+        });
+
+        Button buttonEmpleados = new Button("Empleados", FontAwesome.USERS);//Botón para acceder a la entidad instalaciones
+        buttonEmpleados.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Empleado");//Accedemos a la entidad abono
+        });
+
+        Button buttonMateriales = new Button("Materiales", FontAwesome.ARCHIVE);//Botón para acceder a la entidad instalaciones
+        buttonMateriales.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Material");//Accedemos a la entidad abono
+        });
+
+        Button buttonReservas = new Button("Reservas", FontAwesome.CALENDAR);//Botón para acceder a la entidad instalaciones
+        buttonReservas.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Reserva");//Accedemos a la entidad abono
+        });
+
+        Button buttonLogout = new Button("Cerrar Sesión", FontAwesome.SIGN_OUT);//Botón para cerrar sesión
+        buttonLogout.addClickListener(e -> {//Acción del botón
+            VaadinSession.getCurrent().getSession().invalidate();//Eliminamos la sesión
+            getUI().getPage().setLocation("/");//Accedemos a la página principal
+        });
+
+        Button botonAdd = new Button("Crear Reserva", FontAwesome.PLUS_CIRCLE); //BOTÓN PARA AÑADIR CLIENTES
+        layoutH2.setMargin(true);
+        layoutH2.setSpacing(true);
+        layoutH2.addComponents(labelEntidad, botonAdd);
+
         layoutHLabelabelTitulo.addComponent(l);
-        layout.addComponent(layoutHLabelabelTitulo);
+        layoutH.addComponents(layoutHLabelabelTitulo, buttonReservas, buttonCliente, buttonAbonos, buttonInstalacion, buttonMateriales, buttonEmpleados, buttonLogout);//Añadimos los componentes al layout horizontal
+        layoutH2.setMargin(true);
+        layoutH2.setSpacing(true);
+        layoutH2.addComponents(labelEntidad, botonAdd);
+        layout.addComponents(layoutH, layoutH2);//Añadimos los componentes al layout horizontal
 
         //CREAMOS UNA TABLA DONDE APARECERÁ LA LISTA DE CLIENTES
         Table tabla = new Table();
@@ -56,12 +104,7 @@ public class ReservaUI extends UI {
         tabla.addContainerProperty("Hora Fin", String.class, null);
         tabla.addContainerProperty("Editar", Button.class, null);
         tabla.addContainerProperty("Eliminar", Button.class, null);
-        Button botonAdd = new Button("Crear Reserva", FontAwesome.PLUS_CIRCLE); //BOTÓN PARA AÑADIR RESERVA 
-        layout.addComponent(botonAdd);
-        layoutH2.setMargin(true);
-        layoutH2.setSpacing(true);
-        layoutH2.addComponents(labelEntidad, botonAdd);
-        layout.addComponent(layoutH2);
+
         Iterator it = listaReservas.iterator();
         int i = 0;
         //BUCLE PARA AÑADIR TODAS LAS RESERVA A LA TABLA

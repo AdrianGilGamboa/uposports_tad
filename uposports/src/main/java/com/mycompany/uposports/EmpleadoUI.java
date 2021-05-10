@@ -47,13 +47,13 @@ public class EmpleadoUI extends UI {
         final HorizontalLayout layoutH = new HorizontalLayout();//Creamos un layout horizontal
         final HorizontalLayout layoutHLabelabelTitulo = new HorizontalLayout();//Creamos un layout horizontal
         final HorizontalLayout layoutH2 = new HorizontalLayout();//Creamos un layout horizontal
-        
-                //RECUPERAMOS LA SESION Y SI NO HAY SESION NOS REDIRIGE A LA PÁGINA DE INICIO DE SESIÓN
+
+        //RECUPERAMOS LA SESION Y SI NO HAY SESION NOS REDIRIGE A LA PÁGINA DE INICIO DE SESIÓN
         WrappedSession session = getSession().getSession();
         if (session.getAttribute("nombreUsuario") == null) {
             getUI().getPage().setLocation("/login");
         }
-        
+
         Button crearEmpleado = new Button("Crear Empleado", FontAwesome.PLUS_CIRCLE);//Botón para crear abono
         crearEmpleado.addClickListener(e -> {//Acción del botón
             crearEmpleado(vaadinRequest);//Accedemos al método crearAbono
@@ -66,7 +66,8 @@ public class EmpleadoUI extends UI {
         buttonAbonos.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Abono");//Accedemos a la entidad abono
         });
-        Button buttonCliente = new Button("Clientes", FontAwesome.USERS);//Botón para acceder a la entidad instalaciones
+
+        Button buttonCliente = new Button("Clientes", FontAwesome.MALE);//Botón para acceder a la entidad instalaciones
         buttonCliente.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Cliente");//Accedemos a la entidad abono
         });
@@ -76,7 +77,7 @@ public class EmpleadoUI extends UI {
             getUI().getPage().setLocation("/Instalacion");//Accedemos a la entidad abono
         });
 
-        Button buttonEmpleados = new Button("Empleados", FontAwesome.MALE);//Botón para acceder a la entidad instalaciones
+        Button buttonEmpleados = new Button("Empleados", FontAwesome.USERS);//Botón para acceder a la entidad instalaciones
         buttonEmpleados.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Empleado");//Accedemos a la entidad abono
         });
@@ -96,8 +97,9 @@ public class EmpleadoUI extends UI {
             VaadinSession.getCurrent().getSession().invalidate();//Eliminamos la sesión
             getUI().getPage().setLocation("/");//Accedemos a la página principal
         });
+
         if (layoutMostrarEmpleados.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
-            layoutH.addComponents(layoutHLabelabelTitulo, buttonInstalacion, buttonCliente, buttonAbonos, buttonLogout);//Añadimos los componentes al layout horizontal
+            layoutH.addComponents(layoutHLabelabelTitulo, buttonReservas, buttonCliente, buttonAbonos, buttonInstalacion, buttonMateriales, buttonEmpleados, buttonLogout);//Añadimos los componentes al layout horizontal
             //Le metemos margen y espaciado, para mostrarlo posteriormente.
             layoutH2.setMargin(true);
             layoutH2.setSpacing(true);
@@ -146,7 +148,7 @@ public class EmpleadoUI extends UI {
     protected void crearEmpleado(VaadinRequest vaadinRequest) {//Método para crear abonos
         final VerticalLayout layout = new VerticalLayout();//Creamos un vertical layout
         final HorizontalLayout layoutBotones = new HorizontalLayout();
-         final HorizontalLayout layoutTextField = new HorizontalLayout();
+        final HorizontalLayout layoutTextField = new HorizontalLayout();
 
         final TextField dni = new TextField();//Campo para insertar el tipo
         dni.setCaption("DNI:");//Texto que se muestra en dicho campo
@@ -167,9 +169,10 @@ public class EmpleadoUI extends UI {
             vaadinRequest.setAttribute("apellidos", apellidos.getValue());//Añadimos en la petición el valor del campo coste
             vaadinRequest.setAttribute("telefono", telefono.getValue());//Añadimos en la petición el valor del campo telefono
 
-            if (comprobarDatos(vaadinRequest, layout) == true) {try {
-                //Se comprueban los datos, y si son correctos...
-                registrarEmpleado(vaadinRequest);//Se envían los datos a registro de abono
+            if (comprobarDatos(vaadinRequest, layout) == true) {
+                try {
+                    //Se comprueban los datos, y si son correctos...
+                    registrarEmpleado(vaadinRequest);//Se envían los datos a registro de abono
                 } catch (UnknownHostException ex) {
                     Logger.getLogger(EmpleadoUI.class.getName()).log(Level.SEVERE, null, ex);
                 }

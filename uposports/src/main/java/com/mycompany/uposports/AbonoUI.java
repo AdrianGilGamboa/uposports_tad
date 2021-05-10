@@ -63,7 +63,7 @@ public class AbonoUI extends UI {
             getUI().getPage().setLocation("/Abono");//Accedemos a la entidad abono
         });
 
-        Button buttonCliente = new Button("Clientes", FontAwesome.USERS);//Botón para acceder a la entidad instalaciones
+        Button buttonCliente = new Button("Clientes", FontAwesome.MALE);//Botón para acceder a la entidad instalaciones
         buttonCliente.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Cliente");//Accedemos a la entidad abono
         });
@@ -73,7 +73,7 @@ public class AbonoUI extends UI {
             getUI().getPage().setLocation("/Instalacion");//Accedemos a la entidad abono
         });
 
-        Button buttonEmpleados = new Button("Empleados", FontAwesome.GROUP);//Botón para acceder a la entidad instalaciones
+        Button buttonEmpleados = new Button("Empleados", FontAwesome.USERS);//Botón para acceder a la entidad instalaciones
         buttonEmpleados.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Empleado");//Accedemos a la entidad abono
         });
@@ -95,7 +95,7 @@ public class AbonoUI extends UI {
         });
 
         if (layoutMostrarAbonos.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
-            layoutH.addComponents(layoutHLabelabelTitulo, buttonInstalacion, buttonCliente, buttonAbonos, buttonEmpleados, buttonMateriales, buttonReservas, buttonLogout);//Añadimos los componentes al layout horizontal
+            layoutH.addComponents(layoutHLabelabelTitulo,buttonReservas, buttonCliente, buttonAbonos, buttonInstalacion, buttonMateriales,  buttonEmpleados,   buttonLogout);//Añadimos los componentes al layout horizontal
             //Le metemos margen y espaciado, para mostrarlo posteriormente.
             layoutH2.setMargin(true);
             layoutH2.setSpacing(true);

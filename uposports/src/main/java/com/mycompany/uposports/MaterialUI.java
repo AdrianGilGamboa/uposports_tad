@@ -38,8 +38,8 @@ import javax.servlet.annotation.WebServlet;
 @Theme("mytheme")
 @Title("Material")
 public class MaterialUI extends UI {
-     
-      final static List<Material> listaMateriales = new ArrayList<>();//Creamos una lista de materiales, donde se irán guardando y será compartida por todos los usuarios, necesario recargar la pag para ver cambios de otros usuarios
+
+    final static List<Material> listaMateriales = new ArrayList<>();//Creamos una lista de materiales, donde se irán guardando y será compartida por todos los usuarios, necesario recargar la pag para ver cambios de otros usuarios
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -48,19 +48,19 @@ public class MaterialUI extends UI {
         final HorizontalLayout layoutHLabelabelTitulo = new HorizontalLayout();//Creamos un layout horizontal
         final HorizontalLayout layoutH2 = new HorizontalLayout();//Creamos un layout horizontal
 
-                //RECUPERAMOS LA SESION Y SI NO HAY SESION NOS REDIRIGE A LA PÁGINA DE INICIO DE SESIÓN
+        //RECUPERAMOS LA SESION Y SI NO HAY SESION NOS REDIRIGE A LA PÁGINA DE INICIO DE SESIÓN
         WrappedSession session = getSession().getSession();
         if (session.getAttribute("nombreUsuario") == null) {
             getUI().getPage().setLocation("/login");
         }
-        
+
         Button crearMaterial = new Button("Crear Material", FontAwesome.PLUS_CIRCLE);//Botón para crear abono
         crearMaterial.addClickListener(e -> {//Acción del botón
             crearMaterial(vaadinRequest);//Accedemos al método crearAbono
         });
 
         Label l = new Label("<h1 style='text-weight:bold;text-align:center;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
-        Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Material - </h2>", ContentMode.HTML);
+        Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Materiales - </h2>", ContentMode.HTML);
         layoutHLabelabelTitulo.addComponent(l);
 
         Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);//Botón para acceder a la entidad abono
@@ -68,7 +68,7 @@ public class MaterialUI extends UI {
             getUI().getPage().setLocation("/Abono");//Accedemos a la entidad abono
         });
 
-        Button buttonCliente = new Button("Clientes", FontAwesome.USERS);//Botón para acceder a la entidad instalaciones
+        Button buttonCliente = new Button("Clientes", FontAwesome.MALE);//Botón para acceder a la entidad instalaciones
         buttonCliente.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Cliente");//Accedemos a la entidad abono
         });
@@ -78,7 +78,7 @@ public class MaterialUI extends UI {
             getUI().getPage().setLocation("/Instalacion");//Accedemos a la entidad abono
         });
 
-        Button buttonEmpleados = new Button("Empleados", FontAwesome.MALE);//Botón para acceder a la entidad instalaciones
+        Button buttonEmpleados = new Button("Empleados", FontAwesome.USERS);//Botón para acceder a la entidad instalaciones
         buttonEmpleados.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Empleado");//Accedemos a la entidad abono
         });
@@ -90,7 +90,7 @@ public class MaterialUI extends UI {
 
         Button buttonReservas = new Button("Reservas", FontAwesome.CALENDAR);//Botón para acceder a la entidad instalaciones
         buttonReservas.addClickListener(e -> {//Acción del botón
-            getUI().getPage().setLocation("/Reservas");//Accedemos a la entidad abono
+            getUI().getPage().setLocation("/Reserva");//Accedemos a la entidad abono
         });
 
         Button buttonLogout = new Button("Cerrar Sesión", FontAwesome.SIGN_OUT);//Botón para cerrar sesión
@@ -100,7 +100,7 @@ public class MaterialUI extends UI {
         });
 
         if (layoutMostrarMateriales.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
-            layoutH.addComponents(layoutHLabelabelTitulo, buttonInstalacion, buttonCliente, buttonAbonos,buttonEmpleados,buttonMateriales,buttonReservas, buttonLogout);//Añadimos los componentes al layout horizontal
+            layoutH.addComponents(layoutHLabelabelTitulo, buttonReservas, buttonCliente, buttonAbonos, buttonInstalacion, buttonMateriales, buttonEmpleados, buttonLogout);//Añadimos los componentes al layout horizontal
             //Le metemos margen y espaciado, para mostrarlo posteriormente.
             layoutH2.setMargin(true);
             layoutH2.setSpacing(true);
@@ -140,9 +140,9 @@ public class MaterialUI extends UI {
             }
         }
         //Le añadimos margen y espciado, para mostrarlo posteriormente.
-         layoutMostrarMateriales.setMargin(true);
-         layoutMostrarMateriales.setSpacing(true);
-        setContent( layoutMostrarMateriales);
+        layoutMostrarMateriales.setMargin(true);
+        layoutMostrarMateriales.setSpacing(true);
+        setContent(layoutMostrarMateriales);
 
     }
 
@@ -165,9 +165,10 @@ public class MaterialUI extends UI {
             vaadinRequest.setAttribute("nombre", nombre.getValue());//Añadimos en la petición el valor del campo tipo
             vaadinRequest.setAttribute("descripcion", descripcion.getValue());//Añadimos en la petición el valor del campo duración
             vaadinRequest.setAttribute("unidades", unidades.getValue());//Añadimos en la petición el valor del campo coste
-            if (comprobarDatos(vaadinRequest, layout) == true) {try {
-                //Se comprueban los datos, y si son correctos...
-                registrarMaterial(vaadinRequest);//Se envían los datos a registro de abono
+            if (comprobarDatos(vaadinRequest, layout) == true) {
+                try {
+                    //Se comprueban los datos, y si son correctos...
+                    registrarMaterial(vaadinRequest);//Se envían los datos a registro de abono
                 } catch (UnknownHostException ex) {
                     Logger.getLogger(MaterialUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -184,14 +185,14 @@ public class MaterialUI extends UI {
             init(vaadinRequest);//Se lanza el método principal
         });
 
-        layoutBotones.addComponents(buttonCancelar,buttonRegistrar);
+        layoutBotones.addComponents(buttonCancelar, buttonRegistrar);
         layoutBotones.setSpacing(true);
-         layoutTextField.addComponents(nombre, descripcion, unidades);
+        layoutTextField.addComponents(nombre, descripcion, unidades);
         layoutTextField.setSpacing(true);
         layoutTextField.setMargin(true);
         layout.addComponents(layoutTextField, layoutBotones);//Añadimos los componentes al layout
         //Le añadimos margen y espciado, para mostrarlo posteriormente
-         
+
         layout.setMargin(true);
         layout.setSpacing(true);
 
@@ -216,7 +217,7 @@ public class MaterialUI extends UI {
         Button buttonRegistrar = new Button("Modificar", FontAwesome.EDIT);
 
         buttonRegistrar.addClickListener(e -> {
-             vaadinRequest.setAttribute("nombre", nombre.getValue());//Añadimos en la petición el valor del campo tipo
+            vaadinRequest.setAttribute("nombre", nombre.getValue());//Añadimos en la petición el valor del campo tipo
             vaadinRequest.setAttribute("descripcion", descripcion.getValue());//Añadimos en la petición el valor del campo duración
             vaadinRequest.setAttribute("unidades", unidades.getValue());//Añadimos en la petición el valor del campo coste
             if (comprobarDatos(vaadinRequest, layout) == true) {
@@ -232,7 +233,7 @@ public class MaterialUI extends UI {
         buttonCancelar.addClickListener(e -> {
             init(vaadinRequest);
         });
-layoutBotones.addComponents(buttonCancelar,buttonRegistrar);
+        layoutBotones.addComponents(buttonCancelar, buttonRegistrar);
         layoutBotones.setSpacing(true);
         layout.addComponents(nombre, descripcion, unidades, layoutBotones);
         layout.setMargin(true);
@@ -244,14 +245,14 @@ layoutBotones.addComponents(buttonCancelar,buttonRegistrar);
     protected void modificarMaterial(VaadinRequest vaadinRequest, Material material) {//Método para guardar los datos modificados en memoria, no hay persistencia de momento
         material.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
         material.setDescripcion((String) vaadinRequest.getAttribute("descripcion"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
-        material.setUnidades(Integer.parseInt((String)vaadinRequest.getAttribute("unidades")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
+        material.setUnidades(Integer.parseInt((String) vaadinRequest.getAttribute("unidades")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
     }
 
     protected void registrarMaterial(VaadinRequest vaadinRequest) throws UnknownHostException {//Método para registrar los datos en memoria, no hay persistencia de momento
         Material material = new Material();//Creamos un nuevo objeto abono
         material.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
         material.setDescripcion((String) vaadinRequest.getAttribute("descripcion"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
-        material.setUnidades(Integer.parseInt((String)vaadinRequest.getAttribute("unidades")));
+        material.setUnidades(Integer.parseInt((String) vaadinRequest.getAttribute("unidades")));
         listaMateriales.add(material);//Añadimos el objeto a la lista de abonos
         MaterialDAO.creaMaterial(material);
     }
@@ -289,12 +290,8 @@ layoutBotones.addComponents(buttonCancelar,buttonRegistrar);
         }
     }
 
-
-
     @WebServlet(urlPatterns = "/Material/*", name = "ServletGestionMaterial", asyncSupported = true)
     @VaadinServletConfiguration(ui = MaterialUI.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {
     }
 }
-
-

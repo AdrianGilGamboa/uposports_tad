@@ -10,6 +10,7 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.server.WrappedSession;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
@@ -33,92 +34,138 @@ public class ClienteUI extends UI {
 
     public static ArrayList<Cliente> listaClientes = new ArrayList(); //LISTA DONDE ESTARÁN ALMACENADOS TODOS LOS CLIENTES QUE CREEMOS
     public VerticalLayout layout = new VerticalLayout(); //LAYOUT PRINCIPAL
+    final HorizontalLayout layoutH = new HorizontalLayout();//Creamos un layout horizontal
     final HorizontalLayout layoutHLabelabelTitulo = new HorizontalLayout();//Creamos un layout horizontal
     final HorizontalLayout layoutH2 = new HorizontalLayout();//Creamos un layout horizontal
 
     @Override
     protected void init(VaadinRequest request) {
         try {
-        layout.removeAllComponents();
-        layoutHLabelabelTitulo.removeAllComponents();
-        layoutH2.removeAllComponents();
-        //RECUPERAMOS LA SESION Y SI NO HAY SESION NOS REDIRIGE A LA PÁGINA DE INICIO DE SESIÓN
-        WrappedSession session = getSession().getSession();
-        if (session.getAttribute("nombreUsuario") == null) {
-            getUI().getPage().setLocation("/login");
-        }
-
-        Label l = new Label("<h1 style='text-weight:bold;text-align:center;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
-        Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Clientes - </h2>", ContentMode.HTML);
-        layoutHLabelabelTitulo.addComponent(l);
-        layout.addComponent(layoutHLabelabelTitulo);
-        //CREAMOS UNA TABLA DONDE APARECERÁ LA LISTA DE CLIENTES
-        Table tabla = new Table();
-        tabla.setSizeFull();
-        tabla.addContainerProperty("Nombre", String.class, null);
-        tabla.addContainerProperty("Apellidos", String.class, null);
-        tabla.addContainerProperty("DNI", String.class, null);
-        tabla.addContainerProperty("Teléfono", String.class, null);
-        tabla.addContainerProperty("Codigo Postal", String.class, null);
-        tabla.addContainerProperty("Abono", String.class, null);
-        tabla.addContainerProperty("Editar", Button.class, null);
-        tabla.addContainerProperty("Eliminar", Button.class, null);
-        Button botonAdd = new Button("Crear Cliente", FontAwesome.PLUS_CIRCLE); //BOTÓN PARA AÑADIR CLIENTES
-        layoutH2.setMargin(true);
-        layoutH2.setSpacing(true);
-        layoutH2.addComponents(labelEntidad, botonAdd);
-        layout.addComponent(layoutH2);
-        ArrayList clientes = ClienteDAO.consultaClientes();
-        Iterator it = clientes.iterator();
-        
-        int i = 0;
-        //BUCLE PARA AÑADIR TODOS LOS CLIENTES A LA TABLA
-        if (!clientes.isEmpty()) {
-            while (it.hasNext()) {
-                Button eliminar = new Button("Eliminar", FontAwesome.CLOSE);
-                Button editar = new Button("Editar", FontAwesome.EDIT);
-                Cliente aux = (Cliente) it.next();
-                tabla.addItem(new Object[]{aux.getNombre(), aux.getApellidos(), aux.getDni(), aux.getTelefono(), aux.getCodigoPostal(), aux.getAbono().getTipo(), editar, eliminar}, i);
-                i++;
-                eliminar.addClickListener(e -> {  try {
-                    //AÑADIMOS EL BOTON DE ELIMINAR POR CADA CLIENTE
-                    //listaClientes.remove(aux); //Elimina el cliente de la lista                    
-                    ClienteDAO.eliminaCliente(aux);
-                    } catch (UnknownHostException ex) {
-                        Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    init(request);
-                });
-
-                editar.addClickListener(e -> { try {
-                    //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
-                    editarCliente(request, aux); //EJECUTA LA FUNCION EDITARCLIENTE
-                    } catch (UnknownHostException ex) {
-                        Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                });
+            layout.removeAllComponents();
+            layoutHLabelabelTitulo.removeAllComponents();
+            layoutH2.removeAllComponents();
+            //RECUPERAMOS LA SESION Y SI NO HAY SESION NOS REDIRIGE A LA PÁGINA DE INICIO DE SESIÓN
+            WrappedSession session = getSession().getSession();
+            if (session.getAttribute("nombreUsuario") == null) {
+                getUI().getPage().setLocation("/login");
             }
-            //tabla.setHeight("auto");
-            layout.addComponent(tabla);
-        }
-        layout.setMargin(true);
-        layout.setSpacing(true);
-        setContent(layout);
 
-        botonAdd.addClickListener(e -> {            
-            try {
-                addCliente(request);
-                // getUI().getPage().setLocation("/nuevoCliente");  //REDIRECCIONA A LA CLASE nuevoCliente            
-            } catch (UnknownHostException ex) {
-                Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
+            Label l = new Label("<h1 style='text-weight:bold;text-align:center;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
+            Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Clientes - </h2>", ContentMode.HTML);
+
+            Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);//Botón para acceder a la entidad abono
+            buttonAbonos.addClickListener(e -> {//Acción del botón
+                getUI().getPage().setLocation("/Abono");//Accedemos a la entidad abono
+            });
+
+            Button buttonCliente = new Button("Clientes", FontAwesome.MALE);//Botón para acceder a la entidad instalaciones
+            buttonCliente.addClickListener(e -> {//Acción del botón
+                getUI().getPage().setLocation("/Cliente");//Accedemos a la entidad abono
+            });
+
+            Button buttonInstalacion = new Button("Instalaciones", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
+            buttonInstalacion.addClickListener(e -> {//Acción del botón
+                getUI().getPage().setLocation("/Instalacion");//Accedemos a la entidad abono
+            });
+
+            Button buttonEmpleados = new Button("Empleados", FontAwesome.USERS);//Botón para acceder a la entidad instalaciones
+            buttonEmpleados.addClickListener(e -> {//Acción del botón
+                getUI().getPage().setLocation("/Empleado");//Accedemos a la entidad abono
+            });
+
+            Button buttonMateriales = new Button("Materiales", FontAwesome.ARCHIVE);//Botón para acceder a la entidad instalaciones
+            buttonMateriales.addClickListener(e -> {//Acción del botón
+                getUI().getPage().setLocation("/Material");//Accedemos a la entidad abono
+            });
+
+            Button buttonReservas = new Button("Reservas", FontAwesome.CALENDAR);//Botón para acceder a la entidad instalaciones
+            buttonReservas.addClickListener(e -> {//Acción del botón
+                getUI().getPage().setLocation("/Reserva");//Accedemos a la entidad abono
+            });
+
+            Button buttonLogout = new Button("Cerrar Sesión", FontAwesome.SIGN_OUT);//Botón para cerrar sesión
+            buttonLogout.addClickListener(e -> {//Acción del botón
+                VaadinSession.getCurrent().getSession().invalidate();//Eliminamos la sesión
+                getUI().getPage().setLocation("/");//Accedemos a la página principal
+            });
+
+            Button botonAdd = new Button("Crear Cliente", FontAwesome.PLUS_CIRCLE); //BOTÓN PARA AÑADIR CLIENTES
+            layoutH2.setMargin(true);
+            layoutH2.setSpacing(true);
+            layoutH2.addComponents(labelEntidad, botonAdd);
+
+            layoutHLabelabelTitulo.addComponent(l);
+            layoutH.addComponents(layoutHLabelabelTitulo, buttonReservas, buttonCliente, buttonAbonos, buttonInstalacion, buttonMateriales, buttonEmpleados, buttonLogout);//Añadimos los componentes al layout horizontal
+            layoutH2.setMargin(true);
+            layoutH2.setSpacing(true);
+            layoutH2.addComponents(labelEntidad, botonAdd);
+            layout.addComponents(layoutH, layoutH2);//Añadimos los componentes al layout horizontal
+
+            //CREAMOS UNA TABLA DONDE APARECERÁ LA LISTA DE CLIENTES
+            Table tabla = new Table();
+            tabla.setSizeFull();
+            tabla.addContainerProperty("Nombre", String.class, null);
+            tabla.addContainerProperty("Apellidos", String.class, null);
+            tabla.addContainerProperty("DNI", String.class, null);
+            tabla.addContainerProperty("Teléfono", String.class, null);
+            tabla.addContainerProperty("Codigo Postal", String.class, null);
+            tabla.addContainerProperty("Abono", String.class, null);
+            tabla.addContainerProperty("Editar", Button.class, null);
+            tabla.addContainerProperty("Eliminar", Button.class, null);
+
+            ArrayList clientes = ClienteDAO.consultaClientes();
+            Iterator it = clientes.iterator();
+
+            int i = 0;
+            //BUCLE PARA AÑADIR TODOS LOS CLIENTES A LA TABLA
+            if (!clientes.isEmpty()) {
+                while (it.hasNext()) {
+                    Button eliminar = new Button("Eliminar", FontAwesome.CLOSE);
+                    Button editar = new Button("Editar", FontAwesome.EDIT);
+                    Cliente aux = (Cliente) it.next();
+                    tabla.addItem(new Object[]{aux.getNombre(), aux.getApellidos(), aux.getDni(), aux.getTelefono(), aux.getCodigoPostal(), aux.getAbono().getTipo(), editar, eliminar}, i);
+                    i++;
+                    eliminar.addClickListener(e -> {
+                        try {
+                            //AÑADIMOS EL BOTON DE ELIMINAR POR CADA CLIENTE
+                            //listaClientes.remove(aux); //Elimina el cliente de la lista                    
+                            ClienteDAO.eliminaCliente(aux);
+                        } catch (UnknownHostException ex) {
+                            Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        init(request);
+                    });
+
+                    editar.addClickListener(e -> {
+                        try {
+                            //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
+                            editarCliente(request, aux); //EJECUTA LA FUNCION EDITARCLIENTE
+                        } catch (UnknownHostException ex) {
+                            Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    });
+                }
+                //tabla.setHeight("auto");
+                layout.addComponent(tabla);
             }
-        });
+            layout.setMargin(true);
+            layout.setSpacing(true);
+            setContent(layout);
+
+            botonAdd.addClickListener(e -> {
+                try {
+                    addCliente(request);
+                    // getUI().getPage().setLocation("/nuevoCliente");  //REDIRECCIONA A LA CLASE nuevoCliente            
+                } catch (UnknownHostException ex) {
+                    Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
         } catch (UnknownHostException ex) {
             Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void addCliente(VaadinRequest request) throws UnknownHostException{ //METODO QUE AÑADE UN CLIENTE A LA LISTA
+    public void addCliente(VaadinRequest request) throws UnknownHostException { //METODO QUE AÑADE UN CLIENTE A LA LISTA
         //CREAMOS UN FORMULARIO PARA QUE EL USUARIO INTRODUZCA LOS DATOS DEL CLIENTE A CREAR
         VerticalLayout layout = new VerticalLayout();
         HorizontalLayout datos = new HorizontalLayout();
@@ -201,7 +248,7 @@ public class ClienteUI extends UI {
             System.out.println(listaAbonos.get(i).getTipo());
             abono.addItems(listaAbonos.get(i).getTipo());
         }
-        datos.addComponents(nombre, apellidos, dni, telef, cp,abono);
+        datos.addComponents(nombre, apellidos, dni, telef, cp, abono);
         datos.setMargin(true);
         datos.setSpacing(true);
         Button enviar = new Button("Enviar", FontAwesome.CHECK);

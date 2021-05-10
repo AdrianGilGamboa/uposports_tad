@@ -27,7 +27,6 @@ import com.vaadin.ui.VerticalLayout;
 
 public class login extends UI implements Broadcaster.BroadcastListener {
 
-
     @Override
     protected void init(VaadinRequest vaadinRequest) {
 
@@ -38,7 +37,7 @@ public class login extends UI implements Broadcaster.BroadcastListener {
             final VerticalLayout layout = new VerticalLayout();//Layout vertical
 
             final TextField name = new TextField();//TextField para introducir nombre de usuario
-            name.setCaption("Nombre de usuario:");
+            name.setCaption("Inserte su DNI para acceder al sistema:");
             name.setIcon(FontAwesome.USER);//Icono
 
             Button button = new Button("Acceder", FontAwesome.SIGN_IN);//Botón para guardar el nombre de usuario
@@ -75,8 +74,8 @@ public class login extends UI implements Broadcaster.BroadcastListener {
 //Creamos 3 botones
         Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);
         Button buttonInstalaciones = new Button("Instalaciones", FontAwesome.BUILDING);
-        Button buttonClientes = new Button("Clientes", FontAwesome.USER); //Boton para ir a la página de gestión de clientes
-        Button buttonEmpleado = new Button("Empleados", FontAwesome.MALE);
+        Button buttonClientes = new Button("Clientes", FontAwesome.MALE); //Boton para ir a la página de gestión de clientes
+        Button buttonEmpleado = new Button("Empleados", FontAwesome.USERS);
         Button buttonMaterial = new Button("Materiales", FontAwesome.ARCHIVE);
         Button buttonReserva = new Button("Reservas", FontAwesome.CALENDAR);
 
@@ -112,7 +111,7 @@ public class login extends UI implements Broadcaster.BroadcastListener {
         });
 
         //Añadimos los componentes al layout y le ponemos margen y espaciado
-        layoutEntidades.addComponents(buttonAbonos, buttonInstalaciones, buttonClientes, buttonEmpleado, buttonMaterial, buttonLogout);
+        layoutEntidades.addComponents(buttonReserva, buttonClientes, buttonAbonos, buttonInstalaciones, buttonMaterial,  buttonEmpleado,   buttonLogout);
         layoutVentana.addComponents(saludo, layoutEntidades);
         layoutEntidades.setMargin(true);
         layoutEntidades.setSpacing(true);
