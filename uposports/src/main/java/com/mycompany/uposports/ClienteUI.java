@@ -1,5 +1,8 @@
 package com.mycompany.uposports;
 
+import bbdd.AbonosDAO;
+import bbdd.ClienteDAO;
+import clases.Abono;
 import clases.Cliente;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
@@ -18,8 +21,11 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import java.net.UnknownHostException;
 import javax.servlet.annotation.WebServlet;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Theme("mytheme")
 @Title("Cliente")
@@ -32,6 +38,7 @@ public class ClienteUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
+        try {
         layout.removeAllComponents();
         layoutHLabelabelTitulo.removeAllComponents();
         layoutH2.removeAllComponents();
@@ -46,7 +53,6 @@ public class ClienteUI extends UI {
         layoutHLabelabelTitulo.addComponent(l);
         layout.addComponent(layoutHLabelabelTitulo);
         //CREAMOS UNA TABLA DONDE APARECERÁ LA LISTA DE CLIENTES
-
         Table tabla = new Table();
         tabla.addContainerProperty("Nombre", String.class, null);
         tabla.addContainerProperty("Apellidos", String.class, null);
@@ -61,39 +67,57 @@ public class ClienteUI extends UI {
         layoutH2.setSpacing(true);
         layoutH2.addComponents(labelEntidad, botonAdd);
         layout.addComponent(layoutH2);
-        Iterator it = listaClientes.iterator();
+        ArrayList clientes = ClienteDAO.consultaClientes();
+        Iterator it = clientes.iterator();
+        
         int i = 0;
         //BUCLE PARA AÑADIR TODOS LOS CLIENTES A LA TABLA
-        if (!listaClientes.isEmpty()) {
+        if (!clientes.isEmpty()) {
             while (it.hasNext()) {
                 Button eliminar = new Button("Eliminar", FontAwesome.CLOSE);
                 Button editar = new Button("Editar", FontAwesome.EDIT);
                 Cliente aux = (Cliente) it.next();
                 tabla.addItem(new Object[]{aux.getNombre(), aux.getApellidos(), aux.getDni(), aux.getTelefono(), aux.getCodigoPostal(), aux.getAbono().getTipo(), editar, eliminar}, i);
                 i++;
-                eliminar.addClickListener(e -> {  //AÑADIMOS EL BOTON DE ELIMINAR POR CADA CLIENTE
-                    listaClientes.remove(aux); //Elimina el cliente de la lista
+                eliminar.addClickListener(e -> {  try {
+                    //AÑADIMOS EL BOTON DE ELIMINAR POR CADA CLIENTE
+                    //listaClientes.remove(aux); //Elimina el cliente de la lista                    
+                    ClienteDAO.eliminaCliente(aux);
+                    } catch (UnknownHostException ex) {
+                        Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     init(request);
                 });
 
-                editar.addClickListener(e -> { //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
+                editar.addClickListener(e -> { try {
+                    //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
                     editarCliente(request, aux); //EJECUTA LA FUNCION EDITARCLIENTE
+                    } catch (UnknownHostException ex) {
+                        Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 });
             }
-            tabla.setHeight("auto");
+            //tabla.setHeight("auto");
             layout.addComponent(tabla);
         }
         layout.setMargin(true);
         layout.setSpacing(true);
         setContent(layout);
 
-        botonAdd.addClickListener(e -> {
-            addCliente(request);
-            // getUI().getPage().setLocation("/nuevoCliente");  //REDIRECCIONA A LA CLASE nuevoCliente
+        botonAdd.addClickListener(e -> {            
+            try {
+                addCliente(request);
+                // getUI().getPage().setLocation("/nuevoCliente");  //REDIRECCIONA A LA CLASE nuevoCliente            
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    public void addCliente(VaadinRequest request) { //METODO QUE AÑADE UN CLIENTE A LA LISTA
+    public void addCliente(VaadinRequest request) throws UnknownHostException{ //METODO QUE AÑADE UN CLIENTE A LA LISTA
         //CREAMOS UN FORMULARIO PARA QUE EL USUARIO INTRODUZCA LOS DATOS DEL CLIENTE A CREAR
         VerticalLayout layout = new VerticalLayout();
         HorizontalLayout datos = new HorizontalLayout();
@@ -105,10 +129,11 @@ public class ClienteUI extends UI {
         TextField telef = new TextField("Introduzca el Telefono:");
         TextField cp = new TextField("Introduzca el Código Postal:");
         OptionGroup abono = new OptionGroup("Abono:");
-        /*for (int i = 0; i < AbonoUI.listaAbonos.size(); i++) {
-            System.out.println(AbonoUI.listaAbonos.get(i).getTipo());
-            abono.addItems(AbonoUI.listaAbonos.get(i).getTipo());
-        }*/
+        ArrayList<Abono> listaAbonos = AbonosDAO.mostrarAbonos();
+        for (int i = 0; i < listaAbonos.size(); i++) {
+            System.out.println(listaAbonos.get(i).getTipo());
+            abono.addItems(listaAbonos.get(i).getTipo());
+        }
         datos.addComponents(nombre, apellidos, dni, telef, cp, abono);
         datos.setMargin(true);
         datos.setSpacing(true);
@@ -125,12 +150,13 @@ public class ClienteUI extends UI {
                 aux.setDni(dni.getValue());
                 aux.setTelefono(telef.getValue());
                 aux.setCodigoPostal(cp.getValue());
-                //aux.setAbono((String)abono.getValue());
-                // ClienteUI.addCliente(aux);
-                //layout.addComponent(new Label("Se va a añadir "+ClienteUI.listaClientes.get(0).getNombre()));
-                // getUI().getPage().setLocation("/gestionaCliente");
-
-                listaClientes.add(aux);
+                try {
+                    aux.setAbono(AbonosDAO.buscarAbono((String) abono.getValue()));
+                    //listaClientes.add(aux);
+                    ClienteDAO.creaCliente(aux);
+                } catch (UnknownHostException ex) {
+                    Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 Notification.show("Cliente - DNI: " + aux.getDni(), "Registrado con éxito",
                         Notification.Type.TRAY_NOTIFICATION);
                 init(request);
@@ -152,7 +178,7 @@ public class ClienteUI extends UI {
 
     }
 
-    public void editarCliente(VaadinRequest request, Cliente cliente) {
+    public void editarCliente(VaadinRequest request, Cliente cliente) throws UnknownHostException {
         layout.removeAllComponents();
         //CREAMOS UN FORMULARIO PARA PODER EDITAR EL CLIENTE
         HorizontalLayout datos = new HorizontalLayout();
@@ -168,7 +194,13 @@ public class ClienteUI extends UI {
         telef.setValue(cliente.getTelefono());
         TextField cp = new TextField("Introduzca el Código Postal:");
         cp.setValue(cliente.getCodigoPostal());
-        datos.addComponents(nombre, apellidos, dni, telef, cp);
+        OptionGroup abono = new OptionGroup("Abono:");
+        ArrayList<Abono> listaAbonos = AbonosDAO.mostrarAbonos();
+        for (int i = 0; i < listaAbonos.size(); i++) {
+            System.out.println(listaAbonos.get(i).getTipo());
+            abono.addItems(listaAbonos.get(i).getTipo());
+        }
+        datos.addComponents(nombre, apellidos, dni, telef, cp,abono);
         datos.setMargin(true);
         datos.setSpacing(true);
         Button enviar = new Button("Enviar", FontAwesome.CHECK);
@@ -178,11 +210,22 @@ public class ClienteUI extends UI {
                 Notification.show("Campo vacío", "No se permiten campos vacíos",
                         Notification.Type.WARNING_MESSAGE);
             } else {
-                cliente.setNombre(nombre.getValue());
-                cliente.setApellidos(apellidos.getValue());
-                cliente.setDni(dni.getValue());
-                cliente.setTelefono(telef.getValue());
-                cliente.setCodigoPostal(cp.getValue());
+                Cliente aux = new Cliente();
+                aux.setNombre(nombre.getValue());
+                aux.setApellidos(apellidos.getValue());
+                aux.setDni(dni.getValue());
+                aux.setTelefono(telef.getValue());
+                aux.setCodigoPostal(cp.getValue());
+                try {
+                    aux.setAbono(AbonosDAO.buscarAbono((String) abono.getValue()));
+                } catch (UnknownHostException ex) {
+                    Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                try {
+                    ClienteDAO.actualizaCliente(aux, cliente);
+                } catch (UnknownHostException ex) {
+                    Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 //listaClientes.remove(cliente);
                 //addCliente(aux);
                 init(request);

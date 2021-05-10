@@ -79,20 +79,25 @@ public class AbonosDAO {
         collection.update(abono, newDocument);
         System.out.println("Documento Abono actualizado correctamente\n");
     }
-
+/*
     //Método para eliminar un documento de la colección AbonosDAO
     public static void eliminarAbono(DBCollection collection, String tipo) {
         System.out.println(String.format("Buscando documento Abono tipo %s para eliminar...", tipo));
-        collection.remove(buscarAbono(collection, tipo));//Elimina el documento que recibe del método buscarAbono, pasándole la colección y el tipo de Abono.
+        collection.remove(buscarAbono(tipo));//Elimina el documento que recibe del método buscarAbono, pasándole la colección y el tipo de Abono.
         System.out.println("Documento Abono eliminado\n");
-    }
+    }*/
 
     //Método para buscar un documento abono en la colección AbonosDAO
-    public static DBObject buscarAbono(DBCollection collection, String tipo) {
+    public static Abono buscarAbono(String tipo) throws UnknownHostException {
+        DBCollection collection = abonoInit();
         BasicDBObject searchQuery = new BasicDBObject().append("tipo", tipo);//Creamos la query que será los documentos que contengan como atributo "tipo" el que recibe como parámetro el método
         DBCursor cursor = collection.find(searchQuery);//Los elementos que cumplan la condicion de searchQuery se introducen en cursor
         DBObject elemento = cursor.next();//Solamente debemos tener uno, ya que le pasamos el tipo que es nuestro ID.
         System.out.println(String.format("Documento Abono encontrado: %s", elemento));
-        return elemento;//Devolvemos el documento que será útil para otras operaciones CRUD
+        Abono aux = new Abono();
+        aux.setTipo((String) elemento.get("tipo"));
+        aux.setCoste((Double) elemento.get("precio"));
+        aux.setDuracion((Integer) elemento.get("duracion"));        
+        return aux; //Devolvemos el abono
     }
 }

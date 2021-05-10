@@ -1,5 +1,6 @@
 
 package bbdd;
+import clases.Cliente;
 import java.net.UnknownHostException;
 import com.mongodb.MongoClient;
 import com.mongodb.DB;
@@ -8,63 +9,87 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import static javafx.scene.Cursor.cursor;
 import javax.swing.text.Document;
+import org.omg.CORBA.ORB;
 
-public class ClienteDAO {
-    //Método estático para la creación de clientes
-    public static void creaCliente(DB db,String dni,String nombre, String apellidos, String telefono, String cp){
+public class ClienteDAO{
+    
+    private static DBCollection getColl() throws UnknownHostException{
+        MongoClient mongoClient = new MongoClient("localhost", 27017);
+        // Conectar a la base de datos
+        DB db = mongoClient.getDB("uposports");
+        DBCollection collection = db.getCollection("Cliente");
+        return collection;
+    }
+    
+    //Método estático para la creación de clientes   
+    public static void creaCliente(Cliente c) throws UnknownHostException{
          //Crea documento
             BasicDBObject document; //CREAMOS un documento tipo BasicDBObject
             document = new BasicDBObject();
             //Le añadimos los campos con los valores pasados por parámetros
-            document.append("dni", dni);   
-            document.append("nombre", nombre);
-            document.append("apellidos", apellidos);
-            document.append("telefono", telefono);
-            document.append("CP", cp);
-
-            //Obtencion coleccion "Cliente"
-            DBCollection collection = db.getCollection("Cliente"); //Obtenemos la coleccion Cliente de la Base de Datos
-
+            document.append("dni", c.getDni());   
+            document.append("nombre", c.getNombre());
+            document.append("apellidos", c.getApellidos());
+            document.append("telefono", c.getTelefono());
+            document.append("CP", c.getCodigoPostal());
+            document.append("abono", c.getAbono().getTipo());
             //Inserta documento en la coleccion Cliente
-            collection.insert(document);
+            getColl().insert(document);
             System.out.println("Cliente insertado: "+document);
     }
     
-     public static void consultaClientes(DB db, DBCursor  cursor){
-         DBCollection collection = db.getCollection("Cliente"); //Obtenemos la coleccion Cliente de la Base de Datos
+     public static ArrayList<Cliente> consultaClientes() throws UnknownHostException{
+         ArrayList listaClientes = new ArrayList();
+         DBCursor cursor = null;
          // Obtenemos todos los documentos de la coleccion
-            cursor = collection.find();
+            cursor = getColl().find();
             //Recorrido de todos los elementos de la coleccion
             System.out.println("Recorrido de la coleccion:");
             int i = 0;
             DBObject elemento;
             while (cursor.hasNext()) {
                 i++;
+                Cliente aux = new Cliente();
                 elemento = cursor.next();
-                System.out.println(String.format("Cliente %d leido: %s", i, elemento)); //Mostramos por pantalla documento a documento de la coleccion
+                aux.setNombre((String) elemento.get("nombre"));
+                aux.setApellidos((String) elemento.get("apellidos"));
+                aux.setDni((String) elemento.get("dni"));
+                aux.setTelefono((String) elemento.get("telefono"));
+                aux.setCodigoPostal((String) elemento.get("CP"));
+                aux.setAbono(AbonosDAO.buscarAbono((String) elemento.get("abono")));
+                listaClientes.add(aux);
             }
+            return listaClientes;
      }
      
-     public static void eliminaCliente(DB db,DBCursor  cursor, String dni){
-         DBCollection collection = db.getCollection("Cliente"); //Obtenemos la coleccion Cliente de la Base de Datos            
+     public static void eliminaCliente(Cliente c) throws UnknownHostException{   
+         DBCursor cursor = null;
             DBObject elemento;
-            cursor=collection.find((DBObject) new BasicDBObject().append("dni", dni)); //Obtenemos los documentos que coincidan con el dni pasado por parámetro
+            cursor=getColl().find((DBObject) new BasicDBObject().append("dni", c.getDni())); //Obtenemos los documentos que coincidan con el dni del Cliente
             while(cursor.hasNext()){
-                collection.remove(cursor.next()); //Eliminamos los documentos que coinciden con el dni pasado por parámetro
+                getColl().remove(cursor.next()); //Eliminamos los documentos que coinciden con el dni pasado por parámetro
             }
      }
      
-     public static void actualizaNombreCliente(DB db,String dni,String nombre){
-         DBCollection collection = db.getCollection("Cliente"); //Obtenemos la coleccion Cliente de la Base de Datos
+     public static void actualizaCliente(Cliente c, Cliente viejo) throws UnknownHostException{
          //Actualizacion del valor de un campo
             BasicDBObject newDocument = new BasicDBObject();
+            BasicDBObject aux = new BasicDBObject();
+            
             // Indica el atributo nombre y su valor a establecer ($set)
-            newDocument.append("$set", new BasicDBObject().append("nombre", nombre));
+            newDocument.append("$set", aux.append("telefono", c.getTelefono()));
+            newDocument.append("$set", aux.append("nombre", c.getNombre()));
+            newDocument.append("$set", aux.append("apellidos", c.getApellidos()));
+            newDocument.append("$set", aux.append("dni", c.getDni()));
+            newDocument.append("$set", aux.append("CP", c.getCodigoPostal()));
+            newDocument.append("$set", aux.append("abono", c.getAbono().getTipo()));
             // Indica el filtro a usar para aplicar la modificacion
-            BasicDBObject searchQuery = new BasicDBObject().append("dni", dni);
-            collection.update(searchQuery, newDocument);
+            DBObject searchQuery = new BasicDBObject().append("dni", viejo.getDni());
+            
+            getColl().update(searchQuery, newDocument);
             System.out.println("Nombre del cliente actualizado correctamente");
      }
 }
