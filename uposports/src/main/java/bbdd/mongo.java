@@ -70,6 +70,7 @@ public class mongo {
             d3.append("apellidos", em3.getApellidos());
             d3.append("telefono", em3.getTelefono());
 
+           
             //Obtenemos la coleccion
             DBCollection collectionEmpleado = db.getCollection("Empleado");
 
@@ -362,5 +363,6 @@ public class mongo {
             }
         }
     }
+      
 }
         
