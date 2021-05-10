@@ -27,6 +27,8 @@ import com.vaadin.ui.VerticalLayout;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 
 /**
@@ -162,8 +164,12 @@ public class MaterialUI extends UI {
             vaadinRequest.setAttribute("nombre", nombre.getValue());//Añadimos en la petición el valor del campo tipo
             vaadinRequest.setAttribute("descripcion", descripcion.getValue());//Añadimos en la petición el valor del campo duración
             vaadinRequest.setAttribute("unidades", unidades.getValue());//Añadimos en la petición el valor del campo coste
-            if (comprobarDatos(vaadinRequest, layout) == true) {//Se comprueban los datos, y si son correctos...
+            if (comprobarDatos(vaadinRequest, layout) == true) {try {
+                //Se comprueban los datos, y si son correctos...
                 registrarMaterial(vaadinRequest);//Se envían los datos a registro de abono
+                } catch (UnknownHostException ex) {
+                    Logger.getLogger(MaterialUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
                 init(vaadinRequest);//Se lanza el método principal
                 //Notificacion de tipo bandeja para notificar la correcta operación.
@@ -213,7 +219,7 @@ public class MaterialUI extends UI {
             vaadinRequest.setAttribute("descripcion", descripcion.getValue());//Añadimos en la petición el valor del campo duración
             vaadinRequest.setAttribute("unidades", unidades.getValue());//Añadimos en la petición el valor del campo coste
             if (comprobarDatos(vaadinRequest, layout) == true) {
-                modificarAbono(vaadinRequest, material);//Se lanza el método modificar abono
+                modificarMaterial(vaadinRequest, material);//Se lanza el método modificar abono
                 init(vaadinRequest);
                 //Notificacion de tipo bandeja para notificar la correcta operación.
                 Notification.show("Material - Nombre: " + nombre.getValue(), "Modificado con éxito",
