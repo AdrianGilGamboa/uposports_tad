@@ -1,5 +1,6 @@
 package com.mycompany.uposports;
 
+import bbdd.AbonosDAO;
 import clases.Abono;
 import com.vaadin.annotations.PreserveOnRefresh;
 import javax.servlet.annotation.WebServlet;
@@ -22,8 +23,11 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Theme("mytheme")
 @Title("Abono")
@@ -159,9 +163,12 @@ public class AbonoUI extends UI {
             vaadinRequest.setAttribute("tipo", tipo.getValue());//Añadimos en la petición el valor del campo tipo
             vaadinRequest.setAttribute("duracion", duracion.getValue());//Añadimos en la petición el valor del campo duración
             vaadinRequest.setAttribute("coste", coste.getValue());//Añadimos en la petición el valor del campo coste
-            if (comprobarDatos(vaadinRequest, layout) == true) {//Se comprueban los datos, y si son correctos...
+            if (comprobarDatos(vaadinRequest, layout) == true) {try {
+                //Se comprueban los datos, y si son correctos...
                 registrarAbono(vaadinRequest);//Se envían los datos a registro de abono
-
+                } catch (UnknownHostException ex) {
+                    Logger.getLogger(AbonoUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 init(vaadinRequest);//Se lanza el método principal
                 //Notificacion de tipo bandeja para notificar la correcta operación.
                 Notification.show("Abono - Tipo: " + tipo.getValue(), "Registrado con éxito",
@@ -250,12 +257,13 @@ public class AbonoUI extends UI {
         abono.setCoste(Float.parseFloat((String) vaadinRequest.getAttribute("coste")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
     }
 
-    protected void registrarAbono(VaadinRequest vaadinRequest) {//Método para registrar los datos en memoria, no hay persistencia de momento
+    protected void registrarAbono(VaadinRequest vaadinRequest) throws UnknownHostException {//Método para registrar los datos en memoria, no hay persistencia de momento
         Abono abono = new Abono();//Creamos un nuevo objeto abono
         abono.setTipo((String) vaadinRequest.getAttribute("tipo"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
         abono.setDuracion(Integer.parseInt((String) vaadinRequest.getAttribute("duracion")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
         abono.setCoste(Float.parseFloat((String) vaadinRequest.getAttribute("coste")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
         listaAbonos.add(abono);//Añadimos el objeto a la lista de abonos
+        AbonosDAO.insertarAbono(abono);
 
     }
 

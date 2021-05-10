@@ -1,19 +1,38 @@
 package bbdd;
 
+import clases.Abono;
 import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
+import java.net.UnknownHostException;
 
 public class AbonosDAO {
+    
+    private static DBCollection abonoInit() throws UnknownHostException{
+                     // Conectar al servidor MongoDB
+            MongoClient mongoClient = new MongoClient("localhost", 27017);
 
+            // Conectar a la base de datos
+            DB db = mongoClient.getDB("uposports");
+
+            //Acceder coleccion "Abonos"*/
+            DBCollection collection = db.getCollection("abonos");
+            
+            return collection;
+    }
+        
     //Método para añadir un documento nuevo a la colección AbonosDAO
-    public static void insertarAbono(DBCollection collection, String tipo, double precio, String duracion) {
+    public static void insertarAbono(Abono abono) throws UnknownHostException {
+
+        DBCollection collection = abonoInit();
         BasicDBObject document = new BasicDBObject();//Instanciamos el nuevo documento
         //Insertamos los 3 atributos del nuevo documento Abono
-        document.append("tipo", tipo);
-        document.append("precio", precio);
-        document.append("duracion", duracion);
+        document.append("tipo", abono.getTipo());
+        document.append("precio", abono.getCoste());
+        document.append("duracion", abono.getDuracion());
         //Insertamos el documento en la colección AbonosDAO
         collection.insert(document);
         System.out.println("Documento Abono insertado: " + document + "\n");
