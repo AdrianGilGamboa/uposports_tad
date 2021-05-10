@@ -105,6 +105,7 @@ public class EmpleadoUI extends UI {
             layoutMostrarEmpleados.addComponents(layoutH, layoutH2);
         }
         Table table = new Table();//Creamos la tabla donde meteremos las instancias
+        table.setSizeFull();
 
         if (listaEmpleados.size() > 0) {//Si hay elementos en la lista de abonos
             //Añadimos las columnas de la tabla

@@ -54,6 +54,7 @@ public class ClienteUI extends UI {
         layout.addComponent(layoutHLabelabelTitulo);
         //CREAMOS UNA TABLA DONDE APARECERÁ LA LISTA DE CLIENTES
         Table tabla = new Table();
+        tabla.setSizeFull();
         tabla.addContainerProperty("Nombre", String.class, null);
         tabla.addContainerProperty("Apellidos", String.class, null);
         tabla.addContainerProperty("DNI", String.class, null);

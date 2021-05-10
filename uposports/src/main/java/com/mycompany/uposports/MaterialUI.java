@@ -109,6 +109,7 @@ public class MaterialUI extends UI {
         }
 
         Table table = new Table();//Creamos la tabla donde meteremos las instancias
+        table.setSizeFull();
 
         if (listaMateriales.size() > 0) {//Si hay elementos en la lista de abonos
             //Añadimos las columnas de la tabla
