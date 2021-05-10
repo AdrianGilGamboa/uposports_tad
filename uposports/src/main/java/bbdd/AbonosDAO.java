@@ -63,7 +63,7 @@ public class AbonosDAO {
         return listaAbonos;
 
     }
-
+/*
     //Método para actualizar un campo de tipo String de la colección AbonosDAO
     public static void actualizarAbono(DBCollection collection, DBObject abono, String campo, String nuevoValor) {
         BasicDBObject newDocument = new BasicDBObject();//Instanciamos un nuevo documento
@@ -71,21 +71,26 @@ public class AbonosDAO {
         collection.update(abono, newDocument);//Actualizamos el documento "abono" recibido por parámetro con el nuevo campo del documento creado
         System.out.println("Documento Abono actualizado correctamente\n");
     }
-
+*/
     //Método para actualizar un campo de tipo int de la colección AbonosDAO (método sobrecargado)
-    public static void actualizarAbono(DBCollection collection, DBObject abono, String campo, int nuevoValor) {
+    public static void actualizarAbono(Abono nuevo, Abono viejo) throws UnknownHostException {
         BasicDBObject newDocument = new BasicDBObject();
-        newDocument.append("$set", new BasicDBObject().append(campo, nuevoValor));
-        collection.update(abono, newDocument);
+        BasicDBObject aux = new BasicDBObject();
+        newDocument.append("$set", aux.append("tipo", nuevo.getTipo()));
+        newDocument.append("$set", aux.append("precio", nuevo.getCoste()));
+        newDocument.append("$set", aux.append("duracion", nuevo.getDuracion()));
+        // Indica el filtro a usar para aplicar la modificacion
+        DBObject searchQuery = new BasicDBObject().append("tipo", viejo.getTipo());
+        abonoInit().update(searchQuery, newDocument);
         System.out.println("Documento Abono actualizado correctamente\n");
     }
-/*
+
     //Método para eliminar un documento de la colección AbonosDAO
-    public static void eliminarAbono(DBCollection collection, String tipo) {
-        System.out.println(String.format("Buscando documento Abono tipo %s para eliminar...", tipo));
-        collection.remove(buscarAbono(tipo));//Elimina el documento que recibe del método buscarAbono, pasándole la colección y el tipo de Abono.
+    public static void eliminarAbono(Abono abono) throws UnknownHostException {
+        System.out.println(String.format("Buscando documento Abono tipo %s para eliminar...", abono.getTipo()));
+        abonoInit().remove(new BasicDBObject().append("tipo", abono.getTipo()));//Elimina el documento que recibe del método buscarAbono, pasándole la colección y el tipo de Abono.
         System.out.println("Documento Abono eliminado\n");
-    }*/
+    }
 
     //Método para buscar un documento abono en la colección AbonosDAO
     public static Abono buscarAbono(String tipo) throws UnknownHostException {

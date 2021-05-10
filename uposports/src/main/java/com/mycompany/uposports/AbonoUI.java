@@ -127,8 +127,13 @@ public class AbonoUI extends UI {
                 });
 
                 Button buttonEliminar = new Button("Eliminar", FontAwesome.CLOSE);//Creamos el botón eliminar
-                buttonEliminar.addClickListener(e -> {//Acción del botón
-                    listaAbonos.remove(abono);//Eliminamos el objeto de la lista de instalaciones
+                buttonEliminar.addClickListener(e -> {try {
+                    //Acción del botón
+                    //listaAbonos.remove(abono);
+                    AbonosDAO.eliminarAbono(abono);//Eliminamos el objeto de la lista de instalaciones
+                    } catch (UnknownHostException ex) {
+                        Logger.getLogger(AbonoUI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     init(vaadinRequest);//Volvemos a ejecutar el método principal
                     Notification.show("Abono - Tipo: " + abono.getTipo(), "Eliminado con éxito",
                             Notification.Type.TRAY_NOTIFICATION);
@@ -229,7 +234,11 @@ public class AbonoUI extends UI {
             vaadinRequest.setAttribute("duracion", duracion.getValue());
             vaadinRequest.setAttribute("coste", coste.getValue());
             if (comprobarDatos(vaadinRequest, layout) == true) {
-                modificarAbono(vaadinRequest, abono);//Se lanza el método modificar abono
+                try {
+                    modificarAbono(vaadinRequest, abono);//Se lanza el método modificar abono
+                } catch (UnknownHostException ex) {
+                    Logger.getLogger(AbonoUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 init(vaadinRequest);
                 //Notificacion de tipo bandeja para notificar la correcta operación.
                 Notification.show("Abono - Tipo: " + tipo.getValue(), "Modificado con éxito",
@@ -257,10 +266,12 @@ public class AbonoUI extends UI {
         setContent(layout);
     }
 
-    protected void modificarAbono(VaadinRequest vaadinRequest, Abono abono) {//Método para guardar los datos modificados en memoria, no hay persistencia de momento
-        abono.setTipo((String) vaadinRequest.getAttribute("tipo"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
-        abono.setDuracion(Integer.parseInt((String) vaadinRequest.getAttribute("duracion")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
-        abono.setCoste(Double.parseDouble((String) vaadinRequest.getAttribute("coste")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
+    protected void modificarAbono(VaadinRequest vaadinRequest, Abono abono) throws UnknownHostException {//Método para guardar los datos modificados en memoria, no hay persistencia de momento
+        Abono aux = new Abono();
+        aux.setTipo((String) vaadinRequest.getAttribute("tipo"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
+        aux.setDuracion(Integer.parseInt((String) vaadinRequest.getAttribute("duracion")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
+        aux.setCoste(Double.parseDouble((String) vaadinRequest.getAttribute("coste")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
+        AbonosDAO.actualizarAbono(aux, abono);
     }
 
     protected void registrarAbono(VaadinRequest vaadinRequest) throws UnknownHostException {//Método para registrar los datos en memoria, no hay persistencia de momento
