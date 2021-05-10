@@ -6,6 +6,7 @@
 package bbdd;
 
 import clases.Empleado;
+import clases.Instalacion;
 import clases.Material;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -31,7 +32,7 @@ public class mongo {
         Material m2 = new Material("Bicicleta estatica", "Bicicleta para realizar cardio", 10);
         Material m3 = new Material("Cinta", "Cinta para correr", 7);
 
-        //Creacion de la ultima coleccion, pagoTarjeta
+        Instalacion i1 = new Instalacion();
   
         public void baseDatos(){
         //Accedemos al cliente y a la base de datos
@@ -269,6 +270,87 @@ public class mongo {
             }
             System.out.println("\n");
   
+            
+              BasicDBObject instalacion1;
+            instalacion1 = new BasicDBObject();
+            instalacion1.append("nombre", em.getDni());
+            instalacion1.append("descripción", em.getNombre());
+            instalacion1.append("capacidad", em.getApellidos());
+
+            //Empleado 2
+            BasicDBObject instalacion2 = new BasicDBObject();
+            instalacion2 = new BasicDBObject();
+            instalacion2.append("nombre", em.getDni());
+            instalacion2.append("descripción", em.getNombre());
+            instalacion2.append("capacidad", em.getApellidos());
+
+            //Empleado 3
+            BasicDBObject instalacion3 = new BasicDBObject();
+            instalacion3 = new BasicDBObject();
+            instalacion3.append("nombre", em.getDni());
+            instalacion3.append("descripción", em.getNombre());
+            instalacion3.append("capacidad", em.getApellidos());
+            
+            DBCollection collectionInstalacion = db.getCollection("Instalacion");
+            System.out.println("\n");
+
+            System.out.println("--------------INSERTAR INFORMACIÓN--------------");
+            System.out.println("\n");
+
+            //INSERTAMOS LA INFORMACIÓN
+            //Insertamos el primer material
+            collectionMaterial.insert(instalacion1);
+            System.out.println("Instalación insertada: " + instalacion1);
+
+            //Insertamos el segundo material
+            collectionMaterial.insert(instalacion2);
+            System.out.println("Instalación insertada: " + instalacion2);
+
+            //Insertamos el tercer material
+            collectionMaterial.insert(instalacion3);
+            System.out.println("Instalación insertada: " + instalacion3);
+            System.out.println("\n");
+            
+             System.out.println("--------------LEER INFORMACIÓN--------------");
+            System.out.println("\n");
+
+            //LEEMOS LA INFORMACIÓN
+            cursor = collectionMaterial.find();
+            //Recorrido de todos los elementos de la coleccion
+            System.out.println("Recorrido de la coleccion:");
+            i = 0;
+            while (cursor.hasNext()) {
+                i++;
+                elemento = cursor.next();
+                System.out.println(String.format("Material %d leido: %s", i, elemento));
+            }
+            System.out.println("\n");
+
+            System.out.println("--------------BORRAR INFORMACIÓN--------------");
+            System.out.println("\n");
+
+            //BORRAR
+            collectionMaterial.remove(material3);
+            System.out.println("Material borrado con los datos: " + material3);
+
+            System.out.println("\n");
+
+            System.out.println("--------------ACTUALIZAR INFORMACIÓN--------------");
+            System.out.println("\n");
+
+            //ACTUALIZAR
+            //ACTUALIZAR INOFORMACIÓN
+            //Creamos un documento(Material) de reemplazo para poder actualizar la información
+            BasicDBObject replaceInstalacion = new BasicDBObject();
+            replaceMaterial.append("nombre", "");
+            replaceMaterial.append("descripcion", "");
+            replaceMaterial.append("capacidad",0 );
+            //Actualizamos el documento(Material) que queramos con el replaceDocument que hemos creado
+            collectionInstalacion.update(instalacion1, replaceInstalacion);
+            System.out.println("Instalacion a actualizar: " + instalacion1);
+            System.out.println("Instalacion actualizado: " + replaceInstalacion);
+
+            System.out.println("\n");
         } catch (UnknownHostException e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
 
