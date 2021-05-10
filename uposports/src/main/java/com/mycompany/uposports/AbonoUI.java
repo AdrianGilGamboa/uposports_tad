@@ -35,7 +35,6 @@ import java.util.logging.Logger;
 
 public class AbonoUI extends UI {
 
-
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layoutMostrarAbonos = new VerticalLayout();//Creamos un layout vertical
@@ -106,38 +105,47 @@ public class AbonoUI extends UI {
         Table table = new Table();//Creamos la tabla donde meteremos las instancias
         table.setSizeFull();
         Label label = new Label("<h2 style='margin-top:0'> Abonos Registrados </h2>", ContentMode.HTML);
-        
+
         List<Abono> listaAbonos;
         try {
             listaAbonos = AbonosDAO.mostrarAbonos();
-                    if (listaAbonos.size() > 0) {//Si hay elementos en la lista de abonos
-            layoutMostrarAbonos.addComponent(label);
-            //Añadimos las columnas de la tabla
-            table.addContainerProperty("Tipo", String.class, "");
-            table.addContainerProperty("Duración(meses)", Integer.class, "");
-            table.addContainerProperty("Coste(€)", Double.class, "");
-            table.addContainerProperty("Editar", Button.class, "");
-            table.addContainerProperty("Eliminar", Button.class, "");
-            for (int i = 0; i < listaAbonos.size(); i++) {//Mientras haya elementos por recorrer
-                Abono abono = listaAbonos.get(i);//Obtenemos el objeto de la lista
+            if (listaAbonos.size() > 0) {//Si hay elementos en la lista de abonos
+                layoutMostrarAbonos.addComponent(label);
+                //Añadimos las columnas de la tabla
+                table.addContainerProperty("Tipo", String.class, "");
+                table.addContainerProperty("Duración(meses)", Integer.class, "");
+                table.addContainerProperty("Coste(€)", Double.class, "");
+                table.addContainerProperty("Editar", Button.class, "");
+                table.addContainerProperty("Eliminar", Button.class, "");
+                for (int i = 0; i < listaAbonos.size(); i++) {//Mientras haya elementos por recorrer
+                    Abono abono = listaAbonos.get(i);//Obtenemos el objeto de la lista
 
-                Button buttonModificar = new Button("Modificar", FontAwesome.EDIT);//Creamos el botón modificar
-                buttonModificar.addClickListener(e -> {//Acción del botón
-                    editarAbono(vaadinRequest, abono);//Método para editar la instalación
-                });
+                    Button buttonModificar = new Button("Modificar", FontAwesome.EDIT);//Creamos el botón modificar
+                    buttonModificar.addClickListener(e -> {//Acción del botón
+                        editarAbono(vaadinRequest, abono);//Método para editar la instalación
+                    });
 
-                Button buttonEliminar = new Button("Eliminar", FontAwesome.CLOSE);//Creamos el botón eliminar
-                buttonEliminar.addClickListener(e -> {//Acción del botón
-                    listaAbonos.remove(abono);//Eliminamos el objeto de la lista de instalaciones
-                    init(vaadinRequest);//Volvemos a ejecutar el método principal
-                    Notification.show("Abono - Tipo: " + abono.getTipo(), "Eliminado con éxito",
-                            Notification.Type.TRAY_NOTIFICATION);
-                });
-                //Añadimos la fila a la tabla
-                table.addItem(new Object[]{abono.getTipo(), abono.getDuracion(), abono.getCoste(), buttonModificar, buttonEliminar}, i);
-                layoutMostrarAbonos.addComponent(table);//Lo añadimos al layout vertical
+                    Button buttonEliminar = new Button("Eliminar", FontAwesome.CLOSE);//Creamos el botón eliminar
+                    buttonEliminar.addClickListener(e -> {
+                        try {
+                            //Acción del botón
+                            //listaAbonos.remove(abono);
+                            if(!AbonosDAO.eliminarAbono(abono)) //Eliminamos el objeto de la lista de instalaciones
+                            Notification.show("Abono Asociado", "Debe eliminar todas las asocianciones de este abono con Clientes",
+                                    Notification.Type.ERROR_MESSAGE);
+                        } catch (UnknownHostException ex) {
+                            Logger.getLogger(AbonoUI.class.getName()).log(Level.SEVERE, null, ex);
+
+                        }
+                        init(vaadinRequest);//Volvemos a ejecutar el método principal
+                        Notification.show("Abono - Tipo: " + abono.getTipo(), "Eliminado con éxito",
+                                Notification.Type.TRAY_NOTIFICATION);
+                    });
+                    //Añadimos la fila a la tabla
+                    table.addItem(new Object[]{abono.getTipo(), abono.getDuracion(), abono.getCoste(), buttonModificar, buttonEliminar}, i);
+                    layoutMostrarAbonos.addComponent(table);//Lo añadimos al layout vertical
+                }
             }
-        }
         } catch (UnknownHostException ex) {
             Logger.getLogger(AbonoUI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -169,9 +177,10 @@ public class AbonoUI extends UI {
             vaadinRequest.setAttribute("tipo", tipo.getValue());//Añadimos en la petición el valor del campo tipo
             vaadinRequest.setAttribute("duracion", duracion.getValue());//Añadimos en la petición el valor del campo duración
             vaadinRequest.setAttribute("coste", coste.getValue());//Añadimos en la petición el valor del campo coste
-            if (comprobarDatos(vaadinRequest, layout) == true) {try {
-                //Se comprueban los datos, y si son correctos...
-                registrarAbono(vaadinRequest);//Se envían los datos a registro de abono
+            if (comprobarDatos(vaadinRequest, layout) == true) {
+                try {
+                    //Se comprueban los datos, y si son correctos...
+                    registrarAbono(vaadinRequest);//Se envían los datos a registro de abono
                 } catch (UnknownHostException ex) {
                     Logger.getLogger(AbonoUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -229,7 +238,11 @@ public class AbonoUI extends UI {
             vaadinRequest.setAttribute("duracion", duracion.getValue());
             vaadinRequest.setAttribute("coste", coste.getValue());
             if (comprobarDatos(vaadinRequest, layout) == true) {
-                modificarAbono(vaadinRequest, abono);//Se lanza el método modificar abono
+                try {
+                    modificarAbono(vaadinRequest, abono);//Se lanza el método modificar abono
+                } catch (UnknownHostException ex) {
+                    Logger.getLogger(AbonoUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 init(vaadinRequest);
                 //Notificacion de tipo bandeja para notificar la correcta operación.
                 Notification.show("Abono - Tipo: " + tipo.getValue(), "Modificado con éxito",
@@ -257,10 +270,12 @@ public class AbonoUI extends UI {
         setContent(layout);
     }
 
-    protected void modificarAbono(VaadinRequest vaadinRequest, Abono abono) {//Método para guardar los datos modificados en memoria, no hay persistencia de momento
-        abono.setTipo((String) vaadinRequest.getAttribute("tipo"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
-        abono.setDuracion(Integer.parseInt((String) vaadinRequest.getAttribute("duracion")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
-        abono.setCoste(Double.parseDouble((String) vaadinRequest.getAttribute("coste")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
+    protected void modificarAbono(VaadinRequest vaadinRequest, Abono abono) throws UnknownHostException {//Método para guardar los datos modificados en memoria, no hay persistencia de momento
+        Abono aux = new Abono();
+        aux.setTipo((String) vaadinRequest.getAttribute("tipo"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
+        aux.setDuracion(Integer.parseInt((String) vaadinRequest.getAttribute("duracion")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
+        aux.setCoste(Double.parseDouble((String) vaadinRequest.getAttribute("coste")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
+        AbonosDAO.actualizarAbono(aux, abono);
     }
 
     protected void registrarAbono(VaadinRequest vaadinRequest) throws UnknownHostException {//Método para registrar los datos en memoria, no hay persistencia de momento

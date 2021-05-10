@@ -1,5 +1,6 @@
 
 package bbdd;
+import clases.Abono;
 import clases.Cliente;
 import java.net.UnknownHostException;
 import com.mongodb.MongoClient;
@@ -92,4 +93,13 @@ public class ClienteDAO{
             getColl().update(searchQuery, newDocument);
             System.out.println("Nombre del cliente actualizado correctamente");
      }
+     //Método para buscar un documento abono en la colección AbonosDAO
+    public static boolean clientesConAbono(Abono a) throws UnknownHostException {
+        BasicDBObject searchQuery = new BasicDBObject().append("abono", a.getTipo());//Creamos la query que será los documentos que contengan como atributo "tipo" el que recibe como parámetro el método
+        DBCursor cursor = getColl().find(searchQuery);//Los elementos que cumplan la condicion de searchQuery se introducen en cursor        
+        if(cursor.hasNext())
+            return true;
+        else
+            return false;
+    }
 }
