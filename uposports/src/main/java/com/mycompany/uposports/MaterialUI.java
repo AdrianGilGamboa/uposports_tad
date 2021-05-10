@@ -120,7 +120,7 @@ public class MaterialUI extends UI {
 
                 Button buttonModificar = new Button("Modificar", FontAwesome.EDIT);//Creamos el botón modificar
                 buttonModificar.addClickListener(e -> {//Acción del botón
-                    editarAbono(vaadinRequest, material);//Método para editar la instalación
+                    editarMaterial(vaadinRequest, material);//Método para editar la instalación
                 });
 
                 Button buttonEliminar = new Button("Eliminar", FontAwesome.CLOSE);//Creamos el botón eliminar
@@ -163,7 +163,7 @@ public class MaterialUI extends UI {
             vaadinRequest.setAttribute("descripcion", descripcion.getValue());//Añadimos en la petición el valor del campo duración
             vaadinRequest.setAttribute("unidades", unidades.getValue());//Añadimos en la petición el valor del campo coste
             if (comprobarDatos(vaadinRequest, layout) == true) {//Se comprueban los datos, y si son correctos...
-                registrarAbono(vaadinRequest);//Se envían los datos a registro de abono
+                registrarMaterial(vaadinRequest);//Se envían los datos a registro de abono
 
                 init(vaadinRequest);//Se lanza el método principal
                 //Notificacion de tipo bandeja para notificar la correcta operación.
@@ -194,7 +194,7 @@ public class MaterialUI extends UI {
 
     //Exactamente igual que el método de crear abono, con la peculiaridad de que a este se le pasa el objeto abono y se prerellenan los campos con sus valores actuales.
     //Ya se ha comentado en el método anterior que realiza cada línea de código.
-    protected void editarAbono(VaadinRequest vaadinRequest, Material material) {
+    protected void editarMaterial(VaadinRequest vaadinRequest, Material material) {
         final VerticalLayout layout = new VerticalLayout();
         final HorizontalLayout layoutBotones = new HorizontalLayout();//Creamos un vertical layout
         final TextField nombre = new TextField();//Campo para insertar el tipo
@@ -234,13 +234,13 @@ layoutBotones.addComponents(buttonCancelar,buttonRegistrar);
         setContent(layout);
     }
 
-    protected void modificarAbono(VaadinRequest vaadinRequest, Material material) {//Método para guardar los datos modificados en memoria, no hay persistencia de momento
+    protected void modificarMaterial(VaadinRequest vaadinRequest, Material material) {//Método para guardar los datos modificados en memoria, no hay persistencia de momento
         material.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
         material.setDescripcion((String) vaadinRequest.getAttribute("descripcion"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
         material.setUnidades(Integer.parseInt((String)vaadinRequest.getAttribute("unidades")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
     }
 
-    protected void registrarAbono(VaadinRequest vaadinRequest) throws UnknownHostException {//Método para registrar los datos en memoria, no hay persistencia de momento
+    protected void registrarMaterial(VaadinRequest vaadinRequest) throws UnknownHostException {//Método para registrar los datos en memoria, no hay persistencia de momento
         Material material = new Material();//Creamos un nuevo objeto abono
         material.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
         material.setDescripcion((String) vaadinRequest.getAttribute("descripcion"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
