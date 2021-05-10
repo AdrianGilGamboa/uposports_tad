@@ -27,7 +27,6 @@ import com.vaadin.ui.VerticalLayout;
 
 public class login extends UI implements Broadcaster.BroadcastListener {
 
-    Label errorCampoVacio = new Label("Campo vacío - Inserte un nombre de usuario");//Etiqueta de error
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -50,10 +49,6 @@ public class login extends UI implements Broadcaster.BroadcastListener {
                     Broadcaster.broadcast(name.getValue());//mandamos como mensaje el nombre de usuario
                     mostrarEntidades(session);//Lanzamos el metodo mostrarEntidades
                 } else {//En caso de campo vacío, mostramos 2 tipos de error uno fijo y otro interactivo (para el proyecto final debatiremos este aspecto)
-                    if (layout.getComponentIndex(errorCampoVacio) == -1) {//Error fijo en forma de etiqueta, si ya existe no se crea otro
-
-                        layout.addComponentAsFirst(errorCampoVacio);//Se añade al principio de todo
-                    }
                     //Notificacion de tipo Warning interactiva para el usuario.
                     Notification.show("Campo vacío", "Inserte un nombre de usuario",
                             Notification.Type.WARNING_MESSAGE);

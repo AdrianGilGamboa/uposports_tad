@@ -11,6 +11,8 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.server.WrappedSession;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -29,23 +31,34 @@ import java.util.List;
 public class InstalacionUI extends UI {
 
     final static List<Instalacion> listaInstalaciones = new ArrayList<>();//Creamos una lista de abonos, donde se irán guardando y será compartida por todos los usuarios, necesario recargar la pag para ver cambios de otros usuarios
-    Label errorTipo = new Label("La capacidad debe ser numérica");//Etiqueta error de tipo 
-    Label errorCampoVacio = new Label("Los campos no pueden estar vacíos");//Etiqueta derror de campo vacío
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layoutMostrarInstalaciones = new VerticalLayout();//Creamos un layout vertical
         final HorizontalLayout layoutH = new HorizontalLayout();//Creamos un layout horizontal
+        final HorizontalLayout layoutHLabelabelTitulo = new HorizontalLayout();//Creamos un layout horizontal
+        final HorizontalLayout layoutH2 = new HorizontalLayout();//Creamos un layout horizontal
 
-        Button crearInstalacion = new Button("Crear Instalacion", FontAwesome.PLUS_CIRCLE);//Botón para crear instalación
-        crearInstalacion.addClickListener(e -> {//Acción del botón
-            crearInstalacion(vaadinRequest);//Accedemos al método crearInstalación
+                //RECUPERAMOS LA SESION Y SI NO HAY SESION NOS REDIRIGE A LA PÁGINA DE INICIO DE SESIÓN
+        WrappedSession session = getSession().getSession();
+        if (session.getAttribute("nombreUsuario") == null) {
+            getUI().getPage().setLocation("/login");
+        }
+        
+        Button crearAbono = new Button("Crear Instalacion", FontAwesome.PLUS_CIRCLE);//Botón para crear abono
+        crearAbono.addClickListener(e -> {//Acción del botón
+            crearInstalacion(vaadinRequest);//Accedemos al método crearAbono
         });
+
+        Label l = new Label("<h1 style='text-weight:bold;text-align:center;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
+        Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Instalaciones - </h2>", ContentMode.HTML);
+        layoutHLabelabelTitulo.addComponent(l);
 
         Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);//Botón para acceder a la entidad abono
         buttonAbonos.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Abono");//Accedemos a la entidad abono
         });
+
         Button buttonCliente = new Button("Clientes", FontAwesome.USERS);//Botón para acceder a la entidad instalaciones
         buttonCliente.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Cliente");//Accedemos a la entidad abono
@@ -56,7 +69,7 @@ public class InstalacionUI extends UI {
             getUI().getPage().setLocation("/Instalacion");//Accedemos a la entidad abono
         });
 
-        Button buttonEmpleados = new Button("Empleados", FontAwesome.MALE);//Botón para acceder a la entidad instalaciones
+        Button buttonEmpleados = new Button("Empleados", FontAwesome.GROUP);//Botón para acceder a la entidad instalaciones
         buttonEmpleados.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Empleado");//Accedemos a la entidad abono
         });
@@ -70,18 +83,20 @@ public class InstalacionUI extends UI {
         buttonReservas.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Reserva");//Accedemos a la entidad abono
         });
-        Button buttonLogout = new Button("Cerrar Sesión", FontAwesome.SIGN_OUT);//Botón para acceder a la entidad abono
-        buttonLogout.addClickListener(e -> {
+
+        Button buttonLogout = new Button("Cerrar Sesión", FontAwesome.SIGN_OUT);//Botón para cerrar sesión
+        buttonLogout.addClickListener(e -> {//Acción del botón
             VaadinSession.getCurrent().getSession().invalidate();//Eliminamos la sesión
             getUI().getPage().setLocation("/");//Accedemos a la página principal
         });
 
         if (layoutMostrarInstalaciones.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
-            layoutH.addComponents(crearInstalacion, buttonAbonos, buttonLogout);//Añadimos los componentes al layout horizontal
+            layoutH.addComponents(layoutHLabelabelTitulo,  buttonInstalacion, buttonCliente, buttonAbonos, buttonEmpleados, buttonMateriales, buttonReservas, buttonLogout);//Añadimos los componentes al layout horizontal
             //Le metemos margen y espaciado, para mostrarlo posteriormente.
-            layoutH.setMargin(true);
-            layoutH.setSpacing(true);
-            layoutMostrarInstalaciones.addComponent(layoutH);
+            layoutH2.setMargin(true);
+            layoutH2.setSpacing(true);
+            layoutH2.addComponents(labelEntidad, crearAbono);
+            layoutMostrarInstalaciones.addComponents(layoutH, layoutH2);
         }
         Table table = new Table();//Creamos la tabla donde meteremos las instancias
         if (listaInstalaciones.size() > 0) {//Si hay elementos en la lista de instalaciones
@@ -122,7 +137,9 @@ public class InstalacionUI extends UI {
     }
 
     protected void crearInstalacion(VaadinRequest vaadinRequest) {//Método para crear instalaciones
-        final VerticalLayout layout = new VerticalLayout();//Creamos un vertical layout
+                final VerticalLayout layout = new VerticalLayout();
+        final HorizontalLayout layoutTextField = new HorizontalLayout();
+        final HorizontalLayout layoutBotones = new HorizontalLayout();//Creamos un vertical layout
         final TextField nombre = new TextField();//Campo para insertar el nombre
         nombre.setCaption("Nombre:");//Texto que se muestra en dicho campo
         nombre.setIcon(FontAwesome.TAG);
@@ -154,6 +171,15 @@ public class InstalacionUI extends UI {
         layout.addComponents(nombre, descripcion, capacidad, buttonRegistrar, buttonCancelar);//Añadimos los componentes al layout
         //Le añadimos margen y espciado, para mostrarlo posteriormente.
 
+        layoutBotones.addComponents(buttonCancelar, buttonRegistrar);
+        layoutBotones.setSpacing(true);
+        layoutBotones.setMargin(true);
+
+        layoutTextField.addComponents(nombre, descripcion, capacidad);
+        layoutTextField.setSpacing(true);
+        layoutTextField.setMargin(true);
+        layout.addComponents(layoutTextField, layoutBotones);//Añadimos los componentes al layout
+        //Le añadimos margen y espciado, para mostrarlo posteriormente
         layout.setMargin(true);
         layout.setSpacing(true);
 
@@ -163,7 +189,9 @@ public class InstalacionUI extends UI {
     //Exactamente igual que el método de crear instalación, con la peculiaridad de que a este se le pasa el objeto instalación y se prerellenan los campos con sus valores actuales.
     //Ya se ha comentado en el método anterior que realiza cada línea de código.
     protected void editarInstalacion(VaadinRequest vaadinRequest, Instalacion instalacion) {
-        final VerticalLayout layout = new VerticalLayout();
+                final VerticalLayout layout = new VerticalLayout();
+        final HorizontalLayout layoutTextField = new HorizontalLayout();
+        final HorizontalLayout layoutBotones = new HorizontalLayout();//Creamos un vertical layout
         final TextField nombre = new TextField();
         nombre.setCaption("Nombre: ");
         nombre.setValue(instalacion.getNombre());//Insertamos en el campo el valor del atributo nombre
@@ -195,7 +223,15 @@ public class InstalacionUI extends UI {
             init(vaadinRequest);
         });
 
-        layout.addComponents(nombre, descripcion, capacidad, buttonRegistrar, buttonCancelar);
+        layoutBotones.addComponents(buttonCancelar, buttonRegistrar);
+        layoutBotones.setSpacing(true);
+        layoutBotones.setMargin(true);
+
+        layoutTextField.addComponents(nombre, descripcion, capacidad);
+        layoutTextField.setSpacing(true);
+        layoutTextField.setMargin(true);
+        layout.addComponents(layoutTextField, layoutBotones);//Añadimos los componentes al layout
+        //Le añadimos margen y espciado, para mostrarlo posteriormente
         layout.setMargin(true);
         layout.setSpacing(true);
 
@@ -226,19 +262,12 @@ public class InstalacionUI extends UI {
             if (isInteger((String) vaadinRequest.getAttribute("capacidad")) == true) {
                 b = true;//Si se satisface todas las condiciones, la variables es true
             } else {//Si la capacidad no es numérica
-                if (layout.getComponentIndex(errorTipo) == -1) {//Si no se ha añadido el componente al layout
-
-                    layout.addComponentAsFirst(errorTipo);//Añadimos el camponente al layout
-                }
                 //Notificacion de tipo Warning interactiva para el usuario.
                 Notification.show("Error Datos Introducidos", "La duracion y el coste deben ser numéricos",
                         Notification.Type.WARNING_MESSAGE);
             }
         } else {//En caso de campo vacío, mostramos 2 tipos de error uno fijo y otro interactivo (para el proyecto final debatiremos este aspecto)
-            if (layout.getComponentIndex(errorCampoVacio) == -1) {//Si no se ha añadido el componente al layout
 
-                layout.addComponentAsFirst(errorCampoVacio);//Añadimos el camponente al layout
-            }
             //Notificacion de tipo Warning interactiva para el usuario.
             Notification.show("Campo vacío", "Debe rellenar todos los campos",
                     Notification.Type.WARNING_MESSAGE);

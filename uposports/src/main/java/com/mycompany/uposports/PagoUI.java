@@ -32,7 +32,11 @@ public class PagoUI extends UI {
     protected void init(VaadinRequest vaadinRequest) {
         //Empezamos obteniendo la sesión y creando una lista de empleados para
         //ir mentiendo cuando se vayan creando
-        WrappedSession sesion = getSession().getSession();
+                //RECUPERAMOS LA SESION Y SI NO HAY SESION NOS REDIRIGE A LA PÁGINA DE INICIO DE SESIÓN
+        WrappedSession session = getSession().getSession();
+        if (session.getAttribute("nombreUsuario") == null) {
+            getUI().getPage().setLocation("/login");
+        }
         final FormLayout form = new FormLayout();
         //Añadimos el Label de bienvenida
         //Creamos el boton "Crear empleado" donde implementaremos la funcion de crear un empleado

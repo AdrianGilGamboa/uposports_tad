@@ -1,25 +1,47 @@
-
 package clases;
 
 import com.mycompany.uposports.*;
 
-
 public class Cliente {
+
     //CREAMOS LOS ATRIBUTOS DE LA CLASE CLIENTE SUS GETTER Y SETTER
     private String dni;
     private String nombre;
     private String apellidos;
     private String telefono;
     private String codigoPostal;
-    
-    public Cliente(String dni, String nombre){
-        this.dni=dni;
-        this.nombre=nombre;
+    private Abono abono;
+
+    public Abono getAbono() {
+        return abono;
     }
-    
-    public Cliente(){
+
+    public void setAbono(Abono abono) {
+        this.abono = abono;
     }
-    
+
+    public Abono setAbono(String tipo) {
+        boolean encontrado=false;
+        int i=0;
+        Abono a = null;
+        while (encontrado != true) {
+            if(AbonoUI.listaAbonos.get(i).getTipo().equals(tipo)){
+                a = AbonoUI.listaAbonos.get(i);
+                encontrado=true;
+            }
+        }
+        this.abono = a;
+        return a;
+    }
+
+    public Cliente(String dni, String nombre) {
+        this.dni = dni;
+        this.nombre = nombre;
+    }
+
+    public Cliente() {
+    }
+
     public String getDni() {
         return dni;
     }
