@@ -5,6 +5,7 @@
  */
 package com.mycompany.uposports;
 
+import bbdd.MaterialDAO;
 import clases.Material;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
@@ -23,6 +24,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
@@ -238,13 +240,13 @@ layoutBotones.addComponents(buttonCancelar,buttonRegistrar);
         material.setUnidades(Integer.parseInt((String)vaadinRequest.getAttribute("unidades")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
     }
 
-    protected void registrarAbono(VaadinRequest vaadinRequest) {//Método para registrar los datos en memoria, no hay persistencia de momento
+    protected void registrarAbono(VaadinRequest vaadinRequest) throws UnknownHostException {//Método para registrar los datos en memoria, no hay persistencia de momento
         Material material = new Material();//Creamos un nuevo objeto abono
         material.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
         material.setDescripcion((String) vaadinRequest.getAttribute("descripcion"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
         material.setUnidades(Integer.parseInt((String)vaadinRequest.getAttribute("unidades")));
         listaMateriales.add(material);//Añadimos el objeto a la lista de abonos
-
+        MaterialDAO.creaMaterial(material);
     }
 
     //Método para comprobar los datos introducidos en los formularios
