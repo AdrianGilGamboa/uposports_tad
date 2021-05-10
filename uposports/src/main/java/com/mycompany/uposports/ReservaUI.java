@@ -50,12 +50,12 @@ public class ReservaUI extends UI {
 
         //CREAMOS UNA TABLA DONDE APARECERÁ LA LISTA DE CLIENTES
         Table tabla = new Table();
+        tabla.setSizeFull();
         tabla.addContainerProperty("Fecha Reserva", String.class, null);
         tabla.addContainerProperty("Hora Inicio", String.class, null);
         tabla.addContainerProperty("Hora Fin", String.class, null);
         tabla.addContainerProperty("Editar", Button.class, null);
         tabla.addContainerProperty("Eliminar", Button.class, null);
-        tabla.setWidth("50%"); //ESTABLECEMOS EL ANCHO DE LA TABLA
         Button botonAdd = new Button("Crear Reserva", FontAwesome.PLUS_CIRCLE); //BOTÓN PARA AÑADIR RESERVA 
         layout.addComponent(botonAdd);
         layoutH2.setMargin(true);

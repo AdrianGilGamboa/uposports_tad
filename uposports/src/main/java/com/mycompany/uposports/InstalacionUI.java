@@ -99,6 +99,7 @@ public class InstalacionUI extends UI {
             layoutMostrarInstalaciones.addComponents(layoutH, layoutH2);
         }
         Table table = new Table();//Creamos la tabla donde meteremos las instancias
+        table.setSizeFull();
         if (listaInstalaciones.size() > 0) {//Si hay elementos en la lista de instalaciones
             //Añadimos las columnas de la tabla
             table.addContainerProperty("Nombre", String.class, "");
