@@ -28,6 +28,8 @@ import com.vaadin.ui.VerticalLayout;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 
 @Theme("mytheme")
@@ -165,8 +167,12 @@ public class EmpleadoUI extends UI {
             vaadinRequest.setAttribute("apellidos", apellidos.getValue());//Añadimos en la petición el valor del campo coste
             vaadinRequest.setAttribute("telefono", telefono.getValue());//Añadimos en la petición el valor del campo telefono
 
-            if (comprobarDatos(vaadinRequest, layout) == true) {//Se comprueban los datos, y si son correctos...
+            if (comprobarDatos(vaadinRequest, layout) == true) {try {
+                //Se comprueban los datos, y si son correctos...
                 registrarEmpleado(vaadinRequest);//Se envían los datos a registro de abono
+                } catch (UnknownHostException ex) {
+                    Logger.getLogger(EmpleadoUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
                 init(vaadinRequest);//Se lanza el método principal
                 //Notificacion de tipo bandeja para notificar la correcta operación.
