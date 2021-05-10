@@ -159,12 +159,14 @@ public class ReservaUI extends UI {
         Button enviar = new Button("Guardar", FontAwesome.CHECK);
         //EDITAMOS TODOS LOS CAMPOS QUE HAYA MODIFICADO EL USUARIO Y VOLVEMOS A INSERTAR EL CLIENTE EN LA LISTA
         enviar.addClickListener(e -> {
-            Reserva aux = new Reserva();
-            aux.setInicioReserva(inicioReserva.getValue());
-            aux.setFinReserva(finReserva.getValue());
-            listaReservas.remove(r);
-            addReserva(aux);
-            init(request);
+            if (comprobarDatos((Date) inicioReserva.getValue(), (Date) finReserva.getValue()) == true) {
+                Reserva aux = new Reserva();
+                aux.setInicioReserva(inicioReserva.getValue());
+                aux.setFinReserva(finReserva.getValue());
+                listaReservas.remove(r);
+                addReserva(aux);
+                init(request);
+            }
         });
         Button volver = new Button("Cancelar", FontAwesome.CLOSE);
         //REDIRECCIONA A LA CLASE ReservaUI
