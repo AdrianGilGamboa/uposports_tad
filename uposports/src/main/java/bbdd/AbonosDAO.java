@@ -12,20 +12,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AbonosDAO {
-    
-    private static DBCollection abonoInit() throws UnknownHostException{
-                     // Conectar al servidor MongoDB
-            MongoClient mongoClient = new MongoClient("localhost", 27017);
 
-            // Conectar a la base de datos
-            DB db = mongoClient.getDB("uposports");
+    private static DBCollection abonoInit() throws UnknownHostException {
+        // Conectar al servidor MongoDB
+        MongoClient mongoClient = new MongoClient("localhost", 27017);
 
-            //Acceder coleccion "Abonos"*/
-            DBCollection collection = db.getCollection("abonos");
-            
-            return collection;
+        // Conectar a la base de datos
+        DB db = mongoClient.getDB("uposports");
+
+        //Acceder coleccion "Abonos"*/
+        DBCollection collection = db.getCollection("abonos");
+
+        return collection;
     }
-        
+
     //Método para añadir un documento nuevo a la colección AbonosDAO
     public static void insertarAbono(Abono abono) throws UnknownHostException {
 
@@ -63,7 +63,8 @@ public class AbonosDAO {
         return listaAbonos;
 
     }
-/*
+
+    /*
     //Método para actualizar un campo de tipo String de la colección AbonosDAO
     public static void actualizarAbono(DBCollection collection, DBObject abono, String campo, String nuevoValor) {
         BasicDBObject newDocument = new BasicDBObject();//Instanciamos un nuevo documento
@@ -71,7 +72,7 @@ public class AbonosDAO {
         collection.update(abono, newDocument);//Actualizamos el documento "abono" recibido por parámetro con el nuevo campo del documento creado
         System.out.println("Documento Abono actualizado correctamente\n");
     }
-*/
+     */
     //Método para actualizar un campo de tipo int de la colección AbonosDAO (método sobrecargado)
     public static void actualizarAbono(Abono nuevo, Abono viejo) throws UnknownHostException {
         BasicDBObject newDocument = new BasicDBObject();
@@ -86,10 +87,15 @@ public class AbonosDAO {
     }
 
     //Método para eliminar un documento de la colección AbonosDAO
-    public static void eliminarAbono(Abono abono) throws UnknownHostException {
+    public static boolean eliminarAbono(Abono abono) throws UnknownHostException {
         System.out.println(String.format("Buscando documento Abono tipo %s para eliminar...", abono.getTipo()));
-        abonoInit().remove(new BasicDBObject().append("tipo", abono.getTipo()));//Elimina el documento que recibe del método buscarAbono, pasándole la colección y el tipo de Abono.
-        System.out.println("Documento Abono eliminado\n");
+        if (ClienteDAO.clientesConAbono(abono)) {
+            return false;
+        } else {
+            abonoInit().remove(new BasicDBObject().append("tipo", abono.getTipo()));//Elimina el documento que recibe del método buscarAbono, pasándole la colección y el tipo de Abono.
+            System.out.println("Documento Abono eliminado\n");
+            return true;
+        }
     }
 
     //Método para buscar un documento abono en la colección AbonosDAO
@@ -102,7 +108,7 @@ public class AbonosDAO {
         Abono aux = new Abono();
         aux.setTipo((String) elemento.get("tipo"));
         aux.setCoste((Double) elemento.get("precio"));
-        aux.setDuracion((Integer) elemento.get("duracion"));        
+        aux.setDuracion((Integer) elemento.get("duracion"));
         return aux; //Devolvemos el abono
     }
 }
