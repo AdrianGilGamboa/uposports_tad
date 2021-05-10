@@ -6,7 +6,7 @@ public class Abono {
 
     private String tipo;
     private Integer duracion;
-    private Float coste;
+    private Double coste;
 
     public Abono() {
 
@@ -33,11 +33,11 @@ public class Abono {
         this.duracion = duracion;
     }
 
-    public Float getCoste() {
+    public Double getCoste() {
         return coste;
     }
 
-    public void setCoste(Float coste) {
+    public void setCoste(Double coste) {
         this.coste = coste;
     }
 

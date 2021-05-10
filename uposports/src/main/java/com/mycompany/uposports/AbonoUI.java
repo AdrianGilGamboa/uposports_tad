@@ -35,7 +35,6 @@ import java.util.logging.Logger;
 
 public class AbonoUI extends UI {
 
-    public final static List<Abono> listaAbonos = new ArrayList<>();//Creamos una lista de abonos, donde se irán guardando y será compartida por todos los usuarios, necesario recargar la pag para ver cambios de otros usuarios
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -108,12 +107,15 @@ public class AbonoUI extends UI {
         table.setSizeFull();
         Label label = new Label("<h2 style='margin-top:0'> Abonos Registrados </h2>", ContentMode.HTML);
         
-        if (listaAbonos.size() > 0) {//Si hay elementos en la lista de abonos
+        List<Abono> listaAbonos;
+        try {
+            listaAbonos = AbonosDAO.mostrarAbonos();
+                    if (listaAbonos.size() > 0) {//Si hay elementos en la lista de abonos
             layoutMostrarAbonos.addComponent(label);
             //Añadimos las columnas de la tabla
             table.addContainerProperty("Tipo", String.class, "");
             table.addContainerProperty("Duración(meses)", Integer.class, "");
-            table.addContainerProperty("Coste(€)", Float.class, "");
+            table.addContainerProperty("Coste(€)", Double.class, "");
             table.addContainerProperty("Editar", Button.class, "");
             table.addContainerProperty("Eliminar", Button.class, "");
             for (int i = 0; i < listaAbonos.size(); i++) {//Mientras haya elementos por recorrer
@@ -136,6 +138,10 @@ public class AbonoUI extends UI {
                 layoutMostrarAbonos.addComponent(table);//Lo añadimos al layout vertical
             }
         }
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(AbonoUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         //Le añadimos margen y espciado, para mostrarlo posteriormente.
         layoutMostrarAbonos.setMargin(true);
         layoutMostrarAbonos.setSpacing(true);
@@ -254,15 +260,15 @@ public class AbonoUI extends UI {
     protected void modificarAbono(VaadinRequest vaadinRequest, Abono abono) {//Método para guardar los datos modificados en memoria, no hay persistencia de momento
         abono.setTipo((String) vaadinRequest.getAttribute("tipo"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
         abono.setDuracion(Integer.parseInt((String) vaadinRequest.getAttribute("duracion")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
-        abono.setCoste(Float.parseFloat((String) vaadinRequest.getAttribute("coste")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
+        abono.setCoste(Double.parseDouble((String) vaadinRequest.getAttribute("coste")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
     }
 
     protected void registrarAbono(VaadinRequest vaadinRequest) throws UnknownHostException {//Método para registrar los datos en memoria, no hay persistencia de momento
         Abono abono = new Abono();//Creamos un nuevo objeto abono
         abono.setTipo((String) vaadinRequest.getAttribute("tipo"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
         abono.setDuracion(Integer.parseInt((String) vaadinRequest.getAttribute("duracion")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
-        abono.setCoste(Float.parseFloat((String) vaadinRequest.getAttribute("coste")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
-        listaAbonos.add(abono);//Añadimos el objeto a la lista de abonos
+        abono.setCoste(Double.parseDouble((String) vaadinRequest.getAttribute("coste")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
+        //listaAbonos.add(abono);//Añadimos el objeto a la lista de abonos
         AbonosDAO.insertarAbono(abono);
 
     }
