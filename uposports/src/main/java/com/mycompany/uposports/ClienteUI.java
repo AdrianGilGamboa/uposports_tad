@@ -105,10 +105,10 @@ public class ClienteUI extends UI {
         TextField telef = new TextField("Introduzca el Telefono:");
         TextField cp = new TextField("Introduzca el Código Postal:");
         OptionGroup abono = new OptionGroup("Abono:");
-        for (int i = 0; i < AbonoUI.listaAbonos.size(); i++) {
+        /*for (int i = 0; i < AbonoUI.listaAbonos.size(); i++) {
             System.out.println(AbonoUI.listaAbonos.get(i).getTipo());
             abono.addItems(AbonoUI.listaAbonos.get(i).getTipo());
-        }
+        }*/
         datos.addComponents(nombre, apellidos, dni, telef, cp, abono);
         datos.setMargin(true);
         datos.setSpacing(true);
@@ -125,7 +125,7 @@ public class ClienteUI extends UI {
                 aux.setDni(dni.getValue());
                 aux.setTelefono(telef.getValue());
                 aux.setCodigoPostal(cp.getValue());
-                aux.setAbono((String)abono.getValue());
+                //aux.setAbono((String)abono.getValue());
                 // ClienteUI.addCliente(aux);
                 //layout.addComponent(new Label("Se va a añadir "+ClienteUI.listaClientes.get(0).getNombre()));
                 // getUI().getPage().setLocation("/gestionaCliente");

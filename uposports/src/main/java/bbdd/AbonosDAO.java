@@ -8,6 +8,8 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AbonosDAO {
     
@@ -39,7 +41,9 @@ public class AbonosDAO {
     }
 
     //Método para mostrar todos los documentos de la colección AbonosDAO
-    public static void mostrarAbonos(DBCollection collection) {
+    public static ArrayList<Abono> mostrarAbonos() throws UnknownHostException {
+        ArrayList<Abono> listaAbonos = new ArrayList<>();
+        DBCollection collection = abonoInit();
         DBCursor cursor = collection.find();// Obtenemos todos los documentos de la coleccion AbonosDAO
         DBObject elemento;
         //Recorrido de todos los elementos de la coleccion AbonosDAO
@@ -48,9 +52,15 @@ public class AbonosDAO {
         while (cursor.hasNext()) {//Mientras haya documentos
             i++;//Incrementamos la variable
             elemento = cursor.next();//Guardamos el documento en "elemento"
+            Abono abono = new Abono();
+            abono.setTipo((String) elemento.get("tipo"));
+            abono.setCoste((Double) elemento.get("precio"));
+            abono.setDuracion((Integer) elemento.get("duracion"));
+            listaAbonos.add(abono);
             System.out.println(String.format("Documento Abono_%d leido: %s", i, elemento));//Se muestra por pantalla el documento
         }
         System.out.println("Fin de la colección Abonos\n");
+        return listaAbonos;
 
     }
 
