@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.uposports;
 
 import bbdd.EmpleadoDAO;
@@ -114,35 +109,45 @@ public class EmpleadoUI extends UI {
         Table table = new Table();//Creamos la tabla donde meteremos las instancias
         table.setSizeFull();
 
-        if (listaEmpleados.size() > 0) {//Si hay elementos en la lista de abonos
-            //Añadimos las columnas de la tabla
-            table.addContainerProperty("DNI", String.class, "");
-            table.addContainerProperty("Nombre", String.class, "");
-            table.addContainerProperty("Apellidos", String.class, "");
-            table.addContainerProperty("Telefono", Integer.class, "");
-
-            table.addContainerProperty("Modificar", Button.class, "");
-            table.addContainerProperty("Eliminar", Button.class, "");
-            for (int i = 0; i < listaEmpleados.size(); i++) {//Mientras haya elementos por recorrer
-                Empleado empleado = listaEmpleados.get(i);//Obtenemos el objeto de la lista
-
-                Button buttonModificar = new Button("Modificar", FontAwesome.EDIT);//Creamos el botón modificar
-                buttonModificar.addClickListener(e -> {//Acción del botón
-                    editarEmpleado(vaadinRequest, empleado);//Método para editar la instalación
-                });
-
-                Button buttonEliminar = new Button("Eliminar", FontAwesome.CLOSE);//Creamos el botón eliminar
-                buttonEliminar.addClickListener(e -> {//Acción del botón
-                    listaEmpleados.remove(empleado);//Eliminamos el objeto de la lista de instalaciones
-                    init(vaadinRequest);//Volvemos a ejecutar el método principal
-                    Notification.show("Empleado - Dni: " + empleado.getDni(), "Eliminado con éxito",
-                            Notification.Type.TRAY_NOTIFICATION);
-                });
-                //Añadimos la fila a la tabla
-                table.addItem(new Object[]{empleado.getDni(), empleado.getNombre(), empleado.getApellidos(), empleado.getTelefono(), buttonModificar, buttonEliminar}, i);
-
-                layoutMostrarEmpleados.addComponent(table);//Lo añadimos al layout vertical
+        try {
+            if (!EmpleadoDAO.mostrarEmpleados().isEmpty()) {//Si hay elementos en la lista de abonos
+                //Añadimos las columnas de la tabla
+                table.addContainerProperty("DNI", String.class, "");
+                table.addContainerProperty("Nombre", String.class, "");
+                table.addContainerProperty("Apellidos", String.class, "");
+                table.addContainerProperty("Telefono", Integer.class, "");
+                
+                table.addContainerProperty("Modificar", Button.class, "");
+                table.addContainerProperty("Eliminar", Button.class, "");
+                for (int i = 0; i < EmpleadoDAO.mostrarEmpleados().size(); i++) {//Mientras haya elementos por recorrer
+                    Empleado empleado = EmpleadoDAO.mostrarEmpleados().get(i);//Obtenemos el objeto de la lista
+                    
+                    Button buttonModificar = new Button("Modificar", FontAwesome.EDIT);//Creamos el botón modificar
+                    buttonModificar.addClickListener(e -> {//Acción del botón
+                        editarEmpleado(vaadinRequest, empleado);//Método para editar la instalación
+                    });
+                    
+                    Button buttonEliminar = new Button("Eliminar", FontAwesome.CLOSE);//Creamos el botón eliminar
+                    buttonEliminar.addClickListener(e -> {
+                        try {
+                        //Acción del botón
+                        //listaEmpleados.remove(empleado);
+                        EmpleadoDAO.eliminarEmpleados(empleado);//Eliminamos el objeto de la BBDD
+                        } catch (UnknownHostException ex) {
+                            Logger.getLogger(EmpleadoUI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        init(vaadinRequest);//Volvemos a ejecutar el método principal
+                        Notification.show("Empleado - Dni: " + empleado.getDni(), "Eliminado con éxito",
+                                Notification.Type.TRAY_NOTIFICATION);
+                    });
+                    //Añadimos la fila a la tabla
+                    table.addItem(new Object[]{empleado.getDni(), empleado.getNombre(), empleado.getApellidos(), empleado.getTelefono(), buttonModificar, buttonEliminar}, i);
+                    
+                    layoutMostrarEmpleados.addComponent(table);//Lo añadimos al layout vertical
+                }
             }
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(EmpleadoUI.class.getName()).log(Level.SEVERE, null, ex);
         }
         layoutMostrarEmpleados.setMargin(true);
         layoutMostrarEmpleados.setSpacing(true);
@@ -215,15 +220,19 @@ public class EmpleadoUI extends UI {
         final TextField dni = new TextField();//Campo para insertar el tipo
         dni.setCaption("DNI:");//Texto que se muestra en dicho campo
         dni.setIcon(FontAwesome.ADN);//Icono
+        dni.setValue(empleado.getDni());
         final TextField nombre = new TextField();//Campo para insertar la duracion
         nombre.setCaption("Nombre:");//Texto que se muestra en dicho campo
         nombre.setIcon(FontAwesome.USER);
+        nombre.setValue(empleado.getNombre());
         final TextField apellidos = new TextField();//Campo para insertar el coste
         apellidos.setCaption("Apellidos:");//Texto que se muestra en dicho campo
         apellidos.setIcon(FontAwesome.USER);
+        apellidos.setValue(empleado.getApellidos());
         final TextField telefono = new TextField();//Campo para insertar el coste
         telefono.setCaption("Telefono:");//Texto que se muestra en dicho campo
         telefono.setIcon(FontAwesome.PHONE);
+        telefono.setValue(Integer.toString(empleado.getTelefono()));
         Button buttonRegistrar = new Button("Modificar", FontAwesome.EDIT);
 
         buttonRegistrar.addClickListener(e -> {
@@ -233,7 +242,11 @@ public class EmpleadoUI extends UI {
             vaadinRequest.setAttribute("telefono", telefono.getValue());//Añadimos en la petición el valor del campo telefono
 
             if (comprobarDatos(vaadinRequest, layout) == true) {
-                modificarEmpleado(vaadinRequest, empleado);//Se lanza el método modificar abono
+                try {
+                    modificarEmpleado(vaadinRequest, empleado);//Se lanza el método modificar abono
+                } catch (UnknownHostException ex) {
+                    Logger.getLogger(EmpleadoUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 init(vaadinRequest);
                 //Notificacion de tipo bandeja para notificar la correcta operación.
                 Notification.show("Empleado - DNI: " + dni.getValue(), "Modificado con éxito",
@@ -255,11 +268,13 @@ public class EmpleadoUI extends UI {
         setContent(layout);
     }
 
-    protected void modificarEmpleado(VaadinRequest vaadinRequest, Empleado empleado) {//Método para guardar los datos modificados en memoria, no hay persistencia de momento
-        empleado.setDni((String) vaadinRequest.getAttribute("dni"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
-        empleado.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
-        empleado.setApellidos((String) vaadinRequest.getAttribute("apellidos"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
-        empleado.setTelefono(Integer.parseInt((String) (vaadinRequest.getAttribute("telefono"))));
+    protected void modificarEmpleado(VaadinRequest vaadinRequest, Empleado empleado) throws UnknownHostException {//Método para guardar los datos modificados en memoria, no hay persistencia de momento
+        Empleado aux = new Empleado();
+        aux.setDni((String) vaadinRequest.getAttribute("dni"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
+        aux.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
+        aux.setApellidos((String) vaadinRequest.getAttribute("apellidos"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
+        aux.setTelefono(Integer.parseInt((String) (vaadinRequest.getAttribute("telefono"))));
+        EmpleadoDAO.actualizarEmpleado(aux, empleado);
     }
 
     protected void registrarEmpleado(VaadinRequest vaadinRequest) throws UnknownHostException {//Método para registrar los datos en memoria, no hay persistencia de momento
@@ -268,9 +283,8 @@ public class EmpleadoUI extends UI {
         empleado.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
         empleado.setApellidos((String) vaadinRequest.getAttribute("apellidos"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
         empleado.setTelefono(Integer.parseInt((String) (vaadinRequest.getAttribute("telefono"))));
-//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
-        listaEmpleados.add(empleado);//Añadimos el objeto a la lista de abonos
-        EmpleadoDAO.insertarEmpleado(empleado);
+//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono        
+        EmpleadoDAO.insertarEmpleado(empleado);//Añadimos el objeto a la BBDD
     }
 
     protected boolean comprobarDatos(VaadinRequest vaadinRequest, VerticalLayout layout) {
