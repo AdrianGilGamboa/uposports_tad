@@ -1,5 +1,6 @@
 package com.mycompany.uposports;
 
+import bbdd.InstalacionDAO;
 import clases.Instalacion;
 import com.vaadin.annotations.PreserveOnRefresh;
 import javax.servlet.annotation.WebServlet;
@@ -21,8 +22,11 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Theme("mytheme")
 @Title("Instalacion")
@@ -105,34 +109,43 @@ public class InstalacionUI extends UI {
         }
         Table table = new Table();//Creamos la tabla donde meteremos las instancias
         table.setSizeFull();
-        if (listaInstalaciones.size() > 0) {//Si hay elementos en la lista de instalaciones
-            //Añadimos las columnas de la tabla
-            table.addContainerProperty("Nombre", String.class, "");
-            table.addContainerProperty("Descripcion", String.class, "");
-            table.addContainerProperty("Capacidad", Integer.class, "");
-            table.addContainerProperty("Modificar", Button.class, "");
-            table.addContainerProperty("Eliminar", Button.class, "");
-
-            for (int i = 0; i < listaInstalaciones.size(); i++) {//Mientras haya elementos por recorrer
-
-                Instalacion instalacion = listaInstalaciones.get(i);//Obtenemos el objeto de la lista
-
-                Button buttonModificar = new Button("Modificar", FontAwesome.EDIT);//Creamos el botón modificar
-                buttonModificar.addClickListener(e -> {//Acción del botón
-                    editarInstalacion(vaadinRequest, instalacion);//Método para editar la instalación
-                });
-
-                Button buttonEliminar = new Button("Eliminar", FontAwesome.CLOSE);//Creamos el botón eliminar
-                buttonEliminar.addClickListener(e -> {//Acción del botón
-                    listaInstalaciones.remove(instalacion);//Eliminamos el objeto de la lista de instalaciones
-                    Notification.show("Instalación - Nombre: " + instalacion.getNombre(), "Eliminada con éxito",
-                            Notification.Type.TRAY_NOTIFICATION);
-                    init(vaadinRequest);//Volvemos a ejecutar el método principal
-                });
-                //Añadimos la fila a la tabla
-                table.addItem(new Object[]{instalacion.getNombre(), instalacion.getDescripcion(), instalacion.getCapacidad(), buttonModificar, buttonEliminar}, i);
-                layoutMostrarInstalaciones.addComponents(table);//Lo añadimos al layout vertical
+        try {
+            if (!InstalacionDAO.mostrarInstalaciones().isEmpty()) {//Si hay elementos en la lista de instalaciones
+                //Añadimos las columnas de la tabla
+                table.addContainerProperty("Nombre", String.class, "");
+                table.addContainerProperty("Descripcion", String.class, "");
+                table.addContainerProperty("Capacidad", Integer.class, "");
+                table.addContainerProperty("Modificar", Button.class, "");
+                table.addContainerProperty("Eliminar", Button.class, "");
+                
+                for (int i = 0; i < InstalacionDAO.mostrarInstalaciones().size(); i++) {//Mientras haya elementos por recorrer
+                    
+                    Instalacion instalacion = InstalacionDAO.mostrarInstalaciones().get(i);//Obtenemos el objeto de la lista
+                    
+                    Button buttonModificar = new Button("Modificar", FontAwesome.EDIT);//Creamos el botón modificar
+                    buttonModificar.addClickListener(e -> {//Acción del botón
+                        editarInstalacion(vaadinRequest, instalacion);//Método para editar la instalación
+                    });
+                    
+                    Button buttonEliminar = new Button("Eliminar", FontAwesome.CLOSE);//Creamos el botón eliminar
+                    buttonEliminar.addClickListener(e -> {try {
+                        //Acción del botón
+                        //listaInstalaciones.remove(instalacion);
+                        InstalacionDAO.eliminarInstalacion(instalacion);     //Eliminamos el objeto de la BBDD
+                        } catch (UnknownHostException ex) {
+                            Logger.getLogger(InstalacionUI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        Notification.show("Instalación - Nombre: " + instalacion.getNombre(), "Eliminada con éxito",
+                                Notification.Type.TRAY_NOTIFICATION);
+                        init(vaadinRequest);//Volvemos a ejecutar el método principal
+                    });
+                    //Añadimos la fila a la tabla
+                    table.addItem(new Object[]{instalacion.getNombre(), instalacion.getDescripcion(), instalacion.getCapacidad(), buttonModificar, buttonEliminar}, i);
+                    layoutMostrarInstalaciones.addComponents(table);//Lo añadimos al layout vertical
+                }
             }
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(InstalacionUI.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         //Le añadimos margen y espciado, para mostrarlo posteriormente.
@@ -146,6 +159,8 @@ public class InstalacionUI extends UI {
                 final VerticalLayout layout = new VerticalLayout();
         final HorizontalLayout layoutTextField = new HorizontalLayout();
         final HorizontalLayout layoutBotones = new HorizontalLayout();//Creamos un vertical layout
+        Label l = new Label("<h2>Nueva Instalacion</h2>", ContentMode.HTML);
+        layout.addComponent(l);
         final TextField nombre = new TextField();//Campo para insertar el nombre
         nombre.setCaption("Nombre:");//Texto que se muestra en dicho campo
         nombre.setIcon(FontAwesome.TAG);
@@ -160,8 +175,12 @@ public class InstalacionUI extends UI {
             vaadinRequest.setAttribute("nombre", nombre.getValue());//Añadimos en la petición el valor del campo nombre
             vaadinRequest.setAttribute("descripcion", descripcion.getValue());//Añadimos en la petición el valor del campo descripción
             vaadinRequest.setAttribute("capacidad", capacidad.getValue());//Añadimos en la petición el valor del campo capacidad
-            if (comprobarDatos(vaadinRequest, layout) == true) {//Se comprueban los datos, y si son correctos...
+            if (comprobarDatos(vaadinRequest, layout) == true) {try {
+                //Se comprueban los datos, y si son correctos...
                 registrarInstalacion(vaadinRequest);//Se envían los datos a registro de instalación
+                } catch (UnknownHostException ex) {
+                    Logger.getLogger(InstalacionUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 init(vaadinRequest);//Se lanza el método principal
                 //Notificacion de tipo bandeja para notificar la correcta operación.
                 Notification.show("Instalación - Nombre: " + nombre.getValue(), "Registrado con éxito",
@@ -198,6 +217,8 @@ public class InstalacionUI extends UI {
                 final VerticalLayout layout = new VerticalLayout();
         final HorizontalLayout layoutTextField = new HorizontalLayout();
         final HorizontalLayout layoutBotones = new HorizontalLayout();//Creamos un vertical layout
+        Label l = new Label("<h2>Modificar Instalación</h2>", ContentMode.HTML);
+        layout.addComponent(l);
         final TextField nombre = new TextField();
         nombre.setCaption("Nombre: ");
         nombre.setValue(instalacion.getNombre());//Insertamos en el campo el valor del atributo nombre
@@ -216,7 +237,11 @@ public class InstalacionUI extends UI {
             vaadinRequest.setAttribute("descripcion", descripcion.getValue());
             vaadinRequest.setAttribute("capacidad", capacidad.getValue());
             if (comprobarDatos(vaadinRequest, layout) == true) {
-                modificarInstalacion(vaadinRequest, instalacion);
+                try {
+                    modificarInstalacion(vaadinRequest, instalacion);
+                } catch (UnknownHostException ex) {
+                    Logger.getLogger(InstalacionUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 init(vaadinRequest);
                 //Notificacion de tipo bandeja para notificar la correcta operación.
                 Notification.show("Instalación - Nombre: " + nombre.getValue(), "Modificado con éxito",
@@ -245,18 +270,21 @@ public class InstalacionUI extends UI {
 
     }
 
-    protected void modificarInstalacion(VaadinRequest vaadinRequest, Instalacion instalacion) {//Método para guardar los datos modificados en memoria, no hay persistencia de momento
-        instalacion.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de instalación y lo introducimos en el campo nombre del objeto instalación
-        instalacion.setDescripcion((String) vaadinRequest.getAttribute("descripcion"));//Obtenemos de la petición el tipo de instalación y lo introducimos en el campo descripcion del objeto instalación
-        instalacion.setCapacidad(Integer.parseInt((String) vaadinRequest.getAttribute("capacidad")));//Obtenemos de la petición el tipo de instalación y lo introducimos en el campo capacidad del objeto instalación
+    protected void modificarInstalacion(VaadinRequest vaadinRequest, Instalacion instalacion) throws UnknownHostException {//Método para guardar los datos modificados en memoria, no hay persistencia de momento
+        Instalacion aux = new Instalacion();
+        aux.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de instalación y lo introducimos en el campo nombre del objeto instalación
+        aux.setDescripcion((String) vaadinRequest.getAttribute("descripcion"));//Obtenemos de la petición el tipo de instalación y lo introducimos en el campo descripcion del objeto instalación
+        aux.setCapacidad(Integer.parseInt((String) vaadinRequest.getAttribute("capacidad")));//Obtenemos de la petición el tipo de instalación y lo introducimos en el campo capacidad del objeto instalación
+        InstalacionDAO.actualizarInstalacion(aux, instalacion);
     }
 
-    protected void registrarInstalacion(VaadinRequest vaadinRequest) {//Método para registrar los datos en memoria, no hay persistencia de momento
+    protected void registrarInstalacion(VaadinRequest vaadinRequest) throws UnknownHostException {//Método para registrar los datos en memoria, no hay persistencia de momento
         Instalacion instalacion = new Instalacion();//Creamos un nuevo objeto instalación
         instalacion.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de instalación y lo introducimos en el campo nombre del objeto instalación
         instalacion.setDescripcion((String) vaadinRequest.getAttribute("descripcion"));//Obtenemos de la petición el tipo de instalación y lo introducimos en el campo descripcion del objeto instalación
-        instalacion.setCapacidad(Integer.parseInt((String) vaadinRequest.getAttribute("capacidad")));//Obtenemos de la petición el tipo de instalación y lo introducimos en el campo capacidad del objeto instalación
-        listaInstalaciones.add(instalacion);//Añadimos el objeto a la lista de instalaciones
+        instalacion.setCapacidad(Integer.parseInt((String) vaadinRequest.getAttribute("capacidad")));//Obtenemos de la petición el tipo de instalación y lo introducimos en el campo capacidad del objeto instalación        
+        //listaInstalaciones.add(instalacion);
+        InstalacionDAO.insertarInstalacion(instalacion);    //Añadimos el objeto a la lista de instalaciones
     }
 
     //Método para comprobar los datos introducidos en los formularios

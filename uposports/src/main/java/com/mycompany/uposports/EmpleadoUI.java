@@ -159,7 +159,8 @@ public class EmpleadoUI extends UI {
         final VerticalLayout layout = new VerticalLayout();//Creamos un vertical layout
         final HorizontalLayout layoutBotones = new HorizontalLayout();
         final HorizontalLayout layoutTextField = new HorizontalLayout();
-
+        Label l = new Label("<h2>Nuevo Empleado</h2>", ContentMode.HTML);
+        layout.addComponent(l);
         final TextField dni = new TextField();//Campo para insertar el tipo
         dni.setCaption("DNI:");//Texto que se muestra en dicho campo
         dni.setIcon(FontAwesome.ADN);//Icono
@@ -217,6 +218,8 @@ public class EmpleadoUI extends UI {
     protected void editarEmpleado(VaadinRequest vaadinRequest, Empleado empleado) {
         final VerticalLayout layout = new VerticalLayout();
         final HorizontalLayout layoutBotones = new HorizontalLayout();
+        Label l = new Label("<h2>Editar Empleado</h2>", ContentMode.HTML);
+        layout.addComponent(l);
         final TextField dni = new TextField();//Campo para insertar el tipo
         dni.setCaption("DNI:");//Texto que se muestra en dicho campo
         dni.setIcon(FontAwesome.ADN);//Icono
