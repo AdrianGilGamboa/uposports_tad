@@ -10,6 +10,7 @@ import com.mongodb.MongoClient;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import jdk.nashorn.internal.runtime.arrays.ArrayLikeIterator;
 
 public class ReservaDAO {
@@ -59,36 +60,65 @@ public class ReservaDAO {
             aux.setInicioReserva((Date) elemento.get("inicio"));
             aux.setFinReserva((Date) elemento.get("fin"));
             aux.setCliente(ClienteDAO.buscarCliente((String) elemento.get("cliente")));
+            aux.setInstalacion(InstalacionDAO.buscarInstalacion((String) elemento.get("instalacion")));
             listaReserva.add(aux);
             System.out.println(String.format("Reserva %d leido: %s", i, elemento));  //Mostramos por pantalla documento a documento de la coleccion
         }
         return listaReserva;
     }
 
-    public static void eliminaReserva(DB db, DBCursor cursor, String nombre) {
-        DBCollection collection = db.getCollection("Reserva"); //Obtenemos la coleccion Reserva de la Base de Datos
+    public static void eliminaReserva(Reserva r) throws UnknownHostException {
         //Creamos el documento que queremos buscar para eliminarlo con el nombre pasado por parámetro
-        cursor = collection.find((DBObject) new BasicDBObject().append("nombre", nombre));
-        while (cursor.hasNext()) {
-            collection.remove(cursor.next()); //Borramos los documentos que coinciden con el parametro nombre
+        reservasInit().remove(new BasicDBObject().append("id", r.getId_reserva()));//Elimina el documento que recibe del método buscarAbono, pasándole la colección y el anunciante.
+    }
+
+    public static void actualizaReserva(Reserva nueva, Reserva vieja) throws UnknownHostException {
+        //Actualizacion del valor de un campo
+        BasicDBObject newDocument = new BasicDBObject();
+        BasicDBObject aux = new BasicDBObject();
+        // Indica el atributo hora y su valor a establecer ($set)
+        newDocument.append("$set", aux.append("id", nueva.getId_reserva()));
+        newDocument.append("$set", aux.append("inicio", nueva.getInicioReserva()));
+        newDocument.append("$set", aux.append("fin", nueva.getFinReserva()));
+        newDocument.append("$set", aux.append("cliente", nueva.getCliente().getDni()));
+        newDocument.append("$set", aux.append("instalacion", nueva.getInstalacion().getNombre()));
+        // Indica el filtro a usar para aplicar la modificacion
+        BasicDBObject searchQuery = new BasicDBObject().append("id", vieja.getId_reserva());
+        reservasInit().update(searchQuery, newDocument);
+    }
+
+    public static Reserva buscarReserva(int id) throws UnknownHostException {
+        BasicDBObject searchQuery = new BasicDBObject().append("id", id);
+        DBCursor cursor = reservasInit().find(searchQuery);//Los elementos que cumplan la condicion de searchQuery se introducen en cursor
+        if (cursor.hasNext()) {
+            DBObject elemento = cursor.next();//Solamente debemos tener uno, ya que le pasamos el tipo que es nuestro ID.
+            Reserva aux = new Reserva();
+            aux.setId_reserva((int) elemento.get("id"));
+            aux.setInicioReserva((Date) elemento.get("inicio"));
+            aux.setFinReserva((Date) elemento.get("fin"));
+            aux.setCliente(ClienteDAO.buscarCliente((String) elemento.get("cliente")));
+            aux.setInstalacion(InstalacionDAO.buscarInstalacion((String) elemento.get("instalacion")));
+            return aux;
+        } else {
+            return null;
         }
     }
 
-    public static void actualizaHoraReserva(DB db, String nombre, String hora) {
-        DBCollection collection = db.getCollection("Reserva"); //Obtenemos la coleccion Reserva de la Base de Datos
-        //Actualizacion del valor de un campo
-        BasicDBObject newDocument = new BasicDBObject();
-        // Indica el atributo hora y su valor a establecer ($set)
-        newDocument.append("$set", new BasicDBObject().append("hora", hora));
-        // Indica el filtro a usar para aplicar la modificacion
-        BasicDBObject searchQuery = new BasicDBObject().append("nombre", nombre);
-        collection.update(searchQuery, newDocument);
-        System.out.println("Hora de la reserva " + nombre + " actualizada correctamente");
-    }
-
-    public static int siguienteID() {
-
-        return 0;
-
+    public static int siguienteID() throws UnknownHostException {
+        ArrayList lista = consultaReservas();
+        Iterator it = lista.iterator();
+        int max = 0;
+        Reserva r;
+        if (lista.isEmpty()) {
+            return 1;
+        } else {
+            while (it.hasNext()) {
+                r = (Reserva) it.next();
+                if (max < r.getId_reserva()) {
+                    max = r.getId_reserva();
+                }
+            }
+            return max + 1;
+        }
     }
 }

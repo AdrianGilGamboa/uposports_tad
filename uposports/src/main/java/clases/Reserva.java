@@ -2,6 +2,7 @@
 package clases;
 
 import bbdd.ReservaDAO;
+import java.net.UnknownHostException;
 import java.util.Date;
 
 
@@ -12,7 +13,7 @@ public class Reserva {
     private Cliente cliente;
     private Instalacion instalacion;
     
-    public Reserva(){
+    public Reserva() throws UnknownHostException{
         id_reserva=ReservaDAO.siguienteID();
     }
 
