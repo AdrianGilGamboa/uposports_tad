@@ -12,14 +12,13 @@ import java.util.Date;
  * @author manum
  */
 public class Pago {
+
     private Date fechaHora;
     private Double cantidad;
-    private Double importeDevolver;
-    
+
     public Pago() {
     }
-    
-        
+
     public Date getFecha() {
         return fechaHora;
     }
@@ -36,24 +35,4 @@ public class Pago {
         this.cantidad = cantidad;
     }
 
-
-    public Double getImporteDevolver() {
-        return importeDevolver;
-    }
-
-    public void setImporteDevolver(Double importeDevolver) {
-        this.importeDevolver = importeDevolver;
-    }
-    
-    
-
-   
-
-    @Override
-    public String toString() {
-        return "pagoTarjeta{" + ", fecha=" + fechaHora + ", cantidad=" + cantidad + '}';
-    }
-
-    
-    
 }
