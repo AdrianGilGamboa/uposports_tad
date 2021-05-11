@@ -6,9 +6,25 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
+import java.net.UnknownHostException;
 
 
 public class ReservaDAO {
+    
+        private static DBCollection reservasInit() throws UnknownHostException {
+        // Conectar al servidor MongoDB
+        MongoClient mongoClient = new MongoClient("localhost", 27017);
+
+        // Conectar a la base de datos
+        DB db = mongoClient.getDB("uposports");
+
+        //Acceder coleccion "Abonos"*/
+        DBCollection collection = db.getCollection("Reservas");
+
+        return collection;
+    }
+    
     public static void creaReserva(DB db,String nombre,String hora, int dia, int mes,int año){
          //Crea documento
             BasicDBObject document; //CREAMOS un documento tipo BasicDBObject

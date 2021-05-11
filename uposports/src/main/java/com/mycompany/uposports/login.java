@@ -78,6 +78,7 @@ public class login extends UI implements Broadcaster.BroadcastListener {
         Button buttonEmpleado = new Button("Empleados", FontAwesome.USERS);
         Button buttonMaterial = new Button("Materiales", FontAwesome.ARCHIVE);
         Button buttonReserva = new Button("Reservas", FontAwesome.CALENDAR);
+        Button buttonAnunciantes = new Button("Anunciantes", FontAwesome.BELL);
 
         Button buttonLogout = new Button("Cerrar Sesión", FontAwesome.SIGN_OUT);
 
@@ -105,13 +106,17 @@ public class login extends UI implements Broadcaster.BroadcastListener {
             getUI().getPage().setLocation("/Reserva"); //Redirige a la clase de gestionar clientes
         });
 
+        buttonAnunciantes.addClickListener(e -> {  //Establecemos lo que hace el boton clientes
+            getUI().getPage().setLocation("/Anunciante"); //Redirige a la clase de gestionar clientes
+        });
+
         buttonLogout.addClickListener(a -> {//Acción del botón logout
             session.invalidate();//Se destruye la sesion
             getUI().getPage().setLocation("/");//Página principal (login)
         });
 
         //Añadimos los componentes al layout y le ponemos margen y espaciado
-        layoutEntidades.addComponents(buttonReserva, buttonClientes, buttonAbonos, buttonInstalaciones, buttonMaterial,  buttonEmpleado,   buttonLogout);
+        layoutEntidades.addComponents(buttonReserva, buttonClientes, buttonAbonos, buttonInstalaciones, buttonMaterial, buttonEmpleado, buttonAnunciantes, buttonLogout);
         layoutVentana.addComponents(saludo, layoutEntidades);
         layoutEntidades.setMargin(true);
         layoutEntidades.setSpacing(true);

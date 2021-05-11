@@ -12,44 +12,46 @@ import java.util.Date;
  * @author manum
  */
 public class Pago {
-    private Date fecha;
-    private float cantidad;
-    private Date hora;
-    private float importeDevolver;
+    private Date fechaHora;
+    private Double cantidad;
+    private Double importeDevolver;
+    
     public Pago() {
     }
     
         
-
     public Date getFecha() {
-        return fecha;
+        return fechaHora;
     }
 
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
+    public void setFecha(Date fechaHora) {
+        this.fechaHora = fechaHora;
     }
 
-    public float getCantidad() {
+    public Double getCantidad() {
         return cantidad;
     }
 
-    public void setCantidad(float cantidad) {
+    public void setCantidad(Double cantidad) {
         this.cantidad = cantidad;
     }
 
-    public Date getHora() {
-        return hora;
+
+    public Double getImporteDevolver() {
+        return importeDevolver;
     }
 
-    public void setHora(Date hora) {
-        this.hora = hora;
+    public void setImporteDevolver(Double importeDevolver) {
+        this.importeDevolver = importeDevolver;
     }
+    
+    
 
    
 
     @Override
     public String toString() {
-        return "pagoTarjeta{" + ", fecha=" + fecha + ", cantidad=" + cantidad + ", hora=" + hora + '}';
+        return "pagoTarjeta{" + ", fecha=" + fechaHora + ", cantidad=" + cantidad + '}';
     }
 
     

@@ -1,11 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.mycompany.uposports;
 
 import clases.Pago;
+import com.vaadin.annotations.Theme;
+import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.data.validator.NullValidator;
 import com.vaadin.server.Page;
@@ -23,10 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 
-/**
- *
- * @author manum
- * */
+@Theme("mytheme")
+@Title("Pago")
 public class PagoUI extends UI {
      @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -45,7 +41,7 @@ public class PagoUI extends UI {
             public void buttonClick(Button.ClickEvent event) {
                 //Añadimos por cada atributo del empleado su textfield
                Pago p = new Pago();
-                        getUI().getPage().setLocation("/login");   
+               getUI().getPage().setLocation("/login");   
             }  
         });
 //Se crea el boton de ver empleados el cual, al pulsarse, imprimirá la lista de todos los 
@@ -60,9 +56,10 @@ public class PagoUI extends UI {
         );
         form.addComponent(b);
         form.addComponent(b3);
+         setContent(form);
     }
 
-    @WebServlet(urlPatterns = "/gestionPago/*", name = "ServletGestionPago", asyncSupported = true)
+    @WebServlet(urlPatterns = "/Pago/*", name = "ServletGestionPago", asyncSupported = true)
     @VaadinServletConfiguration(ui = PagoUI.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {
         

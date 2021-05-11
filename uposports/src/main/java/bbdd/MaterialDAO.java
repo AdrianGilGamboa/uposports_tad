@@ -29,7 +29,7 @@ public class MaterialDAO {
             DB db = mongoClient.getDB("uposports");
 
             //Acceder coleccion "Abonos"*/
-            DBCollection collection = db.getCollection("materiales");
+            DBCollection collection = db.getCollection("Materiales");
             
             return collection;
     }

@@ -6,7 +6,7 @@ public class Abono {
 
     private String tipo;
     private Integer duracion;
-    private Double coste;
+    private Double precio;
 
     public Abono() {
 
@@ -14,7 +14,7 @@ public class Abono {
 
     @Override
     public String toString() {
-        return "Abono{" + "tipo=" + tipo + ", duracion=" + duracion + ", coste=" + coste + '}';
+        return "Abono{" + "tipo=" + tipo + ", duracion=" + duracion + ", precio=" + precio + '}';
     }
 
     public String getTipo() {
@@ -33,12 +33,12 @@ public class Abono {
         this.duracion = duracion;
     }
 
-    public Double getCoste() {
-        return coste;
+    public Double getPrecio() {
+        return precio;
     }
 
-    public void setCoste(Double coste) {
-        this.coste = coste;
+    public void setPrecio(Double precio) {
+        this.precio = precio;
     }
 
 }

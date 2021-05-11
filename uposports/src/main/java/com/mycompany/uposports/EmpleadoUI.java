@@ -97,9 +97,14 @@ public class EmpleadoUI extends UI {
             VaadinSession.getCurrent().getSession().invalidate();//Eliminamos la sesión
             getUI().getPage().setLocation("/");//Accedemos a la página principal
         });
+        
+                Button buttonAnunciantes = new Button("Anunciantes", FontAwesome.BELL);//Botón para acceder a la entidad instalaciones
+        buttonAnunciantes.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Anunciante");//Accedemos a la entidad abono
+        });
 
         if (layoutMostrarEmpleados.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
-            layoutH.addComponents(layoutHLabelabelTitulo, buttonReservas, buttonCliente, buttonAbonos, buttonInstalacion, buttonMateriales, buttonEmpleados, buttonLogout);//Añadimos los componentes al layout horizontal
+            layoutH.addComponents(layoutHLabelabelTitulo, buttonReservas, buttonCliente, buttonAbonos, buttonInstalacion, buttonMateriales, buttonEmpleados, buttonAnunciantes, buttonLogout);//Añadimos los componentes al layout horizontal
             //Le metemos margen y espaciado, para mostrarlo posteriormente.
             layoutH2.setMargin(true);
             layoutH2.setSpacing(true);
@@ -116,7 +121,7 @@ public class EmpleadoUI extends UI {
             table.addContainerProperty("Apellidos", String.class, "");
             table.addContainerProperty("Telefono", Integer.class, "");
 
-            table.addContainerProperty("Editar", Button.class, "");
+            table.addContainerProperty("Modificar", Button.class, "");
             table.addContainerProperty("Eliminar", Button.class, "");
             for (int i = 0; i < listaEmpleados.size(); i++) {//Mientras haya elementos por recorrer
                 Empleado empleado = listaEmpleados.get(i);//Obtenemos el objeto de la lista

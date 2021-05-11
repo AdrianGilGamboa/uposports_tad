@@ -1,6 +1,6 @@
 package com.mycompany.uposports;
 
-import bbdd.AbonosDAO;
+import bbdd.AbonoDAO;
 import clases.Abono;
 import com.vaadin.annotations.PreserveOnRefresh;
 import javax.servlet.annotation.WebServlet;
@@ -87,6 +87,11 @@ public class AbonoUI extends UI {
             getUI().getPage().setLocation("/Reserva");//Accedemos a la entidad abono
         });
 
+        Button buttonAnunciantes = new Button("Anunciantes", FontAwesome.BELL);//Botón para acceder a la entidad instalaciones
+        buttonAnunciantes.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Anunciante");//Accedemos a la entidad abono
+        });
+
         Button buttonLogout = new Button("Cerrar Sesión", FontAwesome.SIGN_OUT);//Botón para cerrar sesión
         buttonLogout.addClickListener(e -> {//Acción del botón
             VaadinSession.getCurrent().getSession().invalidate();//Eliminamos la sesión
@@ -94,7 +99,7 @@ public class AbonoUI extends UI {
         });
 
         if (layoutMostrarAbonos.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
-            layoutH.addComponents(layoutHLabelabelTitulo,buttonReservas, buttonCliente, buttonAbonos, buttonInstalacion, buttonMateriales,  buttonEmpleados,   buttonLogout);//Añadimos los componentes al layout horizontal
+            layoutH.addComponents(layoutHLabelabelTitulo, buttonReservas, buttonCliente, buttonAbonos, buttonInstalacion, buttonMateriales, buttonEmpleados, buttonAnunciantes, buttonLogout);//Añadimos los componentes al layout horizontal
             //Le metemos margen y espaciado, para mostrarlo posteriormente.
             layoutH2.setMargin(true);
             layoutH2.setSpacing(true);
@@ -108,14 +113,14 @@ public class AbonoUI extends UI {
 
         List<Abono> listaAbonos;
         try {
-            listaAbonos = AbonosDAO.mostrarAbonos();
+            listaAbonos = AbonoDAO.mostrarAbonos();
             if (listaAbonos.size() > 0) {//Si hay elementos en la lista de abonos
                 layoutMostrarAbonos.addComponent(label);
                 //Añadimos las columnas de la tabla
                 table.addContainerProperty("Tipo", String.class, "");
-                table.addContainerProperty("Duración(meses)", Integer.class, "");
-                table.addContainerProperty("Coste(€)", Double.class, "");
-                table.addContainerProperty("Editar", Button.class, "");
+                table.addContainerProperty("Duración (meses)", Integer.class, "");
+                table.addContainerProperty("Precio (€)", Double.class, "");
+                table.addContainerProperty("Modificar", Button.class, "");
                 table.addContainerProperty("Eliminar", Button.class, "");
                 for (int i = 0; i < listaAbonos.size(); i++) {//Mientras haya elementos por recorrer
                     Abono abono = listaAbonos.get(i);//Obtenemos el objeto de la lista
@@ -130,19 +135,22 @@ public class AbonoUI extends UI {
                         try {
                             //Acción del botón
                             //listaAbonos.remove(abono);
-                            if(!AbonosDAO.eliminarAbono(abono)) //Eliminamos el objeto de la lista de instalaciones
-                            Notification.show("Abono Asociado", "Debe eliminar todas las asocianciones de este abono con Clientes",
-                                    Notification.Type.ERROR_MESSAGE);
+                            if (!AbonoDAO.eliminarAbono(abono)) { //Eliminamos el objeto de la lista de instalaciones
+                                Notification.show("Abono Asociado", "Debe eliminar todas las asociaciones de este abono con Clientes",
+                                        Notification.Type.ERROR_MESSAGE);
+                            } else {
+                                init(vaadinRequest);//Volvemos a ejecutar el método principal
+                                Notification.show("Abono - Tipo: " + abono.getTipo(), "Eliminado con éxito",
+                                        Notification.Type.TRAY_NOTIFICATION);
+                            }
                         } catch (UnknownHostException ex) {
                             Logger.getLogger(AbonoUI.class.getName()).log(Level.SEVERE, null, ex);
 
                         }
-                        init(vaadinRequest);//Volvemos a ejecutar el método principal
-                        Notification.show("Abono - Tipo: " + abono.getTipo(), "Eliminado con éxito",
-                                Notification.Type.TRAY_NOTIFICATION);
+
                     });
                     //Añadimos la fila a la tabla
-                    table.addItem(new Object[]{abono.getTipo(), abono.getDuracion(), abono.getCoste(), buttonModificar, buttonEliminar}, i);
+                    table.addItem(new Object[]{abono.getTipo(), abono.getDuracion(), abono.getPrecio(), buttonModificar, buttonEliminar}, i);
                     layoutMostrarAbonos.addComponent(table);//Lo añadimos al layout vertical
                 }
             }
@@ -169,14 +177,14 @@ public class AbonoUI extends UI {
         final TextField duracion = new TextField();//Campo para insertar la duracion
         duracion.setCaption("Duración (meses):");//Texto que se muestra en dicho campo
         duracion.setIcon(FontAwesome.CALENDAR);
-        final TextField coste = new TextField();//Campo para insertar el coste
-        coste.setCaption("Coste (€):");//Texto que se muestra en dicho campo
-        coste.setIcon(FontAwesome.EURO);
+        final TextField precio = new TextField();//Campo para insertar el precio
+        precio.setCaption("Precio (€):");//Texto que se muestra en dicho campo
+        precio.setIcon(FontAwesome.MONEY);
         Button buttonRegistrar = new Button("Registrar", FontAwesome.CHECK);//Creamo el botón para registrar 
         buttonRegistrar.addClickListener(e -> {//Acción del botón
             vaadinRequest.setAttribute("tipo", tipo.getValue());//Añadimos en la petición el valor del campo tipo
             vaadinRequest.setAttribute("duracion", duracion.getValue());//Añadimos en la petición el valor del campo duración
-            vaadinRequest.setAttribute("coste", coste.getValue());//Añadimos en la petición el valor del campo coste
+            vaadinRequest.setAttribute("precio", precio.getValue());//Añadimos en la petición el valor del campo precio
             if (comprobarDatos(vaadinRequest, layout) == true) {
                 try {
                     //Se comprueban los datos, y si son correctos...
@@ -199,7 +207,7 @@ public class AbonoUI extends UI {
         layoutBotones.setSpacing(true);
         layoutBotones.setMargin(true);
 
-        layoutTextField.addComponents(tipo, duracion, coste);
+        layoutTextField.addComponents(tipo, duracion, precio);
         layoutTextField.setSpacing(true);
         layoutTextField.setMargin(true);
         layout.addComponents(layoutTextField, layoutBotones);//Añadimos los componentes al layout
@@ -227,16 +235,16 @@ public class AbonoUI extends UI {
         duracion.setCaption("Duración (meses):");
         duracion.setValue(abono.getDuracion().toString());//Insertamos en el campo el valor del atributo duración
         duracion.setIcon(FontAwesome.CALENDAR);
-        final TextField coste = new TextField();
-        coste.setCaption("Coste:");
-        coste.setValue(abono.getCoste().toString());//Insertamos en el campo el valor del atributo coste
-        coste.setIcon(FontAwesome.DOLLAR);
+        final TextField precio = new TextField();
+        precio.setCaption("Precio (€):");
+        precio.setValue(abono.getPrecio().toString());//Insertamos en el campo el valor del atributo precio
+        precio.setIcon(FontAwesome.MONEY);
         Button buttonRegistrar = new Button("Modificar", FontAwesome.EDIT);
 
         buttonRegistrar.addClickListener(e -> {
             vaadinRequest.setAttribute("tipo", tipo.getValue());
             vaadinRequest.setAttribute("duracion", duracion.getValue());
-            vaadinRequest.setAttribute("coste", coste.getValue());
+            vaadinRequest.setAttribute("precio", precio.getValue());
             if (comprobarDatos(vaadinRequest, layout) == true) {
                 try {
                     modificarAbono(vaadinRequest, abono);//Se lanza el método modificar abono
@@ -259,7 +267,7 @@ public class AbonoUI extends UI {
         layoutBotones.setSpacing(true);
         layoutBotones.setMargin(true);
 
-        layoutTextField.addComponents(tipo, duracion, coste);
+        layoutTextField.addComponents(tipo, duracion, precio);
         layoutTextField.setSpacing(true);
         layoutTextField.setMargin(true);
         layout.addComponents(layoutTextField, layoutBotones);//Añadimos los componentes al layout
@@ -274,17 +282,17 @@ public class AbonoUI extends UI {
         Abono aux = new Abono();
         aux.setTipo((String) vaadinRequest.getAttribute("tipo"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
         aux.setDuracion(Integer.parseInt((String) vaadinRequest.getAttribute("duracion")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
-        aux.setCoste(Double.parseDouble((String) vaadinRequest.getAttribute("coste")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
-        AbonosDAO.actualizarAbono(aux, abono);
+        aux.setPrecio(Double.parseDouble((String) vaadinRequest.getAttribute("precio")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo precio del objeto abono
+        AbonoDAO.actualizarAbono(aux, abono);
     }
 
     protected void registrarAbono(VaadinRequest vaadinRequest) throws UnknownHostException {//Método para registrar los datos en memoria, no hay persistencia de momento
         Abono abono = new Abono();//Creamos un nuevo objeto abono
         abono.setTipo((String) vaadinRequest.getAttribute("tipo"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
         abono.setDuracion(Integer.parseInt((String) vaadinRequest.getAttribute("duracion")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
-        abono.setCoste(Double.parseDouble((String) vaadinRequest.getAttribute("coste")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
+        abono.setPrecio(Double.parseDouble((String) vaadinRequest.getAttribute("precio")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo precio del objeto abono
         //listaAbonos.add(abono);//Añadimos el objeto a la lista de abonos
-        AbonosDAO.insertarAbono(abono);
+        AbonoDAO.insertarAbono(abono);
 
     }
 
@@ -292,13 +300,13 @@ public class AbonoUI extends UI {
     protected boolean comprobarDatos(VaadinRequest vaadinRequest, VerticalLayout layout) {
         boolean b = false;//Variable booleana inicializada a false
         //Comprobamos si algún campo está vacío
-        if ((String) vaadinRequest.getAttribute("tipo") != "" && (String) vaadinRequest.getAttribute("duracion") != "" && (String) vaadinRequest.getAttribute("coste") != "") {
+        if ((String) vaadinRequest.getAttribute("tipo") != "" && (String) vaadinRequest.getAttribute("duracion") != "" && (String) vaadinRequest.getAttribute("precio") != "") {
             //Comprobamos si la capacidad es numérica llamando al métdo isInteger
-            if (isInteger((String) vaadinRequest.getAttribute("duracion")) == true && isFloat((String) vaadinRequest.getAttribute("coste")) == true) {
+            if (isInteger((String) vaadinRequest.getAttribute("duracion")) == true && isFloat((String) vaadinRequest.getAttribute("precio")) == true) {
                 b = true;//Si se satisface todas las condiciones, la variables es true
-            } else {//Si la duración o el coste no es numérica
+            } else {//Si la duración o el precio no es numérica
                 //Notificacion de tipo Warning interactiva para el usuario.
-                Notification.show("Error Datos Introducidos", "La duración y el coste deben ser numéricos",
+                Notification.show("Error Datos Introducidos", "La duración y el precio deben ser numéricos",
                         Notification.Type.WARNING_MESSAGE);
             }
         } else {//En caso de campo vacío, mostramos 2 tipos de error uno fijo y otro interactivo (para el proyecto final debatiremos este aspecto)

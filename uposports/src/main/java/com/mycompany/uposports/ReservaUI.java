@@ -39,6 +39,7 @@ public class ReservaUI extends UI {
         layout.removeAllComponents();
         layoutHLabelabelTitulo.removeAllComponents();
         layoutH2.removeAllComponents();
+        layoutH.removeAllComponents();
         //RECUPERAMOS LA SESION Y SI NO HAY SESION NOS REDIRIGE A LA PÁGINA DE INICIO DE SESIÓN
         WrappedSession session = getSession().getSession();
         if (session.getAttribute("nombreUsuario") == null) {
@@ -83,6 +84,11 @@ public class ReservaUI extends UI {
             VaadinSession.getCurrent().getSession().invalidate();//Eliminamos la sesión
             getUI().getPage().setLocation("/");//Accedemos a la página principal
         });
+        
+                Button buttonAnunciantes = new Button("Anunciantes", FontAwesome.BELL);//Botón para acceder a la entidad instalaciones
+        buttonAnunciantes.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Anunciante");//Accedemos a la entidad abono
+        });
 
         Button botonAdd = new Button("Crear Reserva", FontAwesome.PLUS_CIRCLE); //BOTÓN PARA AÑADIR CLIENTES
         layoutH2.setMargin(true);
@@ -90,7 +96,7 @@ public class ReservaUI extends UI {
         layoutH2.addComponents(labelEntidad, botonAdd);
 
         layoutHLabelabelTitulo.addComponent(l);
-        layoutH.addComponents(layoutHLabelabelTitulo, buttonReservas, buttonCliente, buttonAbonos, buttonInstalacion, buttonMateriales, buttonEmpleados, buttonLogout);//Añadimos los componentes al layout horizontal
+        layoutH.addComponents(layoutHLabelabelTitulo, buttonReservas, buttonCliente, buttonAbonos, buttonInstalacion, buttonMateriales, buttonEmpleados, buttonAnunciantes, buttonLogout);//Añadimos los componentes al layout horizontal
         layoutH2.setMargin(true);
         layoutH2.setSpacing(true);
         layoutH2.addComponents(labelEntidad, botonAdd);
@@ -102,7 +108,7 @@ public class ReservaUI extends UI {
         tabla.addContainerProperty("Fecha Reserva", String.class, null);
         tabla.addContainerProperty("Hora Inicio", String.class, null);
         tabla.addContainerProperty("Hora Fin", String.class, null);
-        tabla.addContainerProperty("Editar", Button.class, null);
+        tabla.addContainerProperty("Modificar", Button.class, null);
         tabla.addContainerProperty("Eliminar", Button.class, null);
 
         Iterator it = listaReservas.iterator();
@@ -111,7 +117,7 @@ public class ReservaUI extends UI {
         if (!listaReservas.isEmpty()) {
             while (it.hasNext()) {
                 Button eliminar = new Button("Eliminar", FontAwesome.CLOSE);
-                Button editar = new Button("Editar", FontAwesome.EDIT);
+                Button editar = new Button("Modificar", FontAwesome.EDIT);
                 Reserva aux = (Reserva) it.next();
                 DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                 DateFormat horaFormat = new SimpleDateFormat("HH:mm");
@@ -187,7 +193,7 @@ public class ReservaUI extends UI {
         layout.removeAllComponents();
         //CREAMOS UN FORMULARIO PARA PODER EDITAR LA RESERVA
         HorizontalLayout datos = new HorizontalLayout();
-        Label l = new Label("<h2>Editar Reserva</h2>", ContentMode.HTML);
+        Label l = new Label("<h2>Modificar Reserva</h2>", ContentMode.HTML);
         layout.addComponent(l);
 
         DateField inicioReserva = new DateField("Introduzca el inicio de la reserva");
@@ -199,7 +205,7 @@ public class ReservaUI extends UI {
         datos.addComponents(inicioReserva, finReserva);
         datos.setMargin(true);
         datos.setSpacing(true);
-        Button enviar = new Button("Guardar", FontAwesome.CHECK);
+        Button enviar = new Button("Modificar", FontAwesome.EDIT);
         //EDITAMOS TODOS LOS CAMPOS QUE HAYA MODIFICADO EL USUARIO Y VOLVEMOS A INSERTAR EL CLIENTE EN LA LISTA
         enviar.addClickListener(e -> {
             if (comprobarDatos((Date) inicioReserva.getValue(), (Date) finReserva.getValue()) == true) {

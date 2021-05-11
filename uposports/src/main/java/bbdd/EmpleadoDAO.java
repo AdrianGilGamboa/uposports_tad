@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package bbdd;
 
 import clases.Empleado;
@@ -14,10 +10,7 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import java.net.UnknownHostException;
 
-/**
- *
- * @author manum
- */
+
 public class EmpleadoDAO {
          //Crea documento
            private static DBCollection empleadoInit() throws UnknownHostException{
@@ -28,7 +21,7 @@ public class EmpleadoDAO {
             DB db = mongoClient.getDB("uposports");
 
             //Acceder coleccion "Abonos"*/
-            DBCollection collection = db.getCollection("empleados");
+            DBCollection collection = db.getCollection("Empleados");
             
             return collection;
     }

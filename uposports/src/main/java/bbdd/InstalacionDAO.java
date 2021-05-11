@@ -5,10 +5,25 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
+import java.net.UnknownHostException;
 
-public class InstalacionesDAO {
+public class InstalacionDAO {
 
-    //Método para añadir un documento nuevo a la colección InstalacionesDAO
+        private static DBCollection instalacionesInit() throws UnknownHostException {
+        // Conectar al servidor MongoDB
+        MongoClient mongoClient = new MongoClient("localhost", 27017);
+
+        // Conectar a la base de datos
+        DB db = mongoClient.getDB("uposports");
+
+        //Acceder coleccion "Abonos"*/
+        DBCollection collection = db.getCollection("Instalaciones");
+
+        return collection;
+    }
+    
+    //Método para añadir un documento nuevo a la colección InstalacionDAO
     public static void insertarInstalacion(DBCollection collection, String nombre, String descripcion, int capacidad) {
         BasicDBObject document = new BasicDBObject();//Instanciamos el nuevo documento
         //Insertamos los 3 atributos del nuevo documento Instalacion
@@ -20,11 +35,11 @@ public class InstalacionesDAO {
         System.out.println("Documento Instalacion insertado: " + document + "\n");
     }
 
-    //Método para mostrar todos los documentos de la colección InstalacionesDAO
+    //Método para mostrar todos los documentos de la colección InstalacionDAO
     public static void mostrarInstalaciones(DBCollection collection) {
         DBCursor cursor = collection.find();// Obtenemos todos los documentos de la coleccion Abonos
         DBObject elemento;
-        //Recorrido de todos los elementos de la coleccion InstalacionesDAO
+        //Recorrido de todos los elementos de la coleccion InstalacionDAO
         System.out.println("Recorriendo la colección Instalaciones:");
         int i = 0;//Variable iteradora
         while (cursor.hasNext()) {
@@ -36,7 +51,7 @@ public class InstalacionesDAO {
 
     }
 
-    //Método para actualizar un campo de tipo String de la colección InstalacionesDAO
+    //Método para actualizar un campo de tipo String de la colección InstalacionDAO
     public static void actualizarInstalacion(DBCollection collection, DBObject instalacion, String campo, String nuevoValor) {
         BasicDBObject newDocument = new BasicDBObject();//Instanciamos un nuevo documento
         newDocument.append("$set", new BasicDBObject().append(campo, nuevoValor));//Actualizamos el campo con el nuevoValor (ambos atributos se reciben por parámetro)
@@ -44,7 +59,7 @@ public class InstalacionesDAO {
         System.out.println("Documento Abono actualizado correctamente\n");
     }
 
-    //Método para actualizar un campo de tipo int de la colección InstalacionesDAO (método sobrecargado)
+    //Método para actualizar un campo de tipo int de la colección InstalacionDAO (método sobrecargado)
     public static void actualizarInstalacion(DBCollection collection, DBObject instalacion, String campo, int nuevoValor) {
         BasicDBObject newDocument = new BasicDBObject();
         newDocument.append("$set", new BasicDBObject().append(campo, nuevoValor));

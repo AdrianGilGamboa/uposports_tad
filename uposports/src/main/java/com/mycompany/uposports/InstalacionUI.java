@@ -89,9 +89,14 @@ public class InstalacionUI extends UI {
             VaadinSession.getCurrent().getSession().invalidate();//Eliminamos la sesión
             getUI().getPage().setLocation("/");//Accedemos a la página principal
         });
+        
+                Button buttonAnunciantes = new Button("Anunciantes", FontAwesome.BELL);//Botón para acceder a la entidad instalaciones
+        buttonAnunciantes.addClickListener(e -> {//Acción del botón
+            getUI().getPage().setLocation("/Anunciante");//Accedemos a la entidad abono
+        });
 
         if (layoutMostrarInstalaciones.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
-            layoutH.addComponents(layoutHLabelabelTitulo, buttonReservas, buttonCliente, buttonAbonos, buttonInstalacion, buttonMateriales, buttonEmpleados, buttonLogout);//Añadimos los componentes al layout horizontal
+            layoutH.addComponents(layoutHLabelabelTitulo, buttonReservas, buttonCliente, buttonAbonos, buttonInstalacion, buttonMateriales, buttonEmpleados, buttonAnunciantes, buttonLogout);//Añadimos los componentes al layout horizontal
             //Le metemos margen y espaciado, para mostrarlo posteriormente.
             layoutH2.setMargin(true);
             layoutH2.setSpacing(true);
@@ -105,7 +110,7 @@ public class InstalacionUI extends UI {
             table.addContainerProperty("Nombre", String.class, "");
             table.addContainerProperty("Descripcion", String.class, "");
             table.addContainerProperty("Capacidad", Integer.class, "");
-            table.addContainerProperty("Editar", Button.class, "");
+            table.addContainerProperty("Modificar", Button.class, "");
             table.addContainerProperty("Eliminar", Button.class, "");
 
             for (int i = 0; i < listaInstalaciones.size(); i++) {//Mientras haya elementos por recorrer

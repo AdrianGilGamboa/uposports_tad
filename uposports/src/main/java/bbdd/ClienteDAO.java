@@ -17,11 +17,11 @@ import org.omg.CORBA.ORB;
 
 public class ClienteDAO{
     
-    private static DBCollection getColl() throws UnknownHostException{
+    private static DBCollection clienteInit() throws UnknownHostException{
         MongoClient mongoClient = new MongoClient("localhost", 27017);
         // Conectar a la base de datos
         DB db = mongoClient.getDB("uposports");
-        DBCollection collection = db.getCollection("Cliente");
+        DBCollection collection = db.getCollection("Clientes");
         return collection;
     }
     
@@ -38,7 +38,7 @@ public class ClienteDAO{
             document.append("CP", c.getCodigoPostal());
             document.append("abono", c.getAbono().getTipo());
             //Inserta documento en la coleccion Cliente
-            getColl().insert(document);
+            clienteInit().insert(document);
             System.out.println("Cliente insertado: "+document);
     }
     
@@ -46,7 +46,7 @@ public class ClienteDAO{
          ArrayList listaClientes = new ArrayList();
          DBCursor cursor = null;
          // Obtenemos todos los documentos de la coleccion
-            cursor = getColl().find();
+            cursor = clienteInit().find();
             //Recorrido de todos los elementos de la coleccion
             System.out.println("Recorrido de la coleccion:");
             int i = 0;
@@ -60,7 +60,7 @@ public class ClienteDAO{
                 aux.setDni((String) elemento.get("dni"));
                 aux.setTelefono((String) elemento.get("telefono"));
                 aux.setCodigoPostal((String) elemento.get("CP"));
-                aux.setAbono(AbonosDAO.buscarAbono((String) elemento.get("abono")));
+                aux.setAbono(AbonoDAO.buscarAbono((String) elemento.get("abono")));
                 listaClientes.add(aux);
             }
             return listaClientes;
@@ -69,9 +69,9 @@ public class ClienteDAO{
      public static void eliminaCliente(Cliente c) throws UnknownHostException{   
          DBCursor cursor = null;
             DBObject elemento;
-            cursor=getColl().find((DBObject) new BasicDBObject().append("dni", c.getDni())); //Obtenemos los documentos que coincidan con el dni del Cliente
+            cursor=clienteInit().find((DBObject) new BasicDBObject().append("dni", c.getDni())); //Obtenemos los documentos que coincidan con el dni del Cliente
             while(cursor.hasNext()){
-                getColl().remove(cursor.next()); //Eliminamos los documentos que coinciden con el dni pasado por parámetro
+                clienteInit().remove(cursor.next()); //Eliminamos los documentos que coinciden con el dni pasado por parámetro
             }
      }
      
@@ -90,13 +90,13 @@ public class ClienteDAO{
             // Indica el filtro a usar para aplicar la modificacion
             DBObject searchQuery = new BasicDBObject().append("dni", viejo.getDni());
             
-            getColl().update(searchQuery, newDocument);
+            clienteInit().update(searchQuery, newDocument);
             System.out.println("Nombre del cliente actualizado correctamente");
      }
-     //Método para buscar un documento abono en la colección AbonosDAO
+     //Método para buscar un documento abono en la colección AbonoDAO
     public static boolean clientesConAbono(Abono a) throws UnknownHostException {
         BasicDBObject searchQuery = new BasicDBObject().append("abono", a.getTipo());//Creamos la query que será los documentos que contengan como atributo "tipo" el que recibe como parámetro el método
-        DBCursor cursor = getColl().find(searchQuery);//Los elementos que cumplan la condicion de searchQuery se introducen en cursor        
+        DBCursor cursor = clienteInit().find(searchQuery);//Los elementos que cumplan la condicion de searchQuery se introducen en cursor        
         if(cursor.hasNext())
             return true;
         else

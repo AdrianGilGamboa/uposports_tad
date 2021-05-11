@@ -11,7 +11,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AbonosDAO {
+public class AbonoDAO {
 
     private static DBCollection abonoInit() throws UnknownHostException {
         // Conectar al servidor MongoDB
@@ -21,32 +21,33 @@ public class AbonosDAO {
         DB db = mongoClient.getDB("uposports");
 
         //Acceder coleccion "Abonos"*/
-        DBCollection collection = db.getCollection("abonos");
+        DBCollection collection = db.getCollection("Abonos");
 
         return collection;
     }
 
-    //Método para añadir un documento nuevo a la colección AbonosDAO
+    //Método para añadir un documento nuevo a la colección AbonoDAO
     public static void insertarAbono(Abono abono) throws UnknownHostException {
 
         DBCollection collection = abonoInit();
         BasicDBObject document = new BasicDBObject();//Instanciamos el nuevo documento
         //Insertamos los 3 atributos del nuevo documento Abono
         document.append("tipo", abono.getTipo());
-        document.append("precio", abono.getCoste());
+        document.append("precio", abono.getPrecio());
         document.append("duracion", abono.getDuracion());
-        //Insertamos el documento en la colección AbonosDAO
+        //Insertamos el documento en la colección AbonoDAO
         collection.insert(document);
         System.out.println("Documento Abono insertado: " + document + "\n");
     }
 
-    //Método para mostrar todos los documentos de la colección AbonosDAO
+    //Método para mostrar todos los documentos de la colección AbonoDAO
     public static ArrayList<Abono> mostrarAbonos() throws UnknownHostException {
         ArrayList<Abono> listaAbonos = new ArrayList<>();
         DBCollection collection = abonoInit();
-        DBCursor cursor = collection.find();// Obtenemos todos los documentos de la coleccion AbonosDAO
-        DBObject elemento;
-        //Recorrido de todos los elementos de la coleccion AbonosDAO
+                DBObject elemento;
+        DBCursor cursor = collection.find().sort(new BasicDBObject("precio",1));// Obtenemos todos los documentos de la coleccion AbonoDAO
+
+        //Recorrido de todos los elementos de la coleccion AbonoDAO
         System.out.println("Recorriendo la colección Abonos:");
         int i = 0;//Variable iteradora
         while (cursor.hasNext()) {//Mientras haya documentos
@@ -54,7 +55,7 @@ public class AbonosDAO {
             elemento = cursor.next();//Guardamos el documento en "elemento"
             Abono abono = new Abono();
             abono.setTipo((String) elemento.get("tipo"));
-            abono.setCoste((Double) elemento.get("precio"));
+            abono.setPrecio((Double) elemento.get("precio"));
             abono.setDuracion((Integer) elemento.get("duracion"));
             listaAbonos.add(abono);
             System.out.println(String.format("Documento Abono_%d leido: %s", i, elemento));//Se muestra por pantalla el documento
@@ -65,7 +66,7 @@ public class AbonosDAO {
     }
 
     /*
-    //Método para actualizar un campo de tipo String de la colección AbonosDAO
+    //Método para actualizar un campo de tipo String de la colección AbonoDAO
     public static void actualizarAbono(DBCollection collection, DBObject abono, String campo, String nuevoValor) {
         BasicDBObject newDocument = new BasicDBObject();//Instanciamos un nuevo documento
         newDocument.append("$set", new BasicDBObject().append(campo, nuevoValor));//Actualizamos el campo con el nuevoValor (ambos atributos se reciben por parámetro)
@@ -73,12 +74,12 @@ public class AbonosDAO {
         System.out.println("Documento Abono actualizado correctamente\n");
     }
      */
-    //Método para actualizar un campo de tipo int de la colección AbonosDAO (método sobrecargado)
+    //Método para actualizar un campo de tipo int de la colección AbonoDAO (método sobrecargado)
     public static void actualizarAbono(Abono nuevo, Abono viejo) throws UnknownHostException {
         BasicDBObject newDocument = new BasicDBObject();
         BasicDBObject aux = new BasicDBObject();
         newDocument.append("$set", aux.append("tipo", nuevo.getTipo()));
-        newDocument.append("$set", aux.append("precio", nuevo.getCoste()));
+        newDocument.append("$set", aux.append("precio", nuevo.getPrecio()));
         newDocument.append("$set", aux.append("duracion", nuevo.getDuracion()));
         // Indica el filtro a usar para aplicar la modificacion
         DBObject searchQuery = new BasicDBObject().append("tipo", viejo.getTipo());
@@ -86,7 +87,7 @@ public class AbonosDAO {
         System.out.println("Documento Abono actualizado correctamente\n");
     }
 
-    //Método para eliminar un documento de la colección AbonosDAO
+    //Método para eliminar un documento de la colección AbonoDAO
     public static boolean eliminarAbono(Abono abono) throws UnknownHostException {
         System.out.println(String.format("Buscando documento Abono tipo %s para eliminar...", abono.getTipo()));
         if (ClienteDAO.clientesConAbono(abono)) {
@@ -98,7 +99,7 @@ public class AbonosDAO {
         }
     }
 
-    //Método para buscar un documento abono en la colección AbonosDAO
+    //Método para buscar un documento abono en la colección AbonoDAO
     public static Abono buscarAbono(String tipo) throws UnknownHostException {
         DBCollection collection = abonoInit();
         BasicDBObject searchQuery = new BasicDBObject().append("tipo", tipo);//Creamos la query que será los documentos que contengan como atributo "tipo" el que recibe como parámetro el método
@@ -107,7 +108,7 @@ public class AbonosDAO {
         System.out.println(String.format("Documento Abono encontrado: %s", elemento));
         Abono aux = new Abono();
         aux.setTipo((String) elemento.get("tipo"));
-        aux.setCoste((Double) elemento.get("precio"));
+        aux.setPrecio((Double) elemento.get("precio"));
         aux.setDuracion((Integer) elemento.get("duracion"));
         return aux; //Devolvemos el abono
     }
