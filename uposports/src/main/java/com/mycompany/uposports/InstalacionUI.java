@@ -54,7 +54,7 @@ public class InstalacionUI extends UI {
             crearInstalacion(vaadinRequest);//Accedemos al método crearAbono
         });
 
-        Label l = new Label("<h1 style='text-weight:bold;text-align:center;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
+        Label l = new Label("<h1 style='text-weight:bold;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
         Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Instalaciones - </h2>", ContentMode.HTML);
         layoutHLabelabelTitulo.addComponent(l);
 

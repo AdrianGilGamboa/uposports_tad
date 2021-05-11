@@ -61,7 +61,7 @@ public class AnuncianteUI extends UI {
             crearAnunciante(vaadinRequest);//Accedemos al método crearAbono
         });
 
-        Label l = new Label("<h1 style='text-weight:bold;text-align:center;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
+        Label l = new Label("<h1 style='text-weight:bold;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
         Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Anunciantes - </h2>", ContentMode.HTML);
         layoutHLabelabelTitulo.addComponent(l);
 

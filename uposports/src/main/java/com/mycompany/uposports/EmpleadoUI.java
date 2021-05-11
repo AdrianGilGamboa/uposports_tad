@@ -53,7 +53,7 @@ public class EmpleadoUI extends UI {
         crearEmpleado.addClickListener(e -> {//Acción del botón
             crearEmpleado(vaadinRequest);//Accedemos al método crearAbono
         });
-        Label l = new Label("<h1 style='text-weight:bold;text-align:center;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
+        Label l = new Label("<h1 style='text-weight:bold;margin:auto;padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
         Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Empleados - </h2>", ContentMode.HTML);
         layoutHLabelabelTitulo.addComponent(l);
 
@@ -163,7 +163,7 @@ public class EmpleadoUI extends UI {
         layout.addComponent(l);
         final TextField dni = new TextField();//Campo para insertar el tipo
         dni.setCaption("DNI:");//Texto que se muestra en dicho campo
-        dni.setIcon(FontAwesome.ADN);//Icono
+        dni.setIcon(FontAwesome.KEY);//Icono
         final TextField nombre = new TextField();//Campo para insertar la duracion
         nombre.setCaption("Nombre:");//Texto que se muestra en dicho campo
         nombre.setIcon(FontAwesome.USER);
@@ -190,7 +190,7 @@ public class EmpleadoUI extends UI {
 
                 init(vaadinRequest);//Se lanza el método principal
                 //Notificacion de tipo bandeja para notificar la correcta operación.
-                Notification.show("Empleado - Dni " + dni.getValue(), "Registrado con éxito",
+                Notification.show("Empleado - DNI: " + dni.getValue(), "Registrado con éxito",
                         Notification.Type.TRAY_NOTIFICATION);
             }
 
@@ -201,6 +201,7 @@ public class EmpleadoUI extends UI {
         });
         layoutBotones.addComponents(buttonCancelar, buttonRegistrar);
         layoutBotones.setSpacing(true);
+        layoutBotones.setMargin(true);
 
         layoutTextField.addComponents(dni, nombre, apellidos, telefono);
         layoutTextField.setSpacing(true);
@@ -222,7 +223,7 @@ public class EmpleadoUI extends UI {
         layout.addComponent(l);
         final TextField dni = new TextField();//Campo para insertar el tipo
         dni.setCaption("DNI:");//Texto que se muestra en dicho campo
-        dni.setIcon(FontAwesome.ADN);//Icono
+        dni.setIcon(FontAwesome.KEY);//Icono
         dni.setValue(empleado.getDni());
         final TextField nombre = new TextField();//Campo para insertar la duracion
         nombre.setCaption("Nombre:");//Texto que se muestra en dicho campo
@@ -263,6 +264,7 @@ public class EmpleadoUI extends UI {
         });
         layoutBotones.addComponents(buttonCancelar, buttonRegistrar);
         layoutBotones.setSpacing(true);
+        layoutBotones.setMargin(true);
 
         layout.addComponents(dni, nombre, apellidos, telefono, layoutBotones);
         layout.setMargin(true);

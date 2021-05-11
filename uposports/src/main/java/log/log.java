@@ -11,7 +11,9 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.communication.PushMode;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import java.text.SimpleDateFormat;
@@ -25,19 +27,23 @@ import java.util.Date;
 public class log extends UI implements BroadcastListener {
 
     Grid grid = new Grid();//Creamos un grid
+
     SimpleDateFormat fFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm");//Formateo de fecha que incorporaremos
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
 
         final VerticalLayout layout = new VerticalLayout();//Layout vertical
+        Label lTitulo = new Label("<h1 style='text-weight:bold;text-align:center;margin:auto;padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
+        Label labelInfo = new Label("<h2 style='text-weight:bold;margin:0'>Control de acceso al sistema </h2></br>", ContentMode.HTML);
 
         //Insertamos las columnas de fecha y usuario
-        grid.addColumn("Fecha", String.class);
-        grid.addColumn("Usuario", String.class);
+        grid.addColumn("Fecha y Hora", String.class);
+        grid.addColumn("Usuario (DNI - Nombre y Apellidos)", String.class);
+        grid.setSizeFull();
 
         Broadcaster.register(this);//Registramos el broadcaster
-        layout.addComponent(grid);//Añadimos el grid al layout
+        layout.addComponents(lTitulo, labelInfo, grid);//Añadimos el grid al layout
 
         //Añadimos margenes y espaciados, y finalmente se muestra.
         layout.setMargin(true);

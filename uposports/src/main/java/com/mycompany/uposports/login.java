@@ -1,5 +1,7 @@
 package com.mycompany.uposports;
 
+import bbdd.EmpleadoDAO;
+import clases.Empleado;
 import log.Broadcaster;
 import com.vaadin.annotations.Push;
 import javax.servlet.annotation.WebServlet;
@@ -20,6 +22,9 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Theme("mytheme")
 @Title("Login")
@@ -38,15 +43,28 @@ public class login extends UI implements Broadcaster.BroadcastListener {
 
             final TextField name = new TextField();//TextField para introducir nombre de usuario
             name.setCaption("Inserte su DNI para acceder al sistema:");
-            name.setIcon(FontAwesome.USER);//Icono
+            name.setIcon(FontAwesome.KEY);//Icono
 
             Button button = new Button("Acceder", FontAwesome.SIGN_IN);//Botón para guardar el nombre de usuario
             button.addClickListener(e -> {//Acción que realiza el botón de guardar
                 if (name.getValue() != "") {
-                    session.setAttribute("nombreUsuario", name.getValue());//Incorporamos el nombre de usuario como atributo de la sesion
-                    //Broadcaster.register(this);
-                    Broadcaster.broadcast(name.getValue());//mandamos como mensaje el nombre de usuario
-                    mostrarEntidades(session);//Lanzamos el metodo mostrarEntidades
+                    try {
+                        Empleado emp = EmpleadoDAO.buscarEmpleado(name.getValue());
+                        if (emp != null) {
+                            session.setAttribute("nombreUsuario", emp.getNombre() + " " + emp.getApellidos());//Incorporamos el nombre de usuario como atributo de la sesion
+                            //Broadcaster.register(this);
+                            Broadcaster.broadcast(name.getValue() + " - " + emp.getNombre() + " " + emp.getApellidos());//mandamos como mensaje el nombre de usuario
+                            mostrarEntidades(session);//Lanzamos el metodo mostrarEntidades
+                        } else {
+                            //Notificacion de tipo Warning interactiva para el usuario.
+                            Notification.show("DNI Incorrecto", "Inserte un DNI válido",
+                                    Notification.Type.ERROR_MESSAGE);
+                        }
+
+                    } catch (UnknownHostException ex) {
+                        Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
                 } else {//En caso de campo vacío, mostramos 2 tipos de error uno fijo y otro interactivo (para el proyecto final debatiremos este aspecto)
                     //Notificacion de tipo Warning interactiva para el usuario.
                     Notification.show("Campo vacío", "Inserte un nombre de usuario",

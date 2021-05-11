@@ -57,7 +57,7 @@ public class ClienteUI extends UI {
                 getUI().getPage().setLocation("/login");
             }
 
-            Label l = new Label("<h1 style='text-weight:bold;text-align:center;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
+            Label l = new Label("<h1 style='text-weight:bold;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
             Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Clientes - </h2>", ContentMode.HTML);
 
             Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);//Botón para acceder a la entidad abono
@@ -183,12 +183,18 @@ public class ClienteUI extends UI {
         HorizontalLayout datos = new HorizontalLayout();
         Label l = new Label("<h2 style='text-weight:bold;'>Nuevo Cliente</h2>", ContentMode.HTML);
         layout.addComponent(l);
-        TextField nombre = new TextField("Introduzca el Nombre:");
-        TextField apellidos = new TextField("Introduzca los Apellidos:");
-        TextField dni = new TextField("Introduzca el DNI:");
-        TextField telef = new TextField("Introduzca el Telefono:");
-        TextField cp = new TextField("Introduzca el Código Postal:");
+        TextField nombre = new TextField("Nombre:");
+        nombre.setIcon(FontAwesome.USER);
+        TextField apellidos = new TextField("Apellidos:");
+        apellidos.setIcon(FontAwesome.USER);
+        TextField dni = new TextField("DNI:");
+        dni.setIcon(FontAwesome.KEY);
+        TextField telef = new TextField("Telefono:");
+        telef.setIcon(FontAwesome.PHONE);
+        TextField cp = new TextField("Código Postal:");
+        cp.setIcon(FontAwesome.MAP_MARKER);
         OptionGroup abono = new OptionGroup("Abono:");
+        abono.setIcon(FontAwesome.TAG);
         ArrayList<Abono> listaAbonos = AbonoDAO.mostrarAbonos();
         for (int i = 0; i < listaAbonos.size(); i++) {
             System.out.println(listaAbonos.get(i).getTipo());
@@ -321,29 +327,39 @@ public class ClienteUI extends UI {
     }
 
     public void editarCliente(VaadinRequest request, Cliente cliente) throws UnknownHostException {
-        layout.removeAllComponents();
+        layout.removeAllComponents();        
         //CREAMOS UN FORMULARIO PARA PODER EDITAR EL CLIENTE
         HorizontalLayout datos = new HorizontalLayout();
         Label l = new Label("<h2>Modificar Cliente</h2>", ContentMode.HTML);
         layout.addComponent(l);
-        TextField nombre = new TextField("Introduzca el Nombre:");
+        TextField nombre = new TextField("Nombre:");
+                nombre.setIcon(FontAwesome.USER);
+
         nombre.setValue(cliente.getNombre());
-        TextField apellidos = new TextField("Introduzca los Apellidos:");
+        TextField apellidos = new TextField("Apellidos:");
+                apellidos.setIcon(FontAwesome.USER);
+
         apellidos.setValue(cliente.getApellidos());
-        TextField dni = new TextField("Introduzca el DNI:");
+        TextField dni = new TextField("DNI:");
+                dni.setIcon(FontAwesome.KEY);
+
         dni.setValue(cliente.getDni());
-        TextField telef = new TextField("Introduzca el Telefono:");
+        TextField telef = new TextField("Telefono:");
+                telef.setIcon(FontAwesome.PHONE);
+
         telef.setValue(cliente.getTelefono());
-        TextField cp = new TextField("Introduzca el Código Postal:");
+        TextField cp = new TextField("Código Postal:");
+                cp.setIcon(FontAwesome.MAP_MARKER);
+
         cp.setValue(cliente.getCodigoPostal());
         OptionGroup abono = new OptionGroup("Abono:");
+        abono.setIcon(FontAwesome.TAG);
         ArrayList<Abono> listaAbonos = AbonoDAO.mostrarAbonos();
         for (int i = 0; i < listaAbonos.size(); i++) {
             System.out.println(listaAbonos.get(i).getTipo());
 
             abono.addItems(listaAbonos.get(i).getTipo() + " - " + listaAbonos.get(i).getPrecio() + " (€)");
             if(cliente.getAbono().getTipo().equals(listaAbonos.get(i).getTipo())){
-                System.out.println("Este es");
             abono.select(listaAbonos.get(i).getTipo() + " - " + listaAbonos.get(i).getPrecio() + " (€)");
             }
 
@@ -488,7 +504,14 @@ public class ClienteUI extends UI {
             if (abono != null) {
                 //Comprobamos si la capacidad es numérica llamando al métdo isInteger
                 if (isInteger(telef) == true && isInteger(cp) == true) {
-                    b = true;//Si se satisface todas las condiciones, la variables es true
+                    if(telef.length() == 9 && cp.length() == 5){
+                      b = true;//Si se satisface todas las condiciones, la variables es true
+
+                    }else{
+                        //Notificacion de tipo Warning interactiva para el usuario.
+                    Notification.show("Error Formato datos", "Revise el código postal y el teléfono",
+                            Notification.Type.WARNING_MESSAGE);
+                    }
                 } else {//Si la duración o el precio no es numérica
                     //Notificacion de tipo Warning interactiva para el usuario.
                     Notification.show("Error Datos Introducidos", "El teléfono y el código postal deben ser numéricos",
