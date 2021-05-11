@@ -22,9 +22,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -187,7 +185,7 @@ public class AbonoUI extends UI {
             vaadinRequest.setAttribute("precio", precio.getValue());//Añadimos en la petición el valor del campo precio
             try {
                 if (comprobarId(vaadinRequest)) {
-                    if (comprobarDatos(vaadinRequest, layout) == true) {
+                    if (comprobarDatos(vaadinRequest) == true) {
                         //Se comprueban los datos, y si son correctos...
                         registrarAbono(vaadinRequest);//Se envían los datos a registro de abono
                         init(vaadinRequest);//Se lanza el método principal
@@ -246,7 +244,7 @@ public class AbonoUI extends UI {
             vaadinRequest.setAttribute("tipo", tipo.getValue());
             vaadinRequest.setAttribute("duracion", duracion.getValue());
             vaadinRequest.setAttribute("precio", precio.getValue());
-            if (comprobarDatos(vaadinRequest, layout) == true) {
+            if (comprobarDatos(vaadinRequest) == true) {
                 try {
                     modificarAbono(vaadinRequest, abono);//Se lanza el método modificar abono
                 } catch (UnknownHostException ex) {
@@ -298,7 +296,7 @@ public class AbonoUI extends UI {
     }
 
     //Método para comprobar los datos introducidos en los formularios
-    protected boolean comprobarDatos(VaadinRequest vaadinRequest, VerticalLayout layout) {
+    protected boolean comprobarDatos(VaadinRequest vaadinRequest) {
         boolean b = false;//Variable booleana inicializada a false
         //Comprobamos si algún campo está vacío
         if ((String) vaadinRequest.getAttribute("tipo") != "" && (String) vaadinRequest.getAttribute("duracion") != "" && (String) vaadinRequest.getAttribute("precio") != "") {

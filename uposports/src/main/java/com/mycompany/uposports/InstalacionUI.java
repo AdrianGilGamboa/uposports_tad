@@ -178,7 +178,7 @@ public class InstalacionUI extends UI {
             vaadinRequest.setAttribute("capacidad", capacidad.getValue());//Añadimos en la petición el valor del campo capacidad
             try {
                 if(comprobarId(vaadinRequest)){
-                    if (comprobarDatos(vaadinRequest, layout) == true) {
+                    if (comprobarDatos(vaadinRequest) == true) {
                         //Se comprueban los datos, y si son correctos...
                         registrarInstalacion(vaadinRequest);//Se envían los datos a registro de instalación
                         init(vaadinRequest);//Se lanza el método principal
@@ -240,7 +240,7 @@ public class InstalacionUI extends UI {
             vaadinRequest.setAttribute("nombre", nombre.getValue());
             vaadinRequest.setAttribute("descripcion", descripcion.getValue());
             vaadinRequest.setAttribute("capacidad", capacidad.getValue());
-            if (comprobarDatos(vaadinRequest, layout) == true) {
+            if (comprobarDatos(vaadinRequest) == true) {
                 try {
                     modificarInstalacion(vaadinRequest, instalacion);
                 } catch (UnknownHostException ex) {
@@ -292,7 +292,7 @@ public class InstalacionUI extends UI {
     }
 
     //Método para comprobar los datos introducidos en los formularios
-    protected boolean comprobarDatos(VaadinRequest vaadinRequest, VerticalLayout layout) {
+    protected boolean comprobarDatos(VaadinRequest vaadinRequest) {
         boolean b = false;//Variable booleana inicializada a false
         //Comprobamos si algún campo está vacío
         if ((String) vaadinRequest.getAttribute("nombre") != "" && (String) vaadinRequest.getAttribute("descripcion") != "" && (String) vaadinRequest.getAttribute("capacidad") != "") {

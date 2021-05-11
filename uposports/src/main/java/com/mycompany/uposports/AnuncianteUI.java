@@ -1,8 +1,6 @@
 package com.mycompany.uposports;
 
-import bbdd.AbonoDAO;
 import bbdd.AnuncianteDAO;
-import clases.Abono;
 import clases.Anunciante;
 import com.vaadin.annotations.PreserveOnRefresh;
 import javax.servlet.annotation.WebServlet;
@@ -25,12 +23,10 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -189,16 +185,18 @@ public class AnuncianteUI extends UI {
             vaadinRequest.setAttribute("precioContrato", precioContrato.getValue());
             vaadinRequest.setAttribute("fechaIni", fechaIni.getValue());
             vaadinRequest.setAttribute("fechaFin", fechaFin.getValue());
-            if (comprobarDatos(vaadinRequest) == true) {
-                try {
-                    registrarAnunciante(vaadinRequest);//Se lanza el método modificar abono
-                } catch (UnknownHostException | ParseException ex) {
-                    Logger.getLogger(AnuncianteUI.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                if (comprobarId(vaadinRequest)) {
+                    if (comprobarDatos(vaadinRequest) == true) {
+                        registrarAnunciante(vaadinRequest);//Se lanza el método modificar abono
+                        init(vaadinRequest);
+                        //Notificacion de tipo bandeja para notificar la correcta operación.
+                        Notification.show("Anunciante - Nombre: " + anunciante.getValue(), "Creado con éxito",
+                                Notification.Type.TRAY_NOTIFICATION);
+                    }
                 }
-                init(vaadinRequest);
-                //Notificacion de tipo bandeja para notificar la correcta operación.
-                Notification.show("Anunciante - Nombre: " + anunciante.getValue(), "Creado con éxito",
-                        Notification.Type.TRAY_NOTIFICATION);
+            } catch (UnknownHostException | ParseException ex) {
+                Logger.getLogger(AnuncianteUI.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         });
