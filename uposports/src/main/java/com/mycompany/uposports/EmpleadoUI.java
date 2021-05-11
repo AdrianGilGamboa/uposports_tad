@@ -92,8 +92,8 @@ public class EmpleadoUI extends UI {
             VaadinSession.getCurrent().getSession().invalidate();//Eliminamos la sesión
             getUI().getPage().setLocation("/");//Accedemos a la página principal
         });
-        
-                Button buttonAnunciantes = new Button("Anunciantes", FontAwesome.BELL);//Botón para acceder a la entidad instalaciones
+
+        Button buttonAnunciantes = new Button("Anunciantes", FontAwesome.BELL);//Botón para acceder a la entidad instalaciones
         buttonAnunciantes.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Anunciante");//Accedemos a la entidad abono
         });
@@ -116,23 +116,23 @@ public class EmpleadoUI extends UI {
                 table.addContainerProperty("Nombre", String.class, "");
                 table.addContainerProperty("Apellidos", String.class, "");
                 table.addContainerProperty("Telefono", Integer.class, "");
-                
+
                 table.addContainerProperty("Modificar", Button.class, "");
                 table.addContainerProperty("Eliminar", Button.class, "");
                 for (int i = 0; i < EmpleadoDAO.mostrarEmpleados().size(); i++) {//Mientras haya elementos por recorrer
                     Empleado empleado = EmpleadoDAO.mostrarEmpleados().get(i);//Obtenemos el objeto de la lista
-                    
+
                     Button buttonModificar = new Button("Modificar", FontAwesome.EDIT);//Creamos el botón modificar
                     buttonModificar.addClickListener(e -> {//Acción del botón
                         editarEmpleado(vaadinRequest, empleado);//Método para editar la instalación
                     });
-                    
+
                     Button buttonEliminar = new Button("Eliminar", FontAwesome.CLOSE);//Creamos el botón eliminar
                     buttonEliminar.addClickListener(e -> {
                         try {
-                        //Acción del botón
-                        //listaEmpleados.remove(empleado);
-                        EmpleadoDAO.eliminarEmpleados(empleado);//Eliminamos el objeto de la BBDD
+                            //Acción del botón
+                            //listaEmpleados.remove(empleado);
+                            EmpleadoDAO.eliminarEmpleados(empleado);//Eliminamos el objeto de la BBDD
                         } catch (UnknownHostException ex) {
                             Logger.getLogger(EmpleadoUI.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -142,7 +142,7 @@ public class EmpleadoUI extends UI {
                     });
                     //Añadimos la fila a la tabla
                     table.addItem(new Object[]{empleado.getDni(), empleado.getNombre(), empleado.getApellidos(), empleado.getTelefono(), buttonModificar, buttonEliminar}, i);
-                    
+
                     layoutMostrarEmpleados.addComponent(table);//Lo añadimos al layout vertical
                 }
             }
@@ -179,19 +179,20 @@ public class EmpleadoUI extends UI {
             vaadinRequest.setAttribute("nombre", nombre.getValue());//Añadimos en la petición el valor del campo duración
             vaadinRequest.setAttribute("apellidos", apellidos.getValue());//Añadimos en la petición el valor del campo coste
             vaadinRequest.setAttribute("telefono", telefono.getValue());//Añadimos en la petición el valor del campo telefono
+            try {
+                if(comprobarId(vaadinRequest) == true){
+                if (comprobarDatos(vaadinRequest) == true) {
 
-            if (comprobarDatos(vaadinRequest, layout) == true) {
-                try {
-                    //Se comprueban los datos, y si son correctos...
-                    registrarEmpleado(vaadinRequest);//Se envían los datos a registro de abono
-                } catch (UnknownHostException ex) {
-                    Logger.getLogger(EmpleadoUI.class.getName()).log(Level.SEVERE, null, ex);
+                    crearEmpleado(vaadinRequest);//Se lanza el método modificar abono
+
+                    init(vaadinRequest);
+                    //Notificacion de tipo bandeja para notificar la correcta operación.
+                    Notification.show("Empleado - DNI: " + dni.getValue(), "Modificado con éxito",
+                            Notification.Type.TRAY_NOTIFICATION);
                 }
-
-                init(vaadinRequest);//Se lanza el método principal
-                //Notificacion de tipo bandeja para notificar la correcta operación.
-                Notification.show("Empleado - DNI: " + dni.getValue(), "Registrado con éxito",
-                        Notification.Type.TRAY_NOTIFICATION);
+                }
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(EmpleadoUI.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         });
@@ -218,7 +219,8 @@ public class EmpleadoUI extends UI {
 
     protected void editarEmpleado(VaadinRequest vaadinRequest, Empleado empleado) {
         final VerticalLayout layout = new VerticalLayout();
-        final HorizontalLayout layoutBotones = new HorizontalLayout();
+        final HorizontalLayout layoutTextField = new HorizontalLayout();
+        final HorizontalLayout layoutBotones = new HorizontalLayout();//Creamos un vertical layout
         Label l = new Label("<h2>Editar Empleado</h2>", ContentMode.HTML);
         layout.addComponent(l);
         final TextField dni = new TextField();//Campo para insertar el tipo
@@ -244,17 +246,18 @@ public class EmpleadoUI extends UI {
             vaadinRequest.setAttribute("nombre", nombre.getValue());//Añadimos en la petición el valor del campo duración
             vaadinRequest.setAttribute("apellidos", apellidos.getValue());//Añadimos en la petición el valor del campo coste
             vaadinRequest.setAttribute("telefono", telefono.getValue());//Añadimos en la petición el valor del campo telefono
+            try {
+                if (comprobarDatos(vaadinRequest) == true) {
 
-            if (comprobarDatos(vaadinRequest, layout) == true) {
-                try {
                     modificarEmpleado(vaadinRequest, empleado);//Se lanza el método modificar abono
-                } catch (UnknownHostException ex) {
-                    Logger.getLogger(EmpleadoUI.class.getName()).log(Level.SEVERE, null, ex);
+
+                    init(vaadinRequest);
+                    //Notificacion de tipo bandeja para notificar la correcta operación.
+                    Notification.show("Empleado - DNI: " + dni.getValue(), "Modificado con éxito",
+                            Notification.Type.TRAY_NOTIFICATION);
                 }
-                init(vaadinRequest);
-                //Notificacion de tipo bandeja para notificar la correcta operación.
-                Notification.show("Empleado - DNI: " + dni.getValue(), "Modificado con éxito",
-                        Notification.Type.TRAY_NOTIFICATION);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(EmpleadoUI.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         });
@@ -262,11 +265,16 @@ public class EmpleadoUI extends UI {
         buttonCancelar.addClickListener(e -> {
             init(vaadinRequest);
         });
+
         layoutBotones.addComponents(buttonCancelar, buttonRegistrar);
         layoutBotones.setSpacing(true);
         layoutBotones.setMargin(true);
 
-        layout.addComponents(dni, nombre, apellidos, telefono, layoutBotones);
+        layoutTextField.addComponents(dni, nombre, apellidos, telefono);
+        layoutTextField.setSpacing(true);
+        layoutTextField.setMargin(true);
+        layout.addComponents(layoutTextField, layoutBotones);//Añadimos los componentes al layout
+        //Le añadimos margen y espciado, para mostrarlo posteriormente
         layout.setMargin(true);
         layout.setSpacing(true);
 
@@ -292,22 +300,35 @@ public class EmpleadoUI extends UI {
         EmpleadoDAO.insertarEmpleado(empleado);//Añadimos el objeto a la BBDD
     }
 
-    protected boolean comprobarDatos(VaadinRequest vaadinRequest, VerticalLayout layout) {
+    protected boolean comprobarDatos(VaadinRequest vaadinRequest) throws UnknownHostException {
         boolean b = false;//Variable booleana inicializada a false
         //Comprobamos si algún campo está vacío
         if ((String) vaadinRequest.getAttribute("dni") != "" && (String) vaadinRequest.getAttribute("nombre") != "" && (String) vaadinRequest.getAttribute("apellidos") != "" && (String) vaadinRequest.getAttribute("telefono") != "") {
             //Comprobamos si la capacidad es numérica llamando al métdo isInteger
-            if (isInteger((String) vaadinRequest.getAttribute("telefono")) == true) {
+            if (isInteger((String) vaadinRequest.getAttribute("telefono")) == true && vaadinRequest.getAttribute("telefono").toString().length() == 9) {
+
                 b = true;//Si se satisface todas las condiciones, la variables es true
             } else {//Si la duración o el coste no es numérica
                 //Notificacion de tipo Warning interactiva para el usuario.
-                Notification.show("Error Datos Introducidos", "El teléfono debe ser numéricos",
+                Notification.show("Error Datos Introducidos", "El teléfono debe ser numérico y tener 9 dígitos",
                         Notification.Type.WARNING_MESSAGE);
             }
         } else {//En caso de campo vacío, mostramos 2 tipos de error uno fijo y otro interactivo (para el proyecto final debatiremos este aspecto)
 
             //Notificacion de tipo Warning interactiva para el usuario.
             Notification.show("Campo vacío", "Debe rellenar todos los campos",
+                    Notification.Type.WARNING_MESSAGE);
+        }
+        return b;
+    }
+
+    protected boolean comprobarId(VaadinRequest vaadinRequest) throws UnknownHostException {
+        boolean b = false;
+        if (EmpleadoDAO.buscarEmpleado((String) vaadinRequest.getAttribute("dni")) == null) {
+            b = true;//Si se satisface todas las condiciones, la variables es true
+
+        } else {
+            Notification.show("DNI Existente", "Empleado Registrado con este DNI",
                     Notification.Type.WARNING_MESSAGE);
         }
         return b;

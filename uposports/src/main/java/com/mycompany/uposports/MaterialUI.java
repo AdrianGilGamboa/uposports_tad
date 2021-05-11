@@ -1,9 +1,7 @@
 package com.mycompany.uposports;
 
-import bbdd.AbonoDAO;
 import bbdd.InstalacionDAO;
 import bbdd.MaterialDAO;
-import clases.Abono;
 import clases.Instalacion;
 import clases.Material;
 import com.vaadin.annotations.Theme;
@@ -51,9 +49,10 @@ public class MaterialUI extends UI {
         }
 
         Button crearMaterial = new Button("Crear Material", FontAwesome.PLUS_CIRCLE);//Botón para crear abono
-        crearMaterial.addClickListener(e -> {try {
-            //Acción del botón
-            crearMaterial(vaadinRequest);//Accedemos al método crearAbono
+        crearMaterial.addClickListener(e -> {
+            try {
+                //Acción del botón
+                crearMaterial(vaadinRequest);//Accedemos al método crearAbono
             } catch (UnknownHostException ex) {
                 Logger.getLogger(MaterialUI.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -98,8 +97,8 @@ public class MaterialUI extends UI {
             VaadinSession.getCurrent().getSession().invalidate();//Eliminamos la sesión
             getUI().getPage().setLocation("/");//Accedemos a la página principal
         });
-        
-                Button buttonAnunciantes = new Button("Anunciantes", FontAwesome.BELL);//Botón para acceder a la entidad instalaciones
+
+        Button buttonAnunciantes = new Button("Anunciantes", FontAwesome.BELL);//Botón para acceder a la entidad instalaciones
         buttonAnunciantes.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Anunciante");//Accedemos a la entidad abono
         });
@@ -120,29 +119,30 @@ public class MaterialUI extends UI {
             if (!MaterialDAO.consultaMateriales().isEmpty()) {//Si hay elementos en la lista de abonos
                 //Añadimos las columnas de la tabla
                 table.addContainerProperty("Nombre", String.class, "");
-                table.addContainerProperty("Descripción)", String.class, "");
+                table.addContainerProperty("Descripción", String.class, "");
                 table.addContainerProperty("Unidades", Integer.class, "");
                 table.addContainerProperty("Instalacion", String.class, "");
                 table.addContainerProperty("Modificar", Button.class, "");
                 table.addContainerProperty("Eliminar", Button.class, "");
                 for (int i = 0; i < MaterialDAO.consultaMateriales().size(); i++) {//Mientras haya elementos por recorrer
                     Material material = MaterialDAO.consultaMateriales().get(i);//Obtenemos el objeto de la lista
-                    
+
                     Button buttonModificar = new Button("Modificar", FontAwesome.EDIT);//Creamos el botón modificar
-                    buttonModificar.addClickListener(e -> {try {
-                        //Acción del botón
-                        editarMaterial(vaadinRequest, material);//Método para editar la instalación
+                    buttonModificar.addClickListener(e -> {
+                        try {
+                            //Acción del botón
+                            editarMaterial(vaadinRequest, material);//Método para editar la instalación
                         } catch (UnknownHostException ex) {
                             Logger.getLogger(MaterialUI.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     });
-                    
+
                     Button buttonEliminar = new Button("Eliminar", FontAwesome.CLOSE);//Creamos el botón eliminar
                     buttonEliminar.addClickListener(e -> {
                         try {
-                        //Acción del botón
-                        //listaMateriales.remove(material);
-                        MaterialDAO.eliminaMaterial(material);      //Eliminamos el objeto de la BBDD
+                            //Acción del botón
+                            //listaMateriales.remove(material);
+                            MaterialDAO.eliminaMaterial(material);      //Eliminamos el objeto de la BBDD
                         } catch (UnknownHostException ex) {
                             Logger.getLogger(MaterialUI.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -151,8 +151,8 @@ public class MaterialUI extends UI {
                                 Notification.Type.TRAY_NOTIFICATION);
                     });
                     //Añadimos la fila a la tabla
-                    table.addItem(new Object[]{material.getNombre(), material.getDescripcion(), material.getUnidades(),material.getInstalacion().getNombre(), buttonModificar, buttonEliminar}, i);
-                    
+                    table.addItem(new Object[]{material.getNombre(), material.getDescripcion(), material.getUnidades(), material.getInstalacion().getNombre(), buttonModificar, buttonEliminar}, i);
+
                     layoutMostrarMateriales.addComponent(table);//Lo añadimos al layout vertical
                 }
             }
@@ -178,7 +178,7 @@ public class MaterialUI extends UI {
         nombre.setIcon(FontAwesome.TAG);//Icono
         final TextField descripcion = new TextField();//Campo para insertar la duracion
         descripcion.setCaption("Descripción:");//Texto que se muestra en dicho campo
-        descripcion.setIcon(FontAwesome.PARAGRAPH);
+        descripcion.setIcon(FontAwesome.FILE_TEXT);
         final TextField unidades = new TextField();//Campo para insertar el coste
         unidades.setCaption("Unidades:");//Texto que se muestra en dicho campo
         unidades.setIcon(FontAwesome.STACK_OVERFLOW);
@@ -194,18 +194,19 @@ public class MaterialUI extends UI {
             vaadinRequest.setAttribute("descripcion", descripcion.getValue());//Añadimos en la petición el valor del campo duración
             vaadinRequest.setAttribute("unidades", unidades.getValue());//Añadimos en la petición el valor del campo coste
             vaadinRequest.setAttribute("instalacion", instalacion.getValue());
-            if (comprobarDatos(vaadinRequest, layout) == true) {
-                try {
-                    //Se comprueban los datos, y si son correctos...
-                    registrarMaterial(vaadinRequest);//Se envían los datos a registro de abono
-                } catch (UnknownHostException ex) {
-                    Logger.getLogger(MaterialUI.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                if (comprobarId(vaadinRequest)) {
+                    if (comprobarDatos(vaadinRequest, layout) == true) {
+                        //Se comprueban los datos, y si son correctos...
+                        registrarMaterial(vaadinRequest);//Se envían los datos a registro de abono  
+                        init(vaadinRequest);//Se lanza el método principal
+                        //Notificacion de tipo bandeja para notificar la correcta operación.
+                        Notification.show("Material - Nombre: " + nombre.getValue(), "Registrado con éxito",
+                                Notification.Type.TRAY_NOTIFICATION);
+                    }
                 }
-
-                init(vaadinRequest);//Se lanza el método principal
-                //Notificacion de tipo bandeja para notificar la correcta operación.
-                Notification.show("Material - Nombre: " + nombre.getValue(), "Registrado con éxito",
-                        Notification.Type.TRAY_NOTIFICATION);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(MaterialUI.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         });
@@ -216,12 +217,12 @@ public class MaterialUI extends UI {
 
         layoutBotones.addComponents(buttonCancelar, buttonRegistrar);
         layoutBotones.setSpacing(true);
-        layoutTextField.addComponents(nombre, descripcion, unidades,instalacion);
+        layoutBotones.setMargin(true);
+        layoutTextField.addComponents(nombre, descripcion, unidades, instalacion);
         layoutTextField.setSpacing(true);
         layoutTextField.setMargin(true);
         layout.addComponents(layoutTextField, layoutBotones);//Añadimos los componentes al layout
         //Le añadimos margen y espciado, para mostrarlo posteriormente
-
         layout.setMargin(true);
         layout.setSpacing(true);
 
@@ -233,6 +234,7 @@ public class MaterialUI extends UI {
     //Ya se ha comentado en el método anterior que realiza cada línea de código.
     protected void editarMaterial(VaadinRequest vaadinRequest, Material material) throws UnknownHostException {
         final VerticalLayout layout = new VerticalLayout();
+        final HorizontalLayout layoutTextField = new HorizontalLayout();
         final HorizontalLayout layoutBotones = new HorizontalLayout();//Creamos un vertical layout
         Label l = new Label("<h2>Modificar Material</h2>", ContentMode.HTML);
         layout.addComponent(l);
@@ -242,14 +244,14 @@ public class MaterialUI extends UI {
         nombre.setValue(material.getNombre());
         final TextField descripcion = new TextField();//Campo para insertar la duracion
         descripcion.setCaption("Descripción:");//Texto que se muestra en dicho campo
-        descripcion.setIcon(FontAwesome.PARAGRAPH);
+        descripcion.setIcon(FontAwesome.FILE_TEXT);
         descripcion.setValue(material.getDescripcion());
         final TextField unidades = new TextField();//Campo para insertar el coste
         unidades.setCaption("Unidades:");//Texto que se muestra en dicho campo
         unidades.setIcon(FontAwesome.STACK_OVERFLOW);
         unidades.setValue(Integer.toString(material.getUnidades()));
         Button buttonRegistrar = new Button("Modificar", FontAwesome.EDIT);
-         OptionGroup instalacion = new OptionGroup("Instalaciones:");
+        OptionGroup instalacion = new OptionGroup("Instalaciones:");
         ArrayList<Instalacion> listaInstalaciones = InstalacionDAO.mostrarInstalaciones();
         for (int i = 0; i < listaInstalaciones.size(); i++) {
             System.out.println(listaInstalaciones.get(i).getNombre());
@@ -258,6 +260,7 @@ public class MaterialUI extends UI {
         instalacion.setValue(material.getInstalacion().getNombre());
 
         buttonRegistrar.addClickListener(e -> {
+            vaadinRequest.setAttribute("instalacion", instalacion.getValue());
             vaadinRequest.setAttribute("nombre", nombre.getValue());//Añadimos en la petición el valor del campo tipo
             vaadinRequest.setAttribute("descripcion", descripcion.getValue());//Añadimos en la petición el valor del campo duración
             vaadinRequest.setAttribute("unidades", unidades.getValue());//Añadimos en la petición el valor del campo coste
@@ -281,7 +284,12 @@ public class MaterialUI extends UI {
         });
         layoutBotones.addComponents(buttonCancelar, buttonRegistrar);
         layoutBotones.setSpacing(true);
-        layout.addComponents(nombre, descripcion, unidades,instalacion ,layoutBotones);
+        layoutBotones.setMargin(true);
+        layoutTextField.addComponents(nombre, descripcion, unidades, instalacion);
+        layoutTextField.setSpacing(true);
+        layoutTextField.setMargin(true);
+        layout.addComponents(layoutTextField, layoutBotones);//Añadimos los componentes al layout
+        //Le añadimos margen y espciado, para mostrarlo posteriormente
         layout.setMargin(true);
         layout.setSpacing(true);
 
@@ -289,7 +297,7 @@ public class MaterialUI extends UI {
     }
 
     protected void modificarMaterial(VaadinRequest vaadinRequest, Material material) throws UnknownHostException {//Método para guardar los datos modificados en memoria, no hay persistencia de momento
-        Material aux= new Material();
+        Material aux = new Material();
         aux.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
         aux.setDescripcion((String) vaadinRequest.getAttribute("descripcion"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
         aux.setUnidades(Integer.parseInt((String) vaadinRequest.getAttribute("unidades")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
@@ -302,7 +310,7 @@ public class MaterialUI extends UI {
         material.setNombre((String) vaadinRequest.getAttribute("nombre"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
         material.setDescripcion((String) vaadinRequest.getAttribute("descripcion"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
         material.setUnidades(Integer.parseInt((String) vaadinRequest.getAttribute("unidades")));
-        material.setInstalacion(InstalacionDAO.buscarInstalacion((String) vaadinRequest.getAttribute("instalacion")));                    
+        material.setInstalacion(InstalacionDAO.buscarInstalacion((String) vaadinRequest.getAttribute("instalacion")));
         MaterialDAO.creaMaterial(material); //Añadimos el objeto a la BBDD
     }
 
@@ -313,17 +321,33 @@ public class MaterialUI extends UI {
         if ((String) vaadinRequest.getAttribute("nombre") != "" && (String) vaadinRequest.getAttribute("descripcion") != "" && (String) vaadinRequest.getAttribute("unidades") != "") {
             //Comprobamos si la capacidad es numérica llamando al métdo isInteger
             if (isInteger((String) vaadinRequest.getAttribute("unidades")) == true) {
-                b = true;//Si se satisface todas las condiciones, la variables es true
+                if (vaadinRequest.getAttribute("instalacion") != null) {
+                    b = true;//Si se satisface todas las condiciones, la variables es true
+                } else {
+                    Notification.show("Seleccione una instalación", "El material debe tener una instalación asociada",
+                            Notification.Type.WARNING_MESSAGE);
+                }
             } else {//Si la duración o el coste no es numérica
                 //Notificacion de tipo Warning interactiva para el usuario.
                 Notification.show("Error Datos Introducidos", "Las unidades deben ser númericas",
                         Notification.Type.WARNING_MESSAGE);
-
             }
         } else {//En caso de campo vacío, mostramos 2 tipos de error uno fijo y otro interactivo (para el proyecto final debatiremos este aspecto)
 
             //Notificacion de tipo Warning interactiva para el usuario.
             Notification.show("Campo vacío", "Debe rellenar todos los campos",
+                    Notification.Type.WARNING_MESSAGE);
+        }
+        return b;
+    }
+
+    protected boolean comprobarId(VaadinRequest vaadinRequest) throws UnknownHostException {
+        boolean b = false;
+        if (MaterialDAO.buscarMaterial((String) vaadinRequest.getAttribute("nombre")) == null) {
+            b = true;//Si se satisface todas las condiciones, la variables es true
+
+        } else {
+            Notification.show("Nombre Material Existente", "Material Registrado con este Nombre",
                     Notification.Type.WARNING_MESSAGE);
         }
         return b;

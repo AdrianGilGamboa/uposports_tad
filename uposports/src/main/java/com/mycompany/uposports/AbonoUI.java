@@ -22,9 +22,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -185,19 +183,20 @@ public class AbonoUI extends UI {
             vaadinRequest.setAttribute("tipo", tipo.getValue());//Añadimos en la petición el valor del campo tipo
             vaadinRequest.setAttribute("duracion", duracion.getValue());//Añadimos en la petición el valor del campo duración
             vaadinRequest.setAttribute("precio", precio.getValue());//Añadimos en la petición el valor del campo precio
-            if (comprobarDatos(vaadinRequest, layout) == true) {
-                try {
-                    //Se comprueban los datos, y si son correctos...
-                    registrarAbono(vaadinRequest);//Se envían los datos a registro de abono
-                } catch (UnknownHostException ex) {
-                    Logger.getLogger(AbonoUI.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                if (comprobarId(vaadinRequest)) {
+                    if (comprobarDatos(vaadinRequest) == true) {
+                        //Se comprueban los datos, y si son correctos...
+                        registrarAbono(vaadinRequest);//Se envían los datos a registro de abono
+                        init(vaadinRequest);//Se lanza el método principal
+                        //Notificacion de tipo bandeja para notificar la correcta operación.
+                        Notification.show("Abono - Tipo: " + tipo.getValue(), "Registrado con éxito",
+                                Notification.Type.TRAY_NOTIFICATION);
+                    }
                 }
-                init(vaadinRequest);//Se lanza el método principal
-                //Notificacion de tipo bandeja para notificar la correcta operación.
-                Notification.show("Abono - Tipo: " + tipo.getValue(), "Registrado con éxito",
-                        Notification.Type.TRAY_NOTIFICATION);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(AbonoUI.class.getName()).log(Level.SEVERE, null, ex);
             }
-
         });
         Button buttonCancelar = new Button("Cancelar", FontAwesome.CLOSE);//Nuevo botón para cancelar
         buttonCancelar.addClickListener(e -> {//Acción del botón
@@ -245,7 +244,7 @@ public class AbonoUI extends UI {
             vaadinRequest.setAttribute("tipo", tipo.getValue());
             vaadinRequest.setAttribute("duracion", duracion.getValue());
             vaadinRequest.setAttribute("precio", precio.getValue());
-            if (comprobarDatos(vaadinRequest, layout) == true) {
+            if (comprobarDatos(vaadinRequest) == true) {
                 try {
                     modificarAbono(vaadinRequest, abono);//Se lanza el método modificar abono
                 } catch (UnknownHostException ex) {
@@ -297,7 +296,7 @@ public class AbonoUI extends UI {
     }
 
     //Método para comprobar los datos introducidos en los formularios
-    protected boolean comprobarDatos(VaadinRequest vaadinRequest, VerticalLayout layout) {
+    protected boolean comprobarDatos(VaadinRequest vaadinRequest) {
         boolean b = false;//Variable booleana inicializada a false
         //Comprobamos si algún campo está vacío
         if ((String) vaadinRequest.getAttribute("tipo") != "" && (String) vaadinRequest.getAttribute("duracion") != "" && (String) vaadinRequest.getAttribute("precio") != "") {
@@ -312,6 +311,18 @@ public class AbonoUI extends UI {
         } else {//En caso de campo vacío, mostramos 2 tipos de error uno fijo y otro interactivo (para el proyecto final debatiremos este aspecto)
             //Notificacion de tipo Warning interactiva para el usuario.
             Notification.show("Campo vacío", "Debe rellenar todos los campos",
+                    Notification.Type.WARNING_MESSAGE);
+        }
+        return b;
+    }
+
+    protected boolean comprobarId(VaadinRequest vaadinRequest) throws UnknownHostException {
+        boolean b = false;
+        if (AbonoDAO.buscarAbono((String) vaadinRequest.getAttribute("tipo")) == null) {
+            b = true;//Si se satisface todas las condiciones, la variables es true
+
+        } else {
+            Notification.show("Tipo Abono Existente", "Abono Resgistrado con este Tipo",
                     Notification.Type.WARNING_MESSAGE);
         }
         return b;
