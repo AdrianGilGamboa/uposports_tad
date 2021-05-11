@@ -44,8 +44,8 @@ public class AbonoDAO {
     public static ArrayList<Abono> mostrarAbonos() throws UnknownHostException {
         ArrayList<Abono> listaAbonos = new ArrayList<>();
         DBCollection collection = abonoInit();
-                DBObject elemento;
-        DBCursor cursor = collection.find().sort(new BasicDBObject("precio",1));// Obtenemos todos los documentos de la coleccion AbonoDAO
+        DBObject elemento;
+        DBCursor cursor = collection.find().sort(new BasicDBObject("precio", 1));// Obtenemos todos los documentos de la coleccion AbonoDAO
 
         //Recorrido de todos los elementos de la coleccion AbonoDAO
         System.out.println("Recorriendo la colección Abonos:");
@@ -104,12 +104,16 @@ public class AbonoDAO {
         DBCollection collection = abonoInit();
         BasicDBObject searchQuery = new BasicDBObject().append("tipo", tipo);//Creamos la query que será los documentos que contengan como atributo "tipo" el que recibe como parámetro el método
         DBCursor cursor = collection.find(searchQuery);//Los elementos que cumplan la condicion de searchQuery se introducen en cursor
-        DBObject elemento = cursor.next();//Solamente debemos tener uno, ya que le pasamos el tipo que es nuestro ID.
-        System.out.println(String.format("Documento Abono encontrado: %s", elemento));
-        Abono aux = new Abono();
-        aux.setTipo((String) elemento.get("tipo"));
-        aux.setPrecio((Double) elemento.get("precio"));
-        aux.setDuracion((Integer) elemento.get("duracion"));
-        return aux; //Devolvemos el abono
+        if (cursor.hasNext()) {
+            DBObject elemento = cursor.next();//Solamente debemos tener uno, ya que le pasamos el tipo que es nuestro ID.
+            System.out.println(String.format("Documento Abono encontrado: %s", elemento));
+            Abono aux = new Abono();
+            aux.setTipo((String) elemento.get("tipo"));
+            aux.setPrecio((Double) elemento.get("precio"));
+            aux.setDuracion((Integer) elemento.get("duracion"));
+            return aux; //Devolvemos el abono
+        } else {
+            return null;
+        }
     }
 }
