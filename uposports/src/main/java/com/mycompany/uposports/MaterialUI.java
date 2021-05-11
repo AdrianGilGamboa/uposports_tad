@@ -155,6 +155,8 @@ public class MaterialUI extends UI {
         final VerticalLayout layout = new VerticalLayout();//Creamos un vertical layout
         final HorizontalLayout layoutBotones = new HorizontalLayout();//Creamos un vertical layout
         final HorizontalLayout layoutTextField = new HorizontalLayout();
+        Label l = new Label("<h2>Nuevo Material</h2>", ContentMode.HTML);
+        layout.addComponent(l);
 
         final TextField nombre = new TextField();//Campo para insertar el tipo
         nombre.setCaption("Nombre:");//Texto que se muestra en dicho campo
@@ -210,6 +212,8 @@ public class MaterialUI extends UI {
     protected void editarMaterial(VaadinRequest vaadinRequest, Material material) {
         final VerticalLayout layout = new VerticalLayout();
         final HorizontalLayout layoutBotones = new HorizontalLayout();//Creamos un vertical layout
+        Label l = new Label("<h2>Modificar Material</h2>", ContentMode.HTML);
+        layout.addComponent(l);
         final TextField nombre = new TextField();//Campo para insertar el tipo
         nombre.setCaption("Nombre:");//Texto que se muestra en dicho campo
         nombre.setIcon(FontAwesome.TAG);//Icono
