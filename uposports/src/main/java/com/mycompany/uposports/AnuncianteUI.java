@@ -252,18 +252,19 @@ public class AnuncianteUI extends UI {
             vaadinRequest.setAttribute("precioContrato", precioContrato.getValue());
             vaadinRequest.setAttribute("fechaIni", fechaIni.getValue());
             vaadinRequest.setAttribute("fechaFin", fechaFin.getValue());
-            if (comprobarDatos(vaadinRequest) == true) {
-                try {
-                    modificarAnunciante(vaadinRequest, anun);//Se lanza el método modificar abono
-                } catch (UnknownHostException ex) {
-                    Logger.getLogger(AnuncianteUI.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                if (comprobarId(vaadinRequest)) {
+                    if (comprobarDatos(vaadinRequest) == true) {
+                        modificarAnunciante(vaadinRequest, anun);//Se lanza el método modificar abono
+                        init(vaadinRequest);
+                        //Notificacion de tipo bandeja para notificar la correcta operación.
+                        Notification.show("Anunciante - Nombre: " + anunciante.getValue(), "Modificado con éxito",
+                                Notification.Type.TRAY_NOTIFICATION);
+                    }
                 }
-                init(vaadinRequest);
-                //Notificacion de tipo bandeja para notificar la correcta operación.
-                Notification.show("Anunciante - Nombre: " + anunciante.getValue(), "Modificado con éxito",
-                        Notification.Type.TRAY_NOTIFICATION);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(AnuncianteUI.class.getName()).log(Level.SEVERE, null, ex);
             }
-
         });
         Button buttonCancelar = new Button("Cancelar", FontAwesome.CLOSE);
         buttonCancelar.addClickListener(e -> {
@@ -332,6 +333,18 @@ public class AnuncianteUI extends UI {
         } catch (NullPointerException e) {
 
             Notification.show("Error Fechas", "Introduzca la fecha y hora haciendo click en el calendario",
+                    Notification.Type.WARNING_MESSAGE);
+        }
+        return b;
+    }
+
+    protected boolean comprobarId(VaadinRequest vaadinRequest) throws UnknownHostException {
+        boolean b = false;
+        if (AnuncianteDAO.buscarAnunciante((String) vaadinRequest.getAttribute("anunciante")) == null) {
+            b = true;//Si se satisface todas las condiciones, la variables es true
+
+        } else {
+            Notification.show("Anunciante Existente", "Anunciante ya registrado con este Nombre",
                     Notification.Type.WARNING_MESSAGE);
         }
         return b;
