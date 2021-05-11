@@ -170,8 +170,8 @@ public class ReservaUI extends UI {
         }
     }
     
-    public static void addReserva(Reserva r) {     //METODO QUE AÑADE UNA RESERVA A LA LISTA
-        listaReservas.add(r);
+    public static void addReserva(Reserva r) throws UnknownHostException {     //METODO QUE AÑADE UNA RESERVA A LA LISTA
+        ReservaDAO.creaReserva(r);
     }
     
     public void creaReserva(VaadinRequest request) throws UnknownHostException {

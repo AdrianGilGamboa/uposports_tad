@@ -105,20 +105,23 @@ public class ReservaDAO {
     }
 
     public static int siguienteID() throws UnknownHostException {
-        ArrayList lista = consultaReservas();
-        Iterator it = lista.iterator();
+        // Obtenemos todos los documentos de la coleccion
+        DBCursor cursor = reservasInit().find();
+        ArrayList<Reserva> listaReserva = new ArrayList();
+        //Recorrido de todos los elementos de la coleccion
+        int i = 0;
+        DBObject elemento;
         int max = 0;
-        Reserva r;
-        if (lista.isEmpty()) {
+        if (!cursor.hasNext()) {
             return 1;
         } else {
-            while (it.hasNext()) {
-                r = (Reserva) it.next();
-                if (max < r.getId_reserva()) {
-                    max = r.getId_reserva();
+            while (cursor.hasNext()) {
+                elemento = cursor.next();
+                if (max < (int) elemento.get("id")) {
+                    max = (int) elemento.get("id");
                 }
             }
-            return max + 1;
+            return max+1;
         }
     }
 }
