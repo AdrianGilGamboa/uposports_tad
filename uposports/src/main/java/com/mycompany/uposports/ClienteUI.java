@@ -9,12 +9,15 @@ import clases.Pago;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.event.FieldEvents;
+import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.server.WrappedSession;
 import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -195,7 +198,11 @@ public class ClienteUI extends UI {
         datos.setMargin(true);
         datos.setSpacing(true);
         Button enviar = new Button("Acceder al pago", FontAwesome.SIGN_IN);
-
+        Button cancelar = new Button("Cancelar", FontAwesome.CLOSE);
+        //REDIRECCIONA A LA CLASE gestionaCLiente
+        cancelar.addClickListener(e -> {
+            init(request);
+        });
         enviar.addClickListener(e -> { //UNA VEZ PULSADO EL BOTÓN SE CREA EL CLIENTE Y LO AÑADIMOS A LA LISTA
             if (comprobarDatos(nombre.getValue(), apellidos.getValue(), dni.getValue(), telef.getValue(), cp.getValue(), (String) abono.getValue()) == false) {
 
@@ -214,30 +221,35 @@ public class ClienteUI extends UI {
                     //listaClientes.add(aux);
 
                     //Inicio proceso Pago
-                    layout.removeAllComponents();
+                    
                     Label label1 = new Label("<h3> Seleccione una opción: </h3>", ContentMode.HTML);
                     Label label2 = new Label("<h1 style='text-weight:bold;margin:0'>UPOSports</h1>"
-                            + "<br/><br/><h3>Importe a abonar: " +"<b>" + aux.getAbono().getPrecio() + " €</b></h3><br/>", ContentMode.HTML);
+                            + "<br/><br/><h3>Importe a abonar: " + "<b>" + aux.getAbono().getPrecio() + " €</b></h3><br/>", ContentMode.HTML);
                     final VerticalLayout form = new VerticalLayout();
                     final HorizontalLayout layH = new HorizontalLayout();
                     //Añadimos el Label de bienvenida
                     //Creamos el boton "Crear empleado" donde implementaremos la funcion de crear un empleado
                     Button bEfectivo = new Button("Pago en efectivo");
-                    bEfectivo.addClickListener(new Button.ClickListener() {
-                        public void buttonClick(Button.ClickEvent event) {
-                            //Añadimos por cada atributo del empleado su textfield
-                            Pago p = new Pago();
-                            getUI().getPage().setLocation("/Cliente");
-                        }
-                    });
-//Se crea el boton de ver empleados el cual, al pulsarse, imprimirá la lista de todos los 
-//empleados disponibles
-                    Button bTarjeta = new Button("Pago con tarjeta");
-                    bTarjeta.addClickListener(a -> {
+
+                    bEfectivo.addClickListener(b -> {
+                        form.removeAllComponents();
+                        layH.removeAllComponents();
+                        //Añadimos por cada atributo del empleado su textfield
+                        final TextField tf = new TextField("Importe Abonado:");
+                        final Label devolucion = new Label("",ContentMode.HTML);
+                        tf.addTextChangeListener(new FieldEvents.TextChangeListener(){
+                            public void textChange(TextChangeEvent event){
+                                Double aDevolver = Double.parseDouble(event.getText()) - aux.getAbono().getPrecio() ;
+                                devolucion.setValue("Importe a devolver: <b>" + aDevolver + " €</b>");
+                                
+                            }
+                        });
+                        tf.setTextChangeEventMode(TextChangeEventMode.LAZY); 
+                        Button bFinalizar = new Button("Finalizar", FontAwesome.CHECK);
+                        bFinalizar.addClickListener(a -> {
                         Pago pago = new Pago();
                         pago.setFecha(new Date());
-                        pago.setCantidad(aux.getAbono().getPrecio());
-                        pago.setImporteDevolver(0.0);
+                        pago.setCantidad(Double.parseDouble(tf.getValue()));
                         try {
                             PagoDAO.insertarPago(pago);
                             ClienteDAO.creaCliente(aux);
@@ -250,7 +262,35 @@ public class ClienteUI extends UI {
                             Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
                         }
 
-                        mostrarNotificaciones(aux);
+
+                    });
+                        layH.addComponents(bFinalizar);
+                        layH.setSpacing(true);
+                        //layH.setMargin(true);
+                        form.addComponents(label2, tf, devolucion, layH);
+                        form.setMargin(true);
+                        form.setSpacing(true);
+                        setContent(form);
+                        //getUI().getPage().setLocation("/Cliente");
+                    });
+
+                    Button bTarjeta = new Button("Pago con tarjeta");
+                    bTarjeta.addClickListener(a -> {
+                        Pago pago = new Pago();
+                        pago.setFecha(new Date());
+                        pago.setCantidad(aux.getAbono().getPrecio());
+                        try {
+                            PagoDAO.insertarPago(pago);
+                            ClienteDAO.creaCliente(aux);
+                            Notification.show("Cliente - DNI: " + aux.getDni(), "Registrado con éxito",
+                                    Notification.Type.TRAY_NOTIFICATION);
+                            Notification.show("Pago realizado con éxito",
+                                    Notification.Type.HUMANIZED_MESSAGE);
+                            init(request);
+                        } catch (UnknownHostException ex) {
+                            Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
 
                     });
                     layH.addComponents(bEfectivo, bTarjeta);
@@ -268,11 +308,7 @@ public class ClienteUI extends UI {
 
             }
         });
-        Button cancelar = new Button("Cancelar", FontAwesome.CLOSE);
-        //REDIRECCIONA A LA CLASE gestionaCLiente
-        cancelar.addClickListener(e -> {
-            init(request);
-        });
+
         HorizontalLayout horiz = new HorizontalLayout();
         horiz.addComponents(cancelar, enviar);
         horiz.setSpacing(true);
@@ -304,7 +340,13 @@ public class ClienteUI extends UI {
         ArrayList<Abono> listaAbonos = AbonoDAO.mostrarAbonos();
         for (int i = 0; i < listaAbonos.size(); i++) {
             System.out.println(listaAbonos.get(i).getTipo());
-            abono.addItems(listaAbonos.get(i).getTipo());
+
+            abono.addItems(listaAbonos.get(i).getTipo() + " - " + listaAbonos.get(i).getPrecio() + " (€)");
+            if(cliente.getAbono().getTipo().equals(listaAbonos.get(i).getTipo())){
+                System.out.println("Este es");
+            abono.select(listaAbonos.get(i).getTipo() + " - " + listaAbonos.get(i).getPrecio() + " (€)");
+            }
+
         }
         datos.addComponents(nombre, apellidos, dni, telef, cp, abono);
         datos.setMargin(true);
@@ -327,13 +369,100 @@ public class ClienteUI extends UI {
                     aux.setAbono(AbonoDAO.buscarAbono(tipoAbono));
                     // System.out.println("Abono:" + abono.getValue());
                     //listaClientes.add(aux);
-                    ClienteDAO.creaCliente(aux);
+                    if(aux.getAbono().getTipo().equals(cliente.getAbono().getTipo())){
+                    ClienteDAO.actualizaCliente(aux,cliente);
+                                    Notification.show("Cliente - DNI: " + aux.getDni(), "Modificado con éxito",
+                        Notification.Type.TRAY_NOTIFICATION);
+                                    init(request);
+                    }else{
+                        //Inicio proceso Pago
+                    
+                    Label label1 = new Label("<h3> Seleccione una opción: </h3>", ContentMode.HTML);
+                    Label label2 = new Label("<h1 style='text-weight:bold;margin:0'>UPOSports</h1>"
+                            + "<br/><br/><h3>Importe a abonar: " + "<b>" + aux.getAbono().getPrecio() + " €</b></h3><br/>", ContentMode.HTML);
+                    final VerticalLayout form = new VerticalLayout();
+                    final HorizontalLayout layH = new HorizontalLayout();
+                    //Añadimos el Label de bienvenida
+                    //Creamos el boton "Crear empleado" donde implementaremos la funcion de crear un empleado
+                    Button bEfectivo = new Button("Pago en efectivo");
+
+                    bEfectivo.addClickListener(b -> {
+                        form.removeAllComponents();
+                        layH.removeAllComponents();
+                        //Añadimos por cada atributo del empleado su textfield
+                        final TextField tf = new TextField("Importe Abonado:");
+                        final Label devolucion = new Label("",ContentMode.HTML);
+                        tf.addTextChangeListener(new FieldEvents.TextChangeListener(){
+                            public void textChange(TextChangeEvent event){
+                                Double aDevolver = Double.parseDouble(event.getText()) - aux.getAbono().getPrecio() ;
+                                devolucion.setValue("Importe a devolver: <b>" + aDevolver + " €</b>");
+                                
+                            }
+                        });
+                        tf.setTextChangeEventMode(TextChangeEventMode.LAZY); 
+                        Button bFinalizar = new Button("Finalizar", FontAwesome.CHECK);
+                        bFinalizar.addClickListener(a -> {
+                        Pago pago = new Pago();
+                        pago.setFecha(new Date());
+                        pago.setCantidad(Double.parseDouble(tf.getValue()));
+                        try {
+                            PagoDAO.insertarPago(pago);
+                            ClienteDAO.actualizaCliente(aux,cliente);
+                            Notification.show("Cliente - DNI: " + aux.getDni(), "Modificado con éxito",
+                                    Notification.Type.TRAY_NOTIFICATION);
+                            Notification.show("Pago realizado con éxito",
+                                    Notification.Type.HUMANIZED_MESSAGE);
+                            init(request);
+                        } catch (UnknownHostException ex) {
+                            Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+
+                    });
+                        layH.addComponents(bFinalizar);
+                        layH.setSpacing(true);
+                        //layH.setMargin(true);
+                        form.addComponents(label2, tf, devolucion, layH);
+                        form.setMargin(true);
+                        form.setSpacing(true);
+                        setContent(form);
+                        //getUI().getPage().setLocation("/Cliente");
+                    });
+
+                    Button bTarjeta = new Button("Pago con tarjeta");
+                    bTarjeta.addClickListener(a -> {
+                        Pago pago = new Pago();
+                        pago.setFecha(new Date());
+                        pago.setCantidad(aux.getAbono().getPrecio());
+                        try {
+                            PagoDAO.insertarPago(pago);
+                            ClienteDAO.actualizaCliente(aux,cliente);
+                            Notification.show("Cliente - DNI: " + aux.getDni(), "Modificado con éxito",
+                                    Notification.Type.TRAY_NOTIFICATION);
+                            Notification.show("Pago realizado con éxito",
+                                    Notification.Type.HUMANIZED_MESSAGE);
+                            init(request);
+                        } catch (UnknownHostException ex) {
+                            Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+
+                    });
+                    layH.addComponents(bEfectivo, bTarjeta);
+                    layH.setSpacing(true);
+                    //layH.setMargin(true);
+                    form.addComponents(label2, label1, layH);
+                    form.setMargin(true);
+                    form.setSpacing(true);
+                    setContent(form);
+                    //Fin proceso pago
+                        ClienteDAO.actualizaCliente(aux,cliente);
+                    }
                 } catch (UnknownHostException ex) {
                     Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                Notification.show("Cliente - DNI: " + aux.getDni(), "Registrado con éxito",
-                        Notification.Type.TRAY_NOTIFICATION);
-                init(request);
+
+                //init(request);
             }
         });
 
@@ -389,13 +518,6 @@ public class ClienteUI extends UI {
         }
     }
 
-    private void mostrarNotificaciones(Cliente aux) {
-        Notification.show("Cliente - DNI: " + aux.getDni(), "Registrado con éxito",
-                Notification.Type.TRAY_NOTIFICATION);
-        Notification.show("Pago realizado con éxito",
-                Notification.Type.ASSISTIVE_NOTIFICATION);
-
-    }
 
     @WebServlet(urlPatterns = {"/Cliente/*"}, name = "gestionaClienteServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = ClienteUI.class, productionMode = false)

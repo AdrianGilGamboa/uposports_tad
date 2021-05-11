@@ -39,7 +39,6 @@ public class PagoDAO {
         //Insertamos los 3 atributos del nuevo documento Abono
         document.append("fechaHora", pago.getFecha());
         document.append("cantidad", pago.getCantidad());
-        document.append("importeDevolver", pago.getImporteDevolver());
         //Insertamos el documento en la colección AbonoDAO
         collection.insert(document);
         System.out.println("Documento Pago insertado: " + document + "\n");
