@@ -86,7 +86,7 @@ public class InstalacionDAO {
             ArrayList<Material> listaMateriales = MaterialDAO.consultaMateriales();
             if (listaReservas.size() > 0) {
                 for (int i = 0; i < listaReservas.size(); i++) {
-                    if (listaReservas.get(i).getCliente().getDni().equals(vieja.getNombre())) {
+                    if (listaReservas.get(i).getInstalacion().getNombre().equals(vieja.getNombre())) {
                         ReservaDAO.actualizaReservaInstalacion(nueva.getNombre(), listaReservas.get(i));
                     }
                 }
