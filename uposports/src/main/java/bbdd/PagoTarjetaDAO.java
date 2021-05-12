@@ -16,7 +16,7 @@ public class PagoTarjetaDAO {
         // Conectar a la base de datos
         DB db = mongoClient.getDB("uposports");
 
-        //Acceder coleccion "Abonos"*/
+        //Acceder coleccion "PagoTarjeta"*/
         DBCollection collection = db.getCollection("Pagos Tarjeta");
 
         return collection;
@@ -26,10 +26,10 @@ public class PagoTarjetaDAO {
 
         DBCollection collection = pagosInit();
         BasicDBObject document = new BasicDBObject();//Instanciamos el nuevo documento
-        //Insertamos los 3 atributos del nuevo documento Abono
+        //Insertamos los 3 atributos del nuevo documento PagoTarjeta
         document.append("fechaHora", pago.getFecha());
         document.append("cantidad", pago.getCantidad());
-        //Insertamos el documento en la colección AbonoDAO
+        //Insertamos el documento en la colección PagarTarjeta
         collection.insert(document);
         System.out.println("Documento Pago insertado: " + document + "\n");
     }

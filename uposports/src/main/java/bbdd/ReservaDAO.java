@@ -22,7 +22,7 @@ public class ReservaDAO {
         // Conectar a la base de datos
         DB db = mongoClient.getDB("uposports");
 
-        //Acceder coleccion "Abonos"*/
+        //Acceder coleccion "Reserva"*/
         DBCollection collection = db.getCollection("Reservas");
 
         return collection;

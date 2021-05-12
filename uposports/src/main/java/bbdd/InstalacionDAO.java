@@ -42,7 +42,7 @@ public class InstalacionDAO {
 
     //Método para mostrar todos los documentos de la colección InstalacionDAO
     public static ArrayList<Instalacion> mostrarInstalaciones() throws UnknownHostException {
-        DBCursor cursor = instalacionesInit().find();// Obtenemos todos los documentos de la coleccion Abonos
+        DBCursor cursor = instalacionesInit().find();// Obtenemos todos los documentos de la coleccion Instalacion
         DBObject elemento;
         ArrayList<Instalacion> listaInstalaciones = new ArrayList();
         //Recorrido de todos los elementos de la coleccion InstalacionDAO
@@ -103,19 +103,19 @@ public class InstalacionDAO {
         System.out.println("Documento Instalación actualizado correctamente\n");
     }
 
-    //Método para eliminar un documento de la colección Abonos
+    //Método para eliminar un documento de la colección Instalacion
     public static void eliminarInstalacion(Instalacion i) throws UnknownHostException {
         System.out.println(String.format("Buscando documento Instalacion nombre %s para eliminar...", i.getNombre()));
         instalacionesInit().remove(new BasicDBObject("nombre", i.getNombre()));//Elimina el documento que recibe del método buscarInstalacion, pasándole la colección y el tipo de Instalacion.
         System.out.println("Documento Abono eliminado\n");
     }
 
-    //Método para buscar un documento abono en la colección Abonos
+    //Método para buscar un documento abono en la colección Instalacion
     public static Instalacion buscarInstalacion(String nombre) throws UnknownHostException {
         BasicDBObject searchQuery = new BasicDBObject().append("nombre", nombre);//Creamos la query que será los documentos que contengan como atributo "nombre" el que recibe como parámetro el método
         DBCursor cursor = instalacionesInit().find(searchQuery);//Los elementos que cumplan la condicion de searchQuery se introducen en cursor
         if (cursor.hasNext()) {
-            DBObject elemento = cursor.next();//Solamente debemos tener uno, ya que le pasamos el tipo que es nuestro ID.
+            DBObject elemento = cursor.next();//Solamente debemos tener uno, ya que le pasamos el nombre que es nuestro ID.
             System.out.println(String.format("Documento Instalacion encontrado: %s", elemento));
             Instalacion aux = new Instalacion();
             aux.setNombre((String) elemento.get("nombre"));

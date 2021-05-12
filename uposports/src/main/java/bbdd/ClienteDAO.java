@@ -118,9 +118,9 @@ public class ClienteDAO {
         System.out.println("Nombre del cliente actualizado correctamente");
     }
 
-    //Método para buscar un documento abono en la colección AbonoDAO
+    //Método para buscar un documento abono en la colección ClienteDAO
     public static boolean clientesConAbono(Abono a) throws UnknownHostException {
-        BasicDBObject searchQuery = new BasicDBObject().append("abono", a.getTipo());//Creamos la query que será los documentos que contengan como atributo "tipo" el que recibe como parámetro el método
+        BasicDBObject searchQuery = new BasicDBObject().append("abono", a.getTipo());//Creamos la query que será los documentos que contengan como atributo "dni" el que recibe como parámetro el método
         DBCursor cursor = clienteInit().find(searchQuery);//Los elementos que cumplan la condicion de searchQuery se introducen en cursor        
         if (cursor.hasNext()) {
             return true;
@@ -131,10 +131,10 @@ public class ClienteDAO {
 
     public static Cliente buscarCliente(String dni) throws UnknownHostException {
         DBCollection collection = clienteInit();
-        BasicDBObject searchQuery = new BasicDBObject().append("dni", dni);//Creamos la query que será los documentos que contengan como atributo "tipo" el que recibe como parámetro el método
+        BasicDBObject searchQuery = new BasicDBObject().append("dni", dni);//Creamos la query que será los documentos que contengan como atributo "dni" el que recibe como parámetro el método
         DBCursor cursor = collection.find(searchQuery);//Los elementos que cumplan la condicion de searchQuery se introducen en cursor
         if (cursor.hasNext()) {
-            DBObject elemento = cursor.next();//Solamente debemos tener uno, ya que le pasamos el tipo que es nuestro ID.
+            DBObject elemento = cursor.next();//Solamente debemos tener uno, ya que le pasamos el dni que es nuestro ID.
             System.out.println(String.format("Cliente encontrado: %s", elemento));
             Cliente aux = new Cliente();
             aux.setNombre((String) elemento.get("nombre"));
@@ -143,7 +143,7 @@ public class ClienteDAO {
             aux.setTelefono((String) elemento.get("telefono"));
             aux.setCodigoPostal((String) elemento.get("CP"));
             aux.setAbono(AbonoDAO.buscarAbono((String) elemento.get("abono")));
-            return aux; //Devolvemos el abono
+            return aux; //Devolvemos el cliente
         } else {
             return null;
         }

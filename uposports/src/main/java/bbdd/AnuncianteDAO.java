@@ -66,7 +66,7 @@ public class AnuncianteDAO {
 
     }
 
-    //Método para actualizar un campo de tipo String de la colección Abonos
+    //Método para actualizar un campo de tipo String de la colección Anunciante
     public static void actualizarAnunciante(Anunciante nuevo, Anunciante viejo) throws UnknownHostException {
         BasicDBObject newDocument = new BasicDBObject();//Instanciamos un nuevo documento
         BasicDBObject aux = new BasicDBObject();
@@ -79,14 +79,14 @@ public class AnuncianteDAO {
         System.out.println("Documento Anunciante actualizado correctamente\n");
     }
 
-    //Método para eliminar un documento de la colección Abonos
+    //Método para eliminar un documento de la colección Anunciante
     public static void eliminarAnunciante(Anunciante anunciante) throws UnknownHostException {
         System.out.println(String.format("Buscando documento Abono tipo %s para eliminar...", anunciante.getAnunciante()));
         anuncianteInit().remove(new BasicDBObject().append("anunciante", anunciante.getAnunciante()));//Elimina el documento que recibe del método buscarAbono, pasándole la colección y el anunciante.
         System.out.println("Documento Anunciante eliminado\n");
     }
 
-    //Método para buscar un documento abono en la colección Abonos
+    //Método para buscar un documento abono en la colección Anunciante
     public static Anunciante buscarAnunciante(String anunciante) throws UnknownHostException {
         DBCollection collection = anuncianteInit();
         BasicDBObject searchQuery = new BasicDBObject().append("anunciante", anunciante);//Creamos la query que será los documentos que contengan como atributo "tipo" el que recibe como parámetro el método

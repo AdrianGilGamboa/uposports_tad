@@ -19,7 +19,7 @@ public class MaterialDAO {
         // Conectar a la base de datos
         DB db = mongoClient.getDB("uposports");
 
-        //Acceder coleccion "Abonos"*/
+        //Acceder coleccion "Material"*/
         DBCollection collection = db.getCollection("Materiales");
 
         return collection;
@@ -36,7 +36,7 @@ public class MaterialDAO {
         document.append("unidades", material.getUnidades());
         document.append("instalacion", material.getInstalacion().getNombre());
 
-        //Obtencion coleccion "Cliente"
+        //Obtencion coleccion "Material"
         collection.insert(document);
         System.out.println("Documento Material insertado: " + document + "\n");
         System.out.println("Material insertado: " + document);
@@ -65,12 +65,12 @@ public class MaterialDAO {
 
     public static void eliminaMaterial(Material m) throws UnknownHostException {
         System.out.println(String.format("Buscando documento Empleado dni %s para eliminar...", m.getNombre()));
-        materialInit().remove(new BasicDBObject().append("nombre", m.getNombre()));//Elimina el documento que recibe del método buscarAbono, pasándole la colección y el tipo de Abono.
+        materialInit().remove(new BasicDBObject().append("nombre", m.getNombre()));//Elimina el documento que recibe del método buscarMaterial, pasándole la colección y el tipo de Material.
         System.out.println("Documento Material eliminado\n");
     }
 
     public static Material buscarMaterial(String nombre) throws UnknownHostException {
-        BasicDBObject searchQuery = new BasicDBObject().append("nombre", nombre);//Creamos la query que será los documentos que contengan como atributo "tipo" el que recibe como parámetro el método
+        BasicDBObject searchQuery = new BasicDBObject().append("nombre", nombre);//Creamos la query que será los documentos que contengan como atributo "nombre" el que recibe como parámetro el método
         DBCursor cursor = materialInit().find(searchQuery);//Los elementos que cumplan la condicion de searchQuery se introducen en cursor
         if (cursor.hasNext()) {
             DBObject elemento = cursor.next();//Solamente debemos tener uno, ya que le pasamos el tipo que es nuestro ID.
@@ -94,7 +94,7 @@ public class MaterialDAO {
         System.out.println("Documento Empleado actualizado correctamente\n");
     } */
 
-    //Método para actualizar un campo de tipo int de la colección AbonosDAO (método sobrecargado)
+    //Método para actualizar un campo de tipo int de la colección MaterialDAO (método sobrecargado)
     public static void actualizarMaterial(Material nuevo, Material viejo) throws UnknownHostException {
         BasicDBObject newDocument = new BasicDBObject();
         BasicDBObject searchQuery = new BasicDBObject().append("nombre", viejo.getNombre());
