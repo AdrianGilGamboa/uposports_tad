@@ -96,12 +96,12 @@ public class ClienteDAO {
                 }
             }
         }
-                clienteInit().update(searchQuery, newDocument);
-                System.out.println("Nombre del cliente actualizado correctamente");
+        clienteInit().update(searchQuery, newDocument);
+        System.out.println("Nombre del cliente actualizado correctamente");
     }
-    
-    public static void actualizaClienteAbono(String abono, Cliente viejo) throws UnknownHostException{
-                //Actualizacion del valor de un campo
+
+    public static void actualizaClienteAbono(String abono, Cliente viejo) throws UnknownHostException {
+        //Actualizacion del valor de un campo
         BasicDBObject newDocument = new BasicDBObject();
         BasicDBObject aux = new BasicDBObject();
 
@@ -114,12 +114,11 @@ public class ClienteDAO {
         newDocument.append("$set", aux.append("abono", abono));
         // Indica el filtro a usar para aplicar la modificacion
         DBObject searchQuery = new BasicDBObject().append("dni", viejo.getDni());
-                clienteInit().update(searchQuery, newDocument);
-                System.out.println("Nombre del cliente actualizado correctamente");
+        clienteInit().update(searchQuery, newDocument);
+        System.out.println("Nombre del cliente actualizado correctamente");
     }
-    
-    //Método para buscar un documento abono en la colección AbonoDAO
 
+    //Método para buscar un documento abono en la colección AbonoDAO
     public static boolean clientesConAbono(Abono a) throws UnknownHostException {
         BasicDBObject searchQuery = new BasicDBObject().append("abono", a.getTipo());//Creamos la query que será los documentos que contengan como atributo "tipo" el que recibe como parámetro el método
         DBCursor cursor = clienteInit().find(searchQuery);//Los elementos que cumplan la condicion de searchQuery se introducen en cursor        

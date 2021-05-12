@@ -64,7 +64,8 @@ public class EmpleadoDAO {
         System.out.println("Fin de la colección Empleados\n");
         return listaEmpleados;
     }
-/*
+
+    /*
     //Método para actualizar un campo de tipo String de la colección AbonosDAO
     public static void actualizarEmpleado(DBCollection collection, DBObject empleado, String campo, String nuevoValor) {
         BasicDBObject newDocument = new BasicDBObject();//Instanciamos un nuevo documento
@@ -72,7 +73,7 @@ public class EmpleadoDAO {
         collection.update(empleado, newDocument);//Actualizamos el documento "abono" recibido por parámetro con el nuevo campo del documento creado
         System.out.println("Documento Empleado actualizado correctamente\n");
     }
-*/
+     */
     //Método para actualizar un campo de tipo int de la colección AbonosDAO (método sobrecargado)
     public static void actualizarEmpleado(Empleado nuevo, Empleado viejo) throws UnknownHostException {
         BasicDBObject newDocument = new BasicDBObject();
@@ -97,7 +98,7 @@ public class EmpleadoDAO {
     public static Empleado buscarEmpleado(String dni) throws UnknownHostException {
         BasicDBObject searchQuery = new BasicDBObject().append("dni", dni);//Creamos la query que será los documentos que contengan como atributo "tipo" el que recibe como parámetro el método
         DBCursor cursor = empleadoInit().find(searchQuery);//Los elementos que cumplan la condicion de searchQuery se introducen en cursor
-        if(cursor.hasNext()){
+        if (cursor.hasNext()) {
             Empleado aux = new Empleado();
             DBObject elemento = cursor.next();//Solamente debemos tener uno, ya que le pasamos el tipo que es nuestro ID.
             aux.setNombre((String) elemento.get("nombre"));
@@ -106,7 +107,8 @@ public class EmpleadoDAO {
             aux.setTelefono((Integer) elemento.get("telefono"));
             System.out.println(String.format("Documento Empleado encontrado: %s", elemento));
             return aux;//Devolvemos el documento que será útil para otras operaciones CRUD
-        }else
+        } else {
             return null;
-    }   
+        }
+    }
 }

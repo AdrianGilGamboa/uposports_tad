@@ -1,7 +1,6 @@
 package clases;
 
 //Clase para la instancia de Abono, con su constructor, toString y getters y setters.
-
 public class Abono {
 
     private String tipo;

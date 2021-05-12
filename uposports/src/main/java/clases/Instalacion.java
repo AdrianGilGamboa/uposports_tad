@@ -39,6 +39,4 @@ public class Instalacion {
         return "Instalacion{" + "nombre=" + nombre + ", descripcion=" + descripcion + ", capacidad=" + capacidad + '}';
     }
 
-   
-
 }

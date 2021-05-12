@@ -2,9 +2,8 @@ package clases;
 
 import java.util.Date;
 
-
 public class Anunciante {
-    
+
     private String anunciante;
     private Double precioContrato;
     private Date fechaIni;
@@ -44,7 +43,5 @@ public class Anunciante {
     public void setFechaFin(Date fechaFin) {
         this.fechaFin = fechaFin;
     }
-    
-    
-    
+
 }

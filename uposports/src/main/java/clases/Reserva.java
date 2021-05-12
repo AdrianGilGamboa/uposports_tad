@@ -1,20 +1,19 @@
-
 package clases;
 
 import bbdd.ReservaDAO;
 import java.net.UnknownHostException;
 import java.util.Date;
 
-
 public class Reserva {
+
     private int id_reserva;
     private Date inicioReserva;
     private Date finReserva;
     private Cliente cliente;
     private Instalacion instalacion;
-    
-    public Reserva() throws UnknownHostException{
-        id_reserva=ReservaDAO.siguienteID();
+
+    public Reserva() throws UnknownHostException {
+        id_reserva = ReservaDAO.siguienteID();
     }
 
     public int getId_reserva() {

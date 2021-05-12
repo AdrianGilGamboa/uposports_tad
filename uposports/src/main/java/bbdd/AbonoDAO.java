@@ -65,15 +65,6 @@ public class AbonoDAO {
 
     }
 
-    /*
-    //Método para actualizar un campo de tipo String de la colección AbonoDAO
-    public static void actualizarAbono(DBCollection collection, DBObject abono, String campo, String nuevoValor) {
-        BasicDBObject newDocument = new BasicDBObject();//Instanciamos un nuevo documento
-        newDocument.append("$set", new BasicDBObject().append(campo, nuevoValor));//Actualizamos el campo con el nuevoValor (ambos atributos se reciben por parámetro)
-        collection.update(abono, newDocument);//Actualizamos el documento "abono" recibido por parámetro con el nuevo campo del documento creado
-        System.out.println("Documento Abono actualizado correctamente\n");
-    }
-     */
     //Método para actualizar un campo de tipo int de la colección AbonoDAO (método sobrecargado)
     public static void actualizarAbono(Abono nuevo, Abono viejo) throws UnknownHostException {
         BasicDBObject newDocument = new BasicDBObject();
@@ -83,11 +74,11 @@ public class AbonoDAO {
         newDocument.append("$set", aux.append("duracion", nuevo.getDuracion()));
         // Indica el filtro a usar para aplicar la modificacion
         DBObject searchQuery = new BasicDBObject().append("tipo", viejo.getTipo());
-           if(!viejo.getTipo().equals(nuevo.getTipo())){
+        if (!viejo.getTipo().equals(nuevo.getTipo())) {
             ArrayList<Cliente> listaClientes = ClienteDAO.consultaClientes();
-            if(listaClientes.size() > 0){
-                for( int i = 0; i< listaClientes.size(); i++){
-                    if(listaClientes.get(i).getAbono().getTipo().equals(viejo.getTipo())){
+            if (listaClientes.size() > 0) {
+                for (int i = 0; i < listaClientes.size(); i++) {
+                    if (listaClientes.get(i).getAbono().getTipo().equals(viejo.getTipo())) {
                         ClienteDAO.actualizaClienteAbono(nuevo.getTipo(), listaClientes.get(i));
                     }
                 }

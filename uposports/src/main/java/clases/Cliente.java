@@ -1,6 +1,5 @@
 package clases;
 
-
 public class Cliente {
 
     //CREAMOS LOS ATRIBUTOS DE LA CLASE CLIENTE SUS GETTER Y SETTER
@@ -18,20 +17,6 @@ public class Cliente {
     public void setAbono(Abono abono) {
         this.abono = abono;
     }
-
-   /* public Abono setAbono(String tipo) {
-        boolean encontrado=false;
-        int i=0;
-        Abono a = null;
-        while (encontrado != true) {
-            if(AbonoUI.listaAbonos.get(i).getTipo().equals(tipo)){
-                a = AbonoUI.listaAbonos.get(i);
-                encontrado=true;
-            }
-        }
-        this.abono = a;
-        return a;
-    }*/
 
     public Cliente(String dni, String nombre) {
         this.dni = dni;
