@@ -21,7 +21,7 @@ public class AnuncianteDAO {
         // Conectar a la base de datos
         DB db = mongoClient.getDB("uposports");
 
-        //Acceder coleccion "Abonos"*/
+        //Acceder coleccion "Anunciantes"*/
         DBCollection collection = db.getCollection("Anunciantes");
 
         return collection;
