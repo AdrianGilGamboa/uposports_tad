@@ -1,16 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
- 
 package clases;
 
-/**
- *
- * @author manum
- */
 public class Material {
+
     private String nombre;
     private String descripcion;
     private int unidades;
@@ -20,8 +11,8 @@ public class Material {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.unidades = unidades;
-        this.instalacion =i;
-        
+        this.instalacion = i;
+
     }
 
     public Instalacion getInstalacion() {
@@ -35,7 +26,6 @@ public class Material {
     public Material() {
 
     }
-  
 
     public String getNombre() {
         return nombre;
@@ -60,8 +50,8 @@ public class Material {
     public void setUnidades(int unidades) {
         this.unidades = unidades;
     }
-   
-      @Override
+
+    @Override
     public String toString() {
         return "Material{" + "nombre=" + nombre + ", descripcion=" + descripcion + ", unidades=" + unidades + '}';
     }

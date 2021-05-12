@@ -99,7 +99,7 @@ public class InstalacionUI extends UI {
         buttonAnunciantes.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Anunciante");//Accedemos a la entidad abono
         });
-        
+
         Label label = new Label("<h2 style='margin-top:0'> Instalaciones Registradas </h2>", ContentMode.HTML);
 
         if (layoutMostrarInstalaciones.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
@@ -181,7 +181,7 @@ public class InstalacionUI extends UI {
             vaadinRequest.setAttribute("descripcion", descripcion.getValue());//Añadimos en la petición el valor del campo descripción
             vaadinRequest.setAttribute("capacidad", capacidad.getValue());//Añadimos en la petición el valor del campo capacidad
             try {
-                if(comprobarId(vaadinRequest)){
+                if (comprobarId(vaadinRequest)) {
                     if (comprobarDatos(vaadinRequest) == true) {
                         //Se comprueban los datos, y si son correctos...
                         registrarInstalacion(vaadinRequest);//Se envían los datos a registro de instalación

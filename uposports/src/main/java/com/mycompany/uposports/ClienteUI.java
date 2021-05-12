@@ -258,6 +258,10 @@ public class ClienteUI extends UI {
                                 });
                                 tf.setTextChangeEventMode(TextChangeEventMode.LAZY);
                                 Button bFinalizar = new Button("Finalizar", FontAwesome.CHECK);
+                                Button buttonCancelar = new Button("Cancelar", FontAwesome.CLOSE);//Nuevo botón para cancelar
+                                buttonCancelar.addClickListener(a -> {//Acción del botón
+                                    init(request);//Se lanza el método principal
+                                });
                                 bFinalizar.addClickListener(a -> {
                                     Pago pago = new Pago();
                                     pago.setFecha(new Date());
@@ -275,7 +279,7 @@ public class ClienteUI extends UI {
                                     }
 
                                 });
-                                layH.addComponents(bFinalizar);
+                                layH.addComponents(buttonCancelar, bFinalizar);
                                 layH.setSpacing(true);
                                 //layH.setMargin(true);
                                 form.addComponents(label2, tf, devolucion, layH);
@@ -303,7 +307,12 @@ public class ClienteUI extends UI {
                                 }
 
                             });
-                            layH.addComponents(bEfectivo, bTarjeta);
+
+                            Button buttonCancelar = new Button("Cancelar", FontAwesome.CLOSE);//Nuevo botón para cancelar
+                            buttonCancelar.addClickListener(a -> {//Acción del botón
+                                init(request);//Se lanza el método principal
+                            });
+                            layH.addComponents(buttonCancelar, bEfectivo, bTarjeta);
                             layH.setSpacing(true);
                             //layH.setMargin(true);
                             form.addComponents(label2, label1, layH);
@@ -425,6 +434,10 @@ public class ClienteUI extends UI {
                                     }
                                 });
                                 tf.setTextChangeEventMode(TextChangeEventMode.LAZY);
+                                Button buttonCancelar = new Button("Cancelar", FontAwesome.CLOSE);//Nuevo botón para cancelar
+                                buttonCancelar.addClickListener(a -> {//Acción del botón
+                                    init(request);//Se lanza el método principal
+                                });
                                 Button bFinalizar = new Button("Finalizar", FontAwesome.CHECK);
                                 bFinalizar.addClickListener(a -> {
                                     Pago pago = new Pago();
@@ -443,14 +456,12 @@ public class ClienteUI extends UI {
                                     }
 
                                 });
-                                layH.addComponents(bFinalizar);
+                                layH.addComponents(buttonCancelar, bFinalizar);
                                 layH.setSpacing(true);
-                                //layH.setMargin(true);
                                 form.addComponents(label2, tf, devolucion, layH);
                                 form.setMargin(true);
                                 form.setSpacing(true);
                                 setContent(form);
-                                //getUI().getPage().setLocation("/Cliente");
                             });
 
                             Button bTarjeta = new Button("Pago con tarjeta");
@@ -471,21 +482,22 @@ public class ClienteUI extends UI {
                                 }
 
                             });
-                            layH.addComponents(bEfectivo, bTarjeta);
+                            Button buttonCancelar = new Button("Cancelar", FontAwesome.CLOSE);//Nuevo botón para cancelar
+                            buttonCancelar.addClickListener(a -> {//Acción del botón
+                                init(request);//Se lanza el método principal
+                            });
+                            layH.addComponents(buttonCancelar, bEfectivo, bTarjeta);
                             layH.setSpacing(true);
-                            //layH.setMargin(true);
                             form.addComponents(label2, label1, layH);
                             form.setMargin(true);
                             form.setSpacing(true);
                             setContent(form);
                             //Fin proceso pago
-                            ClienteDAO.actualizaCliente(aux, cliente);
                         }
                     } catch (UnknownHostException ex) {
                         Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
-                    //init(request);
                 }
             }
         });

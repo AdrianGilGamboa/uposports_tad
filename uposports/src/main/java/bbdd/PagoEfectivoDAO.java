@@ -1,4 +1,3 @@
-
 package bbdd;
 
 import clases.Pago;
@@ -7,7 +6,6 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 import java.net.UnknownHostException;
-
 
 public class PagoEfectivoDAO {
 

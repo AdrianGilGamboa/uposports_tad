@@ -2,7 +2,6 @@ package com.mycompany.uposports;
 
 import bbdd.EmpleadoDAO;
 import clases.Empleado;
-import static com.mycompany.uposports.ClienteUI.isInteger;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
@@ -98,13 +97,12 @@ public class EmpleadoUI extends UI {
         buttonAnunciantes.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Anunciante");//Accedemos a la entidad abono
         });
-        
+
         Label label = new Label("<h2 style='margin-top:0'> Empleados Registrados </h2>", ContentMode.HTML);
 
         if (layoutMostrarEmpleados.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
             layoutH.addComponents(layoutHLabelabelTitulo, buttonReservas, buttonCliente, buttonAbonos, buttonInstalacion, buttonMateriales, buttonEmpleados, buttonAnunciantes, buttonLogout);//Añadimos los componentes al layout horizontal
             //Le metemos margen y espaciado, para mostrarlo posteriormente.
-            
 
             layoutH2.setMargin(true);
             layoutH2.setSpacing(true);

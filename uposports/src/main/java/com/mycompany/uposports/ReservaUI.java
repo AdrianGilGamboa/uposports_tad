@@ -188,10 +188,11 @@ public class ReservaUI extends UI {
                         }
                         init(request);
                     });
-                    
-                    editar.addClickListener(e -> { try {
-                        //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
-                        editarReserva(aux, request); //EJECUTA LA FUNCION EDITAR CLIENTE
+
+                    editar.addClickListener(e -> {
+                        try {
+                            //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
+                            editarReserva(aux, request); //EJECUTA LA FUNCION EDITAR CLIENTE
                         } catch (UnknownHostException ex) {
                             Logger.getLogger(ReservaUI.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -241,9 +242,10 @@ public class ReservaUI extends UI {
                             init(request);
                         });
 
-                        update.addClickListener(a -> { try {
-                            //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
-                            editarReserva(aux, request); //EJECUTA LA FUNCION EDITAR CLIENTE
+                        update.addClickListener(a -> {
+                            try {
+                                //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
+                                editarReserva(aux, request); //EJECUTA LA FUNCION EDITAR CLIENTE
                             } catch (UnknownHostException ex) {
                                 Logger.getLogger(ReservaUI.class.getName()).log(Level.SEVERE, null, ex);
                             }
@@ -295,9 +297,10 @@ public class ReservaUI extends UI {
                             init(request);
                         });
 
-                        update.addClickListener(a -> { try {
-                            //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
-                            editarReserva(aux, request); //EJECUTA LA FUNCION EDITAR CLIENTE
+                        update.addClickListener(a -> {
+                            try {
+                                //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
+                                editarReserva(aux, request); //EJECUTA LA FUNCION EDITAR CLIENTE
                             } catch (UnknownHostException ex) {
                                 Logger.getLogger(ReservaUI.class.getName()).log(Level.SEVERE, null, ex);
                             }
@@ -350,9 +353,10 @@ public class ReservaUI extends UI {
                             init(request);
                         });
 
-                        update.addClickListener(a -> { try {
-                            //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
-                            editarReserva(aux, request); //EJECUTA LA FUNCION EDITAR CLIENTE
+                        update.addClickListener(a -> {
+                            try {
+                                //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
+                                editarReserva(aux, request); //EJECUTA LA FUNCION EDITAR CLIENTE
                             } catch (UnknownHostException ex) {
                                 Logger.getLogger(ReservaUI.class.getName()).log(Level.SEVERE, null, ex);
                             }
@@ -436,7 +440,6 @@ public class ReservaUI extends UI {
         setContent(layout);
     }
 
-    
     public void editarReserva(Reserva r, VaadinRequest request) throws UnknownHostException {
         layout.removeAllComponents();
         //CREAMOS UN FORMULARIO PARA PODER EDITAR LA RESERVA
@@ -462,7 +465,7 @@ public class ReservaUI extends UI {
             instalacion.addItems(listaInstalaciones.get(i).getNombre());
         }
         instalacion.setValue(r.getInstalacion().getNombre());
-        datos.addComponents(inicioReserva, finReserva,dni,instalacion);
+        datos.addComponents(inicioReserva, finReserva, dni, instalacion);
         datos.setMargin(true);
         datos.setSpacing(true);
         Button enviar = new Button("Modificar", FontAwesome.EDIT);
@@ -471,15 +474,15 @@ public class ReservaUI extends UI {
             try {
                 if (comprobarDatos((Date) inicioReserva.getValue(), (Date) finReserva.getValue()) == true && comprobarCliente(dni.getValue())) {
                     Reserva aux;
-                        aux = new Reserva();
-                        
-                        aux.setInicioReserva(inicioReserva.getValue());
-                        aux.setFinReserva(finReserva.getValue());
-                        aux.setCliente(ClienteDAO.buscarCliente(dni.getValue()));
-                        aux.setInstalacion(InstalacionDAO.buscarInstalacion((String) instalacion.getValue()));
-                        aux.setId_reserva(r.getId_reserva());
-                        ReservaDAO.actualizaReserva(aux, r);
-                        init(request);
+                    aux = new Reserva();
+
+                    aux.setInicioReserva(inicioReserva.getValue());
+                    aux.setFinReserva(finReserva.getValue());
+                    aux.setCliente(ClienteDAO.buscarCliente(dni.getValue()));
+                    aux.setInstalacion(InstalacionDAO.buscarInstalacion((String) instalacion.getValue()));
+                    aux.setId_reserva(r.getId_reserva());
+                    ReservaDAO.actualizaReserva(aux, r);
+                    init(request);
                 }
             } catch (UnknownHostException ex) {
                 Logger.getLogger(ReservaUI.class.getName()).log(Level.SEVERE, null, ex);

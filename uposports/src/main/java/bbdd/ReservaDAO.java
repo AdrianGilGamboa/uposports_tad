@@ -217,6 +217,7 @@ public class ReservaDAO {
                 aux.setInstalacion(InstalacionDAO.buscarInstalacion((String) elemento.get("instalacion")));
                 eliminaReserva(aux);
             }
+
         }
     }
 }

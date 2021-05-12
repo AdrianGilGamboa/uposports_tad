@@ -1,15 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package clases;
 
-/**
- *
- * @author manum
- */
 public class Empleado {
+
     private String dni;
     private String nombre;
     private String apellidos;
@@ -24,8 +16,6 @@ public class Empleado {
 
     public Empleado() {
     }
-
-   
 
     public String getDni() {
         return dni;
@@ -58,7 +48,8 @@ public class Empleado {
     public void setTelefono(int telefono) {
         this.telefono = telefono;
     }
-     @Override
+
+    @Override
     public String toString() {
         return "Empleado{" + "dni=" + dni + ", nombre=" + nombre + ", apellidos=" + apellidos + ", telefono=" + telefono + '}';
     }

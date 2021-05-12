@@ -1,6 +1,5 @@
 package bbdd;
 
-import static bbdd.EmpleadoDAO.buscarEmpleado;
 import clases.Material;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -10,7 +9,6 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import static javafx.scene.Cursor.cursor;
 
 public class MaterialDAO {
 
@@ -87,6 +85,7 @@ public class MaterialDAO {
             return null;
         }
     }
+
     /*
     public static void actualizarMaterial(DBCollection collection, DBObject material, String campo, String nuevoValor) {
         BasicDBObject newDocument = new BasicDBObject();//Instanciamos un nuevo documento
@@ -107,9 +106,8 @@ public class MaterialDAO {
         materialInit().update(searchQuery, newDocument);
         System.out.println("Documento Empleados actualizado correctamente\n");
     }
-    
-    
-    public static void actualizarMaterialInstalacion(String instalacion, Material viejo) throws UnknownHostException{
+
+    public static void actualizarMaterialInstalacion(String instalacion, Material viejo) throws UnknownHostException {
         BasicDBObject newDocument = new BasicDBObject();
         BasicDBObject searchQuery = new BasicDBObject().append("nombre", viejo.getNombre());
         BasicDBObject aux = new BasicDBObject();
