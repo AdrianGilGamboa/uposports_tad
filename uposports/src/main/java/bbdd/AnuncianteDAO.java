@@ -1,6 +1,5 @@
 package bbdd;
 
-import clases.Abono;
 import clases.Anunciante;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -10,7 +9,6 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import java.net.UnknownHostException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 

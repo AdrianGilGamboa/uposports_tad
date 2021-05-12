@@ -1,24 +1,16 @@
 package bbdd;
 
 import clases.Abono;
-import clases.Anunciante;
 import clases.Cliente;
 import clases.Reserva;
-import java.net.UnknownHostException;
 import com.mongodb.MongoClient;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
-import com.mycompany.uposports.ReservaUI;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import static javafx.scene.Cursor.cursor;
-import javax.swing.text.Document;
-import org.omg.CORBA.ORB;
 
 public class ClienteDAO {
 

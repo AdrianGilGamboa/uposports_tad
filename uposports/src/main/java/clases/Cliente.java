@@ -1,6 +1,5 @@
 package clases;
 
-import com.mycompany.uposports.*;
 
 public class Cliente {
 

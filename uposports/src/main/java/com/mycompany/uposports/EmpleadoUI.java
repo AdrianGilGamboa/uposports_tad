@@ -2,7 +2,6 @@ package com.mycompany.uposports;
 
 import bbdd.EmpleadoDAO;
 import clases.Empleado;
-import static com.mycompany.uposports.ClienteUI.isInteger;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
