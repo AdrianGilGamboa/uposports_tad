@@ -4,6 +4,7 @@ import bbdd.AbonoDAO;
 import bbdd.ClienteDAO;
 import bbdd.PagoEfectivoDAO;
 import bbdd.PagoTarjetaDAO;
+import bbdd.ReservaDAO;
 import clases.Abono;
 import clases.Cliente;
 import clases.Pago;
@@ -142,7 +143,8 @@ public class ClienteUI extends UI {
                     eliminar.addClickListener(e -> {
                         try {
                             //AÑADIMOS EL BOTON DE ELIMINAR POR CADA CLIENTE
-                            //listaClientes.remove(aux); //Elimina el cliente de la lista                    
+                            //listaClientes.remove(aux); //Elimina el cliente de la lista
+                            ReservaDAO.eliminaReservasCliente(aux);
                             ClienteDAO.eliminaCliente(aux);
                         } catch (UnknownHostException ex) {
                             Logger.getLogger(ClienteUI.class.getName()).log(Level.SEVERE, null, ex);

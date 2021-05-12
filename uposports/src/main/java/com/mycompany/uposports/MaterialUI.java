@@ -153,7 +153,12 @@ public class MaterialUI extends UI {
                                 Notification.Type.TRAY_NOTIFICATION);
                     });
                     //Añadimos la fila a la tabla
-                    table.addItem(new Object[]{material.getNombre(), material.getDescripcion(), material.getUnidades(), material.getInstalacion().getNombre(), buttonModificar, buttonEliminar}, i);
+                    String ins;
+                    if(material.getInstalacion() != null)
+                        ins=material.getInstalacion().getNombre();
+                    else
+                        ins="-";
+                    table.addItem(new Object[]{material.getNombre(), material.getDescripcion(), material.getUnidades(),ins, buttonModificar, buttonEliminar}, i);
 
                     layoutMostrarMateriales.addComponent(table);//Lo añadimos al layout vertical
                 }
@@ -259,7 +264,8 @@ public class MaterialUI extends UI {
             System.out.println(listaInstalaciones.get(i).getNombre());
             instalacion.addItems(listaInstalaciones.get(i).getNombre());
         }
-        instalacion.setValue(material.getInstalacion().getNombre());
+        if(material.getInstalacion() != null)
+            instalacion.setValue(material.getInstalacion().getNombre());
 
         buttonRegistrar.addClickListener(e -> {
             vaadinRequest.setAttribute("instalacion", instalacion.getValue());

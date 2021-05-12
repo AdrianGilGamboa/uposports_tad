@@ -1,5 +1,7 @@
 package bbdd;
 
+import clases.Cliente;
+import clases.Instalacion;
 import clases.Reserva;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -44,7 +46,7 @@ public class ReservaDAO {
 
     public static ArrayList<Reserva> consultaReservas() throws UnknownHostException {
         // Obtenemos todos los documentos de la coleccion
-        DBCursor cursor = reservasInit().find().sort(new BasicDBObject("inicio",1));
+        DBCursor cursor = reservasInit().find().sort(new BasicDBObject("inicio", 1));
         ArrayList<Reserva> listaReserva = new ArrayList();
         //Recorrido de todos los elementos de la coleccion
         System.out.println("Recorrido de la coleccion:");
@@ -64,8 +66,8 @@ public class ReservaDAO {
         }
         return listaReserva;
     }
-    
-        public static ArrayList<Reserva> consultaReservasHoy() throws UnknownHostException {
+
+    public static ArrayList<Reserva> consultaReservasHoy() throws UnknownHostException {
         // Obtenemos todos los documentos de la coleccion
         BasicDBObject searchQuery = new BasicDBObject().append("inicio", new Date("yyyy-MM-dd"));//Creamos la query que será los documentos que contengan como atributo "tipo" el que recibe como parámetro el método
         DBCursor cursor = reservasInit().find(searchQuery);
@@ -108,7 +110,7 @@ public class ReservaDAO {
         BasicDBObject searchQuery = new BasicDBObject().append("id", vieja.getId_reserva());
         reservasInit().update(searchQuery, newDocument);
     }
-    
+
     public static void actualizaReservaDNI(String dni, Reserva vieja) throws UnknownHostException {
         //Actualizacion del valor de un campo
         BasicDBObject newDocument = new BasicDBObject();
@@ -123,9 +125,9 @@ public class ReservaDAO {
         BasicDBObject searchQuery = new BasicDBObject().append("id", vieja.getId_reserva());
         reservasInit().update(searchQuery, newDocument);
     }
-    
-    public static void actualizaReservaInstalacion(String instalacion, Reserva vieja) throws UnknownHostException{
-                //Actualizacion del valor de un campo
+
+    public static void actualizaReservaInstalacion(String instalacion, Reserva vieja) throws UnknownHostException {
+        //Actualizacion del valor de un campo
         BasicDBObject newDocument = new BasicDBObject();
         BasicDBObject aux = new BasicDBObject();
         // Indica el atributo hora y su valor a establecer ($set)
@@ -173,7 +175,48 @@ public class ReservaDAO {
                     max = (int) elemento.get("id");
                 }
             }
-            return max+1;
+            return max + 1;
+        }
+    }
+
+    public static void eliminaReservasCliente(Cliente c) throws UnknownHostException {
+        // Obtenemos todos los documentos de la coleccion
+        DBCursor cursor = reservasInit().find();
+        ArrayList<Reserva> listaReserva = new ArrayList();
+        //Recorrido de todos los elementos de la coleccion
+        DBObject elemento;
+        while (cursor.hasNext()) {
+            elemento = cursor.next();
+            if (c.getDni().equals((String) elemento.get("cliente"))) {
+                Reserva aux = new Reserva();
+                aux.setId_reserva((int) elemento.get("id"));
+                aux.setInicioReserva((Date) elemento.get("inicio"));
+                aux.setFinReserva((Date) elemento.get("fin"));
+                aux.setCliente(ClienteDAO.buscarCliente((String) elemento.get("cliente")));
+                aux.setInstalacion(InstalacionDAO.buscarInstalacion((String) elemento.get("instalacion")));
+                eliminaReserva(aux);
+            }
+
+        }
+    }
+    
+    public static void eliminaReservasInstalacion(Instalacion i) throws UnknownHostException {
+        // Obtenemos todos los documentos de la coleccion
+        DBCursor cursor = reservasInit().find();
+        ArrayList<Reserva> listaReserva = new ArrayList();
+        //Recorrido de todos los elementos de la coleccion
+        DBObject elemento;
+        while (cursor.hasNext()) {
+            elemento = cursor.next();
+            if (i.getNombre().equals((String) elemento.get("instalacion"))) {
+                Reserva aux = new Reserva();
+                aux.setId_reserva((int) elemento.get("id"));
+                aux.setInicioReserva((Date) elemento.get("inicio"));
+                aux.setFinReserva((Date) elemento.get("fin"));
+                aux.setCliente(ClienteDAO.buscarCliente((String) elemento.get("cliente")));
+                aux.setInstalacion(InstalacionDAO.buscarInstalacion((String) elemento.get("instalacion")));
+                eliminaReserva(aux);
+            }
         }
     }
 }

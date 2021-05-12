@@ -1,6 +1,7 @@
 package com.mycompany.uposports;
 
 import bbdd.InstalacionDAO;
+import bbdd.ReservaDAO;
 import clases.Instalacion;
 import com.vaadin.annotations.PreserveOnRefresh;
 import javax.servlet.annotation.WebServlet;
@@ -134,6 +135,7 @@ public class InstalacionUI extends UI {
                         try {
                             //Acción del botón
                             //listaInstalaciones.remove(instalacion);
+                            ReservaDAO.eliminaReservasInstalacion(instalacion);
                             InstalacionDAO.eliminarInstalacion(instalacion);     //Eliminamos el objeto de la BBDD
                         } catch (UnknownHostException ex) {
                             Logger.getLogger(InstalacionUI.class.getName()).log(Level.SEVERE, null, ex);
