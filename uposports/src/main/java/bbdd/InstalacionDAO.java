@@ -1,6 +1,8 @@
 package bbdd;
 
 import clases.Instalacion;
+import clases.Material;
+import clases.Reserva;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 public class InstalacionDAO {
 
     private static DBCollection instalacionesInit() throws UnknownHostException {
-        
+
 // Conectar al servidor MongoDB
         MongoClient mongoClient = new MongoClient("localhost", 27017);
 
@@ -79,8 +81,26 @@ public class InstalacionDAO {
         newDocument.append("$set", aux.append("nombre", nueva.getNombre()));
         newDocument.append("$set", aux.append("descripcion", nueva.getDescripcion()));
         newDocument.append("$set", aux.append("capacidad", nueva.getCapacidad()));
+        if (!vieja.getNombre().equals(nueva.getNombre())) {
+            ArrayList<Reserva> listaReservas = ReservaDAO.consultaReservas();
+            ArrayList<Material> listaMateriales = MaterialDAO.consultaMateriales();
+            if (listaReservas.size() > 0) {
+                for (int i = 0; i < listaReservas.size(); i++) {
+                    if (listaReservas.get(i).getCliente().getDni().equals(vieja.getNombre())) {
+                        ReservaDAO.actualizaReservaInstalacion(nueva.getNombre(), listaReservas.get(i));
+                    }
+                }
+            }
+            if (listaMateriales.size() > 0) {
+                for (int i = 0; i < listaMateriales.size(); i++) {
+                    if (listaMateriales.get(i).getInstalacion().getNombre().equals(vieja.getNombre())) {
+                        MaterialDAO.actualizarMaterialInstalacion(nueva.getNombre(), listaMateriales.get(i));
+                    }
+                }
+            }
+        }
         instalacionesInit().update(query, newDocument);
-        System.out.println("Documento Abono actualizado correctamente\n");
+        System.out.println("Documento Instalación actualizado correctamente\n");
     }
 
     //Método para eliminar un documento de la colección Abonos

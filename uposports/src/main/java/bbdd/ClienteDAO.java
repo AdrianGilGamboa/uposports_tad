@@ -11,6 +11,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mycompany.uposports.ReservaUI;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -101,11 +102,30 @@ public class ClienteDAO {
                         ReservaDAO.actualizaReservaDNI(c.getDni(), listaReservas.get(i));
                     }
                 }
-                clienteInit().update(searchQuery, newDocument);
-                System.out.println("Nombre del cliente actualizado correctamente");
             }
         }
+                clienteInit().update(searchQuery, newDocument);
+                System.out.println("Nombre del cliente actualizado correctamente");
     }
+    
+    public static void actualizaClienteAbono(String abono, Cliente viejo) throws UnknownHostException{
+                //Actualizacion del valor de un campo
+        BasicDBObject newDocument = new BasicDBObject();
+        BasicDBObject aux = new BasicDBObject();
+
+        // Indica el atributo nombre y su valor a establecer ($set)
+        newDocument.append("$set", aux.append("telefono", viejo.getTelefono()));
+        newDocument.append("$set", aux.append("nombre", viejo.getNombre()));
+        newDocument.append("$set", aux.append("apellidos", viejo.getApellidos()));
+        newDocument.append("$set", aux.append("dni", viejo.getDni()));
+        newDocument.append("$set", aux.append("CP", viejo.getCodigoPostal()));
+        newDocument.append("$set", aux.append("abono", abono));
+        // Indica el filtro a usar para aplicar la modificacion
+        DBObject searchQuery = new BasicDBObject().append("dni", viejo.getDni());
+                clienteInit().update(searchQuery, newDocument);
+                System.out.println("Nombre del cliente actualizado correctamente");
+    }
+    
     //Método para buscar un documento abono en la colección AbonoDAO
 
     public static boolean clientesConAbono(Abono a) throws UnknownHostException {

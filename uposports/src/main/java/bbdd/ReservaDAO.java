@@ -1,7 +1,6 @@
 package bbdd;
 
 import clases.Reserva;
-import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -11,8 +10,6 @@ import com.mongodb.MongoClient;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
-import jdk.nashorn.internal.runtime.arrays.ArrayLikeIterator;
 
 public class ReservaDAO {
 
@@ -122,6 +119,21 @@ public class ReservaDAO {
         newDocument.append("$set", aux.append("fin", vieja.getFinReserva()));
         newDocument.append("$set", aux.append("cliente", dni));
         newDocument.append("$set", aux.append("instalacion", vieja.getInstalacion().getNombre()));
+        // Indica el filtro a usar para aplicar la modificacion
+        BasicDBObject searchQuery = new BasicDBObject().append("id", vieja.getId_reserva());
+        reservasInit().update(searchQuery, newDocument);
+    }
+    
+    public static void actualizaReservaInstalacion(String instalacion, Reserva vieja) throws UnknownHostException{
+                //Actualizacion del valor de un campo
+        BasicDBObject newDocument = new BasicDBObject();
+        BasicDBObject aux = new BasicDBObject();
+        // Indica el atributo hora y su valor a establecer ($set)
+        newDocument.append("$set", aux.append("id", vieja.getId_reserva()));
+        newDocument.append("$set", aux.append("inicio", vieja.getInicioReserva()));
+        newDocument.append("$set", aux.append("fin", vieja.getFinReserva()));
+        newDocument.append("$set", aux.append("cliente", vieja.getCliente().getDni()));
+        newDocument.append("$set", aux.append("instalacion", instalacion));
         // Indica el filtro a usar para aplicar la modificacion
         BasicDBObject searchQuery = new BasicDBObject().append("id", vieja.getId_reserva());
         reservasInit().update(searchQuery, newDocument);

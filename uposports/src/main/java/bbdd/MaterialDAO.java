@@ -107,4 +107,17 @@ public class MaterialDAO {
         materialInit().update(searchQuery, newDocument);
         System.out.println("Documento Empleados actualizado correctamente\n");
     }
+    
+    
+    public static void actualizarMaterialInstalacion(String instalacion, Material viejo) throws UnknownHostException{
+        BasicDBObject newDocument = new BasicDBObject();
+        BasicDBObject searchQuery = new BasicDBObject().append("nombre", viejo.getNombre());
+        BasicDBObject aux = new BasicDBObject();
+        newDocument.append("$set", aux.append("nombre", viejo.getNombre()));
+        newDocument.append("$set", aux.append("descripcion", viejo.getDescripcion()));
+        newDocument.append("$set", aux.append("unidades", viejo.getUnidades()));
+        newDocument.append("$set", aux.append("instalacion", instalacion));
+        materialInit().update(searchQuery, newDocument);
+        System.out.println("Documento Empleados actualizado correctamente\n");
+    }
 }

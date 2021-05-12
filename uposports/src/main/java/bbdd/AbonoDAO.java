@@ -1,6 +1,7 @@
 package bbdd;
 
 import clases.Abono;
+import clases.Cliente;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -83,6 +84,16 @@ public class AbonoDAO {
         newDocument.append("$set", aux.append("duracion", nuevo.getDuracion()));
         // Indica el filtro a usar para aplicar la modificacion
         DBObject searchQuery = new BasicDBObject().append("tipo", viejo.getTipo());
+           if(!viejo.getTipo().equals(nuevo.getTipo())){
+            ArrayList<Cliente> listaClientes = ClienteDAO.consultaClientes();
+            if(listaClientes.size() > 0){
+                for( int i = 0; i< listaClientes.size(); i++){
+                    if(listaClientes.get(i).getAbono().getTipo().equals(viejo.getTipo())){
+                        ClienteDAO.actualizaClienteAbono(nuevo.getTipo(), listaClientes.get(i));
+                    }
+                }
+            }
+        }
         abonoInit().update(searchQuery, newDocument);
         System.out.println("Documento Abono actualizado correctamente\n");
     }
