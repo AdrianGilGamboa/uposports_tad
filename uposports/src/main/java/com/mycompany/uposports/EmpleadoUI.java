@@ -2,6 +2,7 @@ package com.mycompany.uposports;
 
 import bbdd.EmpleadoDAO;
 import clases.Empleado;
+import static com.mycompany.uposports.ClienteUI.isInteger;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
@@ -97,14 +98,18 @@ public class EmpleadoUI extends UI {
         buttonAnunciantes.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Anunciante");//Accedemos a la entidad abono
         });
+        
+        Label label = new Label("<h2 style='margin-top:0'> Empleados Registrados </h2>", ContentMode.HTML);
 
         if (layoutMostrarEmpleados.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
             layoutH.addComponents(layoutHLabelabelTitulo, buttonReservas, buttonCliente, buttonAbonos, buttonInstalacion, buttonMateriales, buttonEmpleados, buttonAnunciantes, buttonLogout);//Añadimos los componentes al layout horizontal
             //Le metemos margen y espaciado, para mostrarlo posteriormente.
+            
+
             layoutH2.setMargin(true);
             layoutH2.setSpacing(true);
             layoutH2.addComponents(labelEntidad, crearEmpleado);
-            layoutMostrarEmpleados.addComponents(layoutH, layoutH2);
+            layoutMostrarEmpleados.addComponents(layoutH, layoutH2, label);
         }
         Table table = new Table();//Creamos la tabla donde meteremos las instancias
         table.setSizeFull();
@@ -180,16 +185,16 @@ public class EmpleadoUI extends UI {
             vaadinRequest.setAttribute("apellidos", apellidos.getValue());//Añadimos en la petición el valor del campo coste
             vaadinRequest.setAttribute("telefono", telefono.getValue());//Añadimos en la petición el valor del campo telefono
             try {
-                if(comprobarId(vaadinRequest) == true){
-                if (comprobarDatos(vaadinRequest) == true) {
+                if (comprobarId(vaadinRequest) == true && validarDNI(vaadinRequest.getAttribute("dni").toString())) {
+                    if (comprobarDatos(vaadinRequest) == true) {
 
-                    crearEmpleado(vaadinRequest);//Se lanza el método modificar abono
+                        crearEmpleado(vaadinRequest);//Se lanza el método modificar abono
 
-                    init(vaadinRequest);
-                    //Notificacion de tipo bandeja para notificar la correcta operación.
-                    Notification.show("Empleado - DNI: " + dni.getValue(), "Modificado con éxito",
-                            Notification.Type.TRAY_NOTIFICATION);
-                }
+                        init(vaadinRequest);
+                        //Notificacion de tipo bandeja para notificar la correcta operación.
+                        Notification.show("Empleado - DNI: " + dni.getValue(), "Modificado con éxito",
+                                Notification.Type.TRAY_NOTIFICATION);
+                    }
                 }
             } catch (UnknownHostException ex) {
                 Logger.getLogger(EmpleadoUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -221,7 +226,7 @@ public class EmpleadoUI extends UI {
         final VerticalLayout layout = new VerticalLayout();
         final HorizontalLayout layoutTextField = new HorizontalLayout();
         final HorizontalLayout layoutBotones = new HorizontalLayout();//Creamos un vertical layout
-        Label l = new Label("<h2>Editar Empleado</h2>", ContentMode.HTML);
+        Label l = new Label("<h2>Modificar Empleado</h2>", ContentMode.HTML);
         layout.addComponent(l);
         final TextField dni = new TextField();//Campo para insertar el tipo
         dni.setCaption("DNI:");//Texto que se muestra en dicho campo
@@ -247,14 +252,16 @@ public class EmpleadoUI extends UI {
             vaadinRequest.setAttribute("apellidos", apellidos.getValue());//Añadimos en la petición el valor del campo coste
             vaadinRequest.setAttribute("telefono", telefono.getValue());//Añadimos en la petición el valor del campo telefono
             try {
-                if (comprobarDatos(vaadinRequest) == true) {
+                if (validarDNI(vaadinRequest.getAttribute("dni").toString())) {
+                    if (comprobarDatos(vaadinRequest) == true) {
 
-                    modificarEmpleado(vaadinRequest, empleado);//Se lanza el método modificar abono
+                        modificarEmpleado(vaadinRequest, empleado);//Se lanza el método modificar abono
 
-                    init(vaadinRequest);
-                    //Notificacion de tipo bandeja para notificar la correcta operación.
-                    Notification.show("Empleado - DNI: " + dni.getValue(), "Modificado con éxito",
-                            Notification.Type.TRAY_NOTIFICATION);
+                        init(vaadinRequest);
+                        //Notificacion de tipo bandeja para notificar la correcta operación.
+                        Notification.show("Empleado - DNI: " + dni.getValue(), "Modificado con éxito",
+                                Notification.Type.TRAY_NOTIFICATION);
+                    }
                 }
             } catch (UnknownHostException ex) {
                 Logger.getLogger(EmpleadoUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -332,6 +339,27 @@ public class EmpleadoUI extends UI {
                     Notification.Type.WARNING_MESSAGE);
         }
         return b;
+    }
+
+    private boolean validarDNI(String itDNI) {
+        try {
+            String dniChars = "TRWAGMYFPDXBNJZSQVHLCKE";
+            String intPartDNI = itDNI.trim().replaceAll(" ", "").substring(0, 7);
+            char ltrDNI = itDNI.charAt(8);
+            int valNumDni = Integer.parseInt(intPartDNI) % 23;
+            if (itDNI.length() != 9 && isInteger(intPartDNI) == false && dniChars.charAt(valNumDni) != ltrDNI) {
+                Notification.show("Formato DNI Incorrecto", "Inserte de nuevo el DNI",
+                        Notification.Type.WARNING_MESSAGE);
+                return false;
+            } else {
+                return true;
+            }
+        } catch (Exception e) {
+            Notification.show("Formato DNI Incorrecto", "Inserte de nuevo el DNI",
+                    Notification.Type.WARNING_MESSAGE);
+            return false;
+        }
+
     }
 
     protected static boolean isInteger(String cadena) {

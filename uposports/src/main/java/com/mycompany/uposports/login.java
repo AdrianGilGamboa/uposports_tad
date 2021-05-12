@@ -67,7 +67,7 @@ public class login extends UI implements Broadcaster.BroadcastListener {
 
                 } else {//En caso de campo vacío, mostramos 2 tipos de error uno fijo y otro interactivo (para el proyecto final debatiremos este aspecto)
                     //Notificacion de tipo Warning interactiva para el usuario.
-                    Notification.show("Campo vacío", "Inserte un nombre de usuario",
+                    Notification.show("Campo vacío", "Inserte su DNI",
                             Notification.Type.WARNING_MESSAGE);
                 }
 

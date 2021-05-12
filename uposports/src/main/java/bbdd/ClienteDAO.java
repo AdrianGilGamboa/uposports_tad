@@ -3,6 +3,7 @@ package bbdd;
 import clases.Abono;
 import clases.Anunciante;
 import clases.Cliente;
+import clases.Reserva;
 import java.net.UnknownHostException;
 import com.mongodb.MongoClient;
 import com.mongodb.DB;
@@ -13,6 +14,7 @@ import com.mongodb.DBObject;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import static javafx.scene.Cursor.cursor;
 import javax.swing.text.Document;
 import org.omg.CORBA.ORB;
@@ -91,9 +93,18 @@ public class ClienteDAO {
         newDocument.append("$set", aux.append("abono", c.getAbono().getTipo()));
         // Indica el filtro a usar para aplicar la modificacion
         DBObject searchQuery = new BasicDBObject().append("dni", viejo.getDni());
-
-        clienteInit().update(searchQuery, newDocument);
-        System.out.println("Nombre del cliente actualizado correctamente");
+        if (!viejo.getDni().equals(c.getDni())) {
+            ArrayList<Reserva> listaReservas = ReservaDAO.consultaReservas();
+            if (listaReservas.size() > 0) {
+                for (int i = 0; i < listaReservas.size(); i++) {
+                    if (listaReservas.get(i).getCliente().getDni().equals(viejo.getDni())) {
+                        ReservaDAO.actualizaReservaDNI(c.getDni(), listaReservas.get(i));
+                    }
+                }
+                clienteInit().update(searchQuery, newDocument);
+                System.out.println("Nombre del cliente actualizado correctamente");
+            }
+        }
     }
     //Método para buscar un documento abono en la colección AbonoDAO
 

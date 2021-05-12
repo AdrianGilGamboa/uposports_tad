@@ -98,6 +98,8 @@ public class InstalacionUI extends UI {
         buttonAnunciantes.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Anunciante");//Accedemos a la entidad abono
         });
+        
+        Label label = new Label("<h2 style='margin-top:0'> Instalaciones Registradas </h2>", ContentMode.HTML);
 
         if (layoutMostrarInstalaciones.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
             layoutH.addComponents(layoutHLabelabelTitulo, buttonReservas, buttonCliente, buttonAbonos, buttonInstalacion, buttonMateriales, buttonEmpleados, buttonAnunciantes, buttonLogout);//Añadimos los componentes al layout horizontal
@@ -105,7 +107,7 @@ public class InstalacionUI extends UI {
             layoutH2.setMargin(true);
             layoutH2.setSpacing(true);
             layoutH2.addComponents(labelEntidad, crearAbono);
-            layoutMostrarInstalaciones.addComponents(layoutH, layoutH2);
+            layoutMostrarInstalaciones.addComponents(layoutH, layoutH2, label);
         }
         Table table = new Table();//Creamos la tabla donde meteremos las instancias
         table.setSizeFull();
@@ -253,7 +255,7 @@ public class InstalacionUI extends UI {
             }
 
         });
-        Button buttonCancelar = new Button("Cancelar", FontAwesome.ARROW_LEFT);
+        Button buttonCancelar = new Button("Cancelar", FontAwesome.CLOSE);
         buttonCancelar.addClickListener(e -> {
             init(vaadinRequest);
         });

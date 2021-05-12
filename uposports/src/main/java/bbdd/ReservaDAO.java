@@ -1,6 +1,7 @@
 package bbdd;
 
 import clases.Reserva;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -46,7 +47,31 @@ public class ReservaDAO {
 
     public static ArrayList<Reserva> consultaReservas() throws UnknownHostException {
         // Obtenemos todos los documentos de la coleccion
-        DBCursor cursor = reservasInit().find();
+        DBCursor cursor = reservasInit().find().sort(new BasicDBObject("inicio",1));
+        ArrayList<Reserva> listaReserva = new ArrayList();
+        //Recorrido de todos los elementos de la coleccion
+        System.out.println("Recorrido de la coleccion:");
+        int i = 0;
+        DBObject elemento;
+        while (cursor.hasNext()) {
+            i++;
+            elemento = cursor.next();
+            Reserva aux = new Reserva();
+            aux.setId_reserva((int) elemento.get("id"));
+            aux.setInicioReserva((Date) elemento.get("inicio"));
+            aux.setFinReserva((Date) elemento.get("fin"));
+            aux.setCliente(ClienteDAO.buscarCliente((String) elemento.get("cliente")));
+            aux.setInstalacion(InstalacionDAO.buscarInstalacion((String) elemento.get("instalacion")));
+            listaReserva.add(aux);
+            System.out.println(String.format("Reserva %d leido: %s", i, elemento));  //Mostramos por pantalla documento a documento de la coleccion
+        }
+        return listaReserva;
+    }
+    
+        public static ArrayList<Reserva> consultaReservasHoy() throws UnknownHostException {
+        // Obtenemos todos los documentos de la coleccion
+        BasicDBObject searchQuery = new BasicDBObject().append("inicio", new Date("yyyy-MM-dd"));//Creamos la query que será los documentos que contengan como atributo "tipo" el que recibe como parámetro el método
+        DBCursor cursor = reservasInit().find(searchQuery);
         ArrayList<Reserva> listaReserva = new ArrayList();
         //Recorrido de todos los elementos de la coleccion
         System.out.println("Recorrido de la coleccion:");
@@ -82,6 +107,21 @@ public class ReservaDAO {
         newDocument.append("$set", aux.append("fin", nueva.getFinReserva()));
         newDocument.append("$set", aux.append("cliente", nueva.getCliente().getDni()));
         newDocument.append("$set", aux.append("instalacion", nueva.getInstalacion().getNombre()));
+        // Indica el filtro a usar para aplicar la modificacion
+        BasicDBObject searchQuery = new BasicDBObject().append("id", vieja.getId_reserva());
+        reservasInit().update(searchQuery, newDocument);
+    }
+    
+    public static void actualizaReservaDNI(String dni, Reserva vieja) throws UnknownHostException {
+        //Actualizacion del valor de un campo
+        BasicDBObject newDocument = new BasicDBObject();
+        BasicDBObject aux = new BasicDBObject();
+        // Indica el atributo hora y su valor a establecer ($set)
+        newDocument.append("$set", aux.append("id", vieja.getId_reserva()));
+        newDocument.append("$set", aux.append("inicio", vieja.getInicioReserva()));
+        newDocument.append("$set", aux.append("fin", vieja.getFinReserva()));
+        newDocument.append("$set", aux.append("cliente", dni));
+        newDocument.append("$set", aux.append("instalacion", vieja.getInstalacion().getNombre()));
         // Indica el filtro a usar para aplicar la modificacion
         BasicDBObject searchQuery = new BasicDBObject().append("id", vieja.getId_reserva());
         reservasInit().update(searchQuery, newDocument);

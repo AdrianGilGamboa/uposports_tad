@@ -102,6 +102,8 @@ public class MaterialUI extends UI {
         buttonAnunciantes.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Anunciante");//Accedemos a la entidad abono
         });
+        
+        Label label = new Label("<h2 style='margin-top:0'> Materiales Registrados </h2>", ContentMode.HTML);
 
         if (layoutMostrarMateriales.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
             layoutH.addComponents(layoutHLabelabelTitulo, buttonReservas, buttonCliente, buttonAbonos, buttonInstalacion, buttonMateriales, buttonEmpleados, buttonAnunciantes, buttonLogout);//Añadimos los componentes al layout horizontal
@@ -109,7 +111,7 @@ public class MaterialUI extends UI {
             layoutH2.setMargin(true);
             layoutH2.setSpacing(true);
             layoutH2.addComponents(labelEntidad, crearMaterial);
-            layoutMostrarMateriales.addComponents(layoutH, layoutH2);
+            layoutMostrarMateriales.addComponents(layoutH, layoutH2, label);
         }
 
         Table table = new Table();//Creamos la tabla donde meteremos las instancias
