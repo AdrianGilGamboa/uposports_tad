@@ -188,9 +188,13 @@ public class ReservaUI extends UI {
                         }
                         init(request);
                     });
-
-                    editar.addClickListener(e -> { //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
+                    
+                    editar.addClickListener(e -> { try {
+                        //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
                         editarReserva(aux, request); //EJECUTA LA FUNCION EDITAR CLIENTE
+                        } catch (UnknownHostException ex) {
+                            Logger.getLogger(ReservaUI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     });
                 }
                 layout.addComponent(tabla);
@@ -237,8 +241,12 @@ public class ReservaUI extends UI {
                             init(request);
                         });
 
-                        update.addClickListener(a -> { //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
+                        update.addClickListener(a -> { try {
+                            //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
                             editarReserva(aux, request); //EJECUTA LA FUNCION EDITAR CLIENTE
+                            } catch (UnknownHostException ex) {
+                                Logger.getLogger(ReservaUI.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         });
                     }
                 }
@@ -287,8 +295,12 @@ public class ReservaUI extends UI {
                             init(request);
                         });
 
-                        update.addClickListener(a -> { //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
+                        update.addClickListener(a -> { try {
+                            //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
                             editarReserva(aux, request); //EJECUTA LA FUNCION EDITAR CLIENTE
+                            } catch (UnknownHostException ex) {
+                                Logger.getLogger(ReservaUI.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         });
                     }
                 }
@@ -338,8 +350,12 @@ public class ReservaUI extends UI {
                             init(request);
                         });
 
-                        update.addClickListener(a -> { //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
+                        update.addClickListener(a -> { try {
+                            //AÑADIMOS EL BOTON DE EDITAR POR CADA CLIENTE
                             editarReserva(aux, request); //EJECUTA LA FUNCION EDITAR CLIENTE
+                            } catch (UnknownHostException ex) {
+                                Logger.getLogger(ReservaUI.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         });
                     }
                 }
@@ -420,7 +436,8 @@ public class ReservaUI extends UI {
         setContent(layout);
     }
 
-    public void editarReserva(Reserva r, VaadinRequest request) {
+    
+    public void editarReserva(Reserva r, VaadinRequest request) throws UnknownHostException {
         layout.removeAllComponents();
         //CREAMOS UN FORMULARIO PARA PODER EDITAR LA RESERVA
         HorizontalLayout datos = new HorizontalLayout();
@@ -435,25 +452,37 @@ public class ReservaUI extends UI {
         finReserva.setResolution(Resolution.MINUTE);
         finReserva.setIcon(FontAwesome.HOURGLASS_END);
         finReserva.setValue(r.getFinReserva());
-        datos.addComponents(inicioReserva, finReserva);
+        TextField dni = new TextField("DNI cliente:");
+        dni.setIcon(FontAwesome.KEY);
+        dni.setValue(r.getCliente().getDni());
+        OptionGroup instalacion = new OptionGroup("Instalaciones:");
+        ArrayList<Instalacion> listaInstalaciones = InstalacionDAO.mostrarInstalaciones();
+        for (int i = 0; i < listaInstalaciones.size(); i++) {
+            System.out.println(listaInstalaciones.get(i).getNombre());
+            instalacion.addItems(listaInstalaciones.get(i).getNombre());
+        }
+        instalacion.setValue(r.getInstalacion().getNombre());
+        datos.addComponents(inicioReserva, finReserva,dni,instalacion);
         datos.setMargin(true);
         datos.setSpacing(true);
         Button enviar = new Button("Modificar", FontAwesome.EDIT);
         //EDITAMOS TODOS LOS CAMPOS QUE HAYA MODIFICADO EL USUARIO Y VOLVEMOS A INSERTAR EL CLIENTE EN LA LISTA
         enviar.addClickListener(e -> {
-            if (comprobarDatos((Date) inicioReserva.getValue(), (Date) finReserva.getValue()) == true) {
-                Reserva aux;
-                try {
-                    aux = new Reserva();
-
-                    aux.setInicioReserva(inicioReserva.getValue());
-                    aux.setFinReserva(finReserva.getValue());
-                    listaReservas.remove(r);
-                    addReserva(aux);
-                    init(request);
-                } catch (UnknownHostException ex) {
-                    Logger.getLogger(ReservaUI.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                if (comprobarDatos((Date) inicioReserva.getValue(), (Date) finReserva.getValue()) == true && comprobarCliente(dni.getValue())) {
+                    Reserva aux;
+                        aux = new Reserva();
+                        
+                        aux.setInicioReserva(inicioReserva.getValue());
+                        aux.setFinReserva(finReserva.getValue());
+                        aux.setCliente(ClienteDAO.buscarCliente(dni.getValue()));
+                        aux.setInstalacion(InstalacionDAO.buscarInstalacion((String) instalacion.getValue()));
+                        aux.setId_reserva(r.getId_reserva());
+                        ReservaDAO.actualizaReserva(aux, r);
+                        init(request);
                 }
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(ReservaUI.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
         Button volver = new Button("Cancelar", FontAwesome.CLOSE);
