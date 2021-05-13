@@ -12,6 +12,13 @@ public class Anunciante {
     public Anunciante() {
     }
 
+    public Anunciante(String anunciante, Double precioContrato, Date fechaIni, Date fechaFin) {
+        this.anunciante = anunciante;
+        this.precioContrato = precioContrato;
+        this.fechaIni = fechaIni;
+        this.fechaFin = fechaFin;
+    }
+
     public String getAnunciante() {
         return anunciante;
     }

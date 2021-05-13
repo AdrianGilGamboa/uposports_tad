@@ -9,6 +9,12 @@ public class Abono {
     public Abono() {
 
     }
+    
+    public Abono(String tipo, Integer duracion, Double precio) {
+       this.tipo=tipo;
+       this.duracion=duracion;
+       this.precio=precio;
+    }
 
     @Override
     public String toString() {

@@ -2,7 +2,6 @@ package clases;
 
 public class Cliente {
 
-    
     private String dni;
     private String nombre;
     private String apellidos;
@@ -10,11 +9,15 @@ public class Cliente {
     private String codigoPostal;
     private Abono abono;
 
-    public Abono getAbono() {
-        return abono;
+    public Cliente() {
     }
 
-    public void setAbono(Abono abono) {
+    public Cliente(String dni, String nombre, String apellidos, String telefono, String codigoPostal, Abono abono) {
+        this.dni = dni;
+        this.nombre = nombre;
+        this.apellidos = apellidos;
+        this.telefono = telefono;
+        this.codigoPostal = codigoPostal;
         this.abono = abono;
     }
 
@@ -23,7 +26,12 @@ public class Cliente {
         this.nombre = nombre;
     }
 
-    public Cliente() {
+    public Abono getAbono() {
+        return abono;
+    }
+
+    public void setAbono(Abono abono) {
+        this.abono = abono;
     }
 
     public String getDni() {

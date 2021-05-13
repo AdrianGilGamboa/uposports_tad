@@ -1,9 +1,19 @@
 package com.mycompany.uposports;
 
 import bbdd.AbonoDAO;
+import bbdd.AnuncianteDAO;
+import bbdd.ClienteDAO;
 import bbdd.EmpleadoDAO;
+import bbdd.InstalacionDAO;
+import bbdd.MaterialDAO;
+import bbdd.ReservaDAO;
 import clases.Abono;
+import clases.Anunciante;
+import clases.Cliente;
 import clases.Empleado;
+import clases.Instalacion;
+import clases.Material;
+import clases.Reserva;
 import log.Broadcaster;
 import com.vaadin.annotations.Push;
 import javax.servlet.annotation.WebServlet;
@@ -25,6 +35,10 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,15 +47,20 @@ import java.util.logging.Logger;
 @Push(PushMode.AUTOMATIC) //Envía push en modo automático al navegador (es el por defecto)
 
 public class login extends UI implements Broadcaster.BroadcastListener {
-
+    
     @Override
     protected void init(VaadinRequest vaadinRequest) {
-
+        
         WrappedSession session = getSession().getSession();//Creamos una sesión
         if (session.getAttribute("nombreUsuario") != null) {//Si ya tenemos una sesión en el navegador
             mostrarEntidades(session);//mostramos el menú de las entidades
-        } else {//Si no hay sesión en el navegador, se muestra el campo para acceder
-            cargarDatos();
+        } else {
+            try {
+                //Si no hay sesión en el navegador, se muestra el campo para acceder
+                cargarDatos();
+            } catch (ParseException ex) {
+                Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+            }
             final VerticalLayout layout = new VerticalLayout();//Layout vertical
 
             final TextField name = new TextField();//TextField para introducir nombre de usuario
@@ -62,24 +81,24 @@ public class login extends UI implements Broadcaster.BroadcastListener {
                             Notification.show("DNI Incorrecto", "Inserte un DNI válido",
                                     Notification.Type.ERROR_MESSAGE);
                         }
-
+                        
                     } catch (UnknownHostException ex) {
                         Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
                     }
-
+                    
                 } else {
                     //Notificacion de tipo Warning interactiva para el usuario.
                     Notification.show("Campo vacío", "Inserte su DNI",
                             Notification.Type.WARNING_MESSAGE);
                 }
-
+                
             });
-
+            
             layout.addComponents(name, button);//Añadimos los componentes al layout
             //Le metemos el espaciado y margen
             layout.setMargin(true);
             layout.setSpacing(true);
-
+            
             setContent(layout);//Mostramos el contenido del layout
         }
     }
@@ -100,43 +119,43 @@ public class login extends UI implements Broadcaster.BroadcastListener {
         Button buttonMaterial = new Button("Materiales", FontAwesome.ARCHIVE);
         Button buttonReserva = new Button("Reservas", FontAwesome.CALENDAR);
         Button buttonAnunciantes = new Button("Anunciantes", FontAwesome.BELL);
-
+        
         Button buttonLogout = new Button("Cerrar Sesión", FontAwesome.SIGN_OUT);
-
+        
         buttonAbonos.addClickListener(a -> {//Acción del botón
             getUI().getPage().setLocation("/Abono");//Redirección a página abono
         });
-
+        
         buttonInstalaciones.addClickListener(a -> {//Acción del botón
             getUI().getPage().setLocation("/Instalacion");//Redirección a página instalación
         });
-
+        
         buttonClientes.addClickListener(e -> {  //Establecemos lo que hace el boton clientes
             getUI().getPage().setLocation("/Cliente"); //Redirige a la clase de gestionar clientes
         });
-
+        
         buttonEmpleado.addClickListener(e -> {  //Establecemos lo que hace el boton clientes
             getUI().getPage().setLocation("/Empleado"); //Redirige a la clase de gestionar clientes
         });
-
+        
         buttonMaterial.addClickListener(e -> {  //Establecemos lo que hace el boton clientes
             getUI().getPage().setLocation("/Material"); //Redirige a la clase de gestionar clientes
         });
-
+        
         buttonReserva.addClickListener(e -> {  //Establecemos lo que hace el boton clientes
             getUI().getPage().setLocation("/Reserva"); //Redirige a la clase de gestionar clientes
         });
-
+        
         buttonAnunciantes.addClickListener(e -> {  //Establecemos lo que hace el boton clientes
             getUI().getPage().setLocation("/Anunciante"); //Redirige a la clase de gestionar clientes
         });
-
+        
         buttonLogout.addClickListener(a -> {//Acción del botón logout
             session.invalidate();//Se destruye la sesion
             getUI().getPage().setLocation("/");//Página principal (login)
         });
         //FIN MENU INICIO
-        
+
         //Añadimos los componentes al layout y le ponemos margen y espaciado
         layoutEntidades.addComponents(buttonReserva, buttonClientes, buttonAbonos, buttonInstalaciones, buttonMaterial, buttonEmpleado, buttonAnunciantes, buttonLogout);
         layoutVentana.addComponents(saludo, layoutEntidades);
@@ -144,31 +163,41 @@ public class login extends UI implements Broadcaster.BroadcastListener {
         layoutEntidades.setSpacing(true);
         layoutVentana.setMargin(true);
         layoutVentana.setSpacing(true);
-
+        
         setContent(layoutVentana);//Mostramos le contenido del layout
 
     }
     
-    public void cargarDatos(){
-            Empleado empleado = new Empleado();
-            empleado.setNombre("Adrian");
-            empleado.setApellidos("Gil Gamboa");
-            empleado.setDni("28983187K");
-            empleado.setTelefono(695525878);          
-            try {
-                if(EmpleadoDAO.buscarEmpleado(empleado.getDni())==null)
+    public void cargarDatos() throws ParseException {
+        Empleado empleado = new Empleado();
+        empleado.setNombre("Adrian");
+        empleado.setApellidos("Gil Gamboa");
+        empleado.setDni("28983187K");
+        empleado.setTelefono(695525878);
+        
+        try {
+            if (EmpleadoDAO.buscarEmpleado(empleado.getDni()) == null) {
                 EmpleadoDAO.insertarEmpleado(empleado);
-                Abono abono = new Abono();
-                abono.setTipo("Mensual");
-                abono.setDuracion(1);
-                abono.setPrecio(20.0);
+                Abono abono = new Abono("Trimestral", 3, 70.0);
                 AbonoDAO.insertarAbono(abono);
-                
-            } catch (UnknownHostException ex) {
-                Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+                Cliente cliente = new Cliente("49129515L", "Javier", "Gimenez Figueroa", "682468724", "45374", abono);
+                ClienteDAO.creaCliente(cliente);
+                Instalacion instalacion = new Instalacion("Pista de futbol", "Pista de futbol 11 con cesped artificial", 200);
+                InstalacionDAO.insertarInstalacion(instalacion);
+                Material material = new Material("Porteria", "Porteria de futbol", 2, instalacion);
+                MaterialDAO.creaMaterial(material);                
+                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                Date inicioReserva = dateFormat.parse("05/07/2021 19:30:00");
+                Date finReserva = dateFormat.parse("05/07/2021 21:00:00");
+                Reserva reserva = new Reserva(inicioReserva, finReserva, cliente, instalacion);
+                ReservaDAO.creaReserva(reserva);
+                Anunciante anunciante = new Anunciante("Industrias Manolo", 465.95, inicioReserva, finReserva);
+                AnuncianteDAO.insertarAnunciante(anunciante);
             }
-    } 
-    
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     //Se ejecuta el método access para el log que recibe el push (en este caso no realiza nada, se realiza en el log)
     @Override
@@ -179,7 +208,7 @@ public class login extends UI implements Broadcaster.BroadcastListener {
             }
         });
     }
-
+    
     @WebServlet(urlPatterns = "/*", name = "Login", asyncSupported = true)
     @VaadinServletConfiguration(ui = login.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {

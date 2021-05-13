@@ -9,6 +9,13 @@ public class Instalacion {
     public Instalacion() {
     }
 
+    public Instalacion(String nombre, String descripcion, Integer capacidad) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.capacidad = capacidad;
+    }
+    
+
     public String getNombre() {
         return nombre;
     }

@@ -16,6 +16,14 @@ public class Reserva {
         id_reserva = ReservaDAO.siguienteID();
     }
 
+    public Reserva( Date inicioReserva, Date finReserva, Cliente cliente, Instalacion instalacion) throws UnknownHostException {
+        this.id_reserva = ReservaDAO.siguienteID();
+        this.inicioReserva = inicioReserva;
+        this.finReserva = finReserva;
+        this.cliente = cliente;
+        this.instalacion = instalacion;
+    }
+    
     public int getId_reserva() {
         return id_reserva;
     }
