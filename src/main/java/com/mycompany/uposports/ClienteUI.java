@@ -102,7 +102,7 @@ public class ClienteUI extends UI {
                 getUI().getPage().setLocation("/");//Accedemos a la página principal
             });
             //FIN MENU
-            
+
             Button botonAdd = new Button("Crear Cliente", FontAwesome.PLUS_CIRCLE); //BOTÓN PARA AÑADIR CLIENTES
             Label label = new Label("<h2 style='margin-top:0'> Clientes Registrados </h2>", ContentMode.HTML);
 
@@ -232,7 +232,6 @@ public class ClienteUI extends UI {
                         aux.setCodigoPostal(cp.getValue());
                         try {
                             aux.setAbono(AbonoDAO.buscarAbono(tipoAbono));
-
 
                             //Inicio proceso Pago
                             Label label1 = new Label("<h3> Seleccione una opción: </h3>", ContentMode.HTML);
@@ -387,7 +386,7 @@ public class ClienteUI extends UI {
         datos.setSpacing(true);
         Button enviar = new Button("Modificar", FontAwesome.EDIT);
         //EDITAMOS TODOS LOS CAMPOS QUE HAYA MODIFICADO EL USUARIO Y VOLVEMOS A INSERTAR EL CLIENTE EN LA LISTA
-        enviar.addClickListener(e -> { 
+        enviar.addClickListener(e -> {
             if (comprobarDatos(nombre.getValue(), apellidos.getValue(), dni.getValue(), telef.getValue(), cp.getValue(), (String) abono.getValue()) == false) {
 
             } else {
@@ -552,7 +551,11 @@ public class ClienteUI extends UI {
     //Comprobar ID es único
     protected boolean comprobarId(VaadinRequest vaadinRequest) throws UnknownHostException {
         boolean b = false;
-        if (ClienteDAO.buscarCliente((String) vaadinRequest.getAttribute("dni")) == null) {
+        ArrayList<Cliente> listaC = ClienteDAO.consultaClientes();
+        if (listaC.isEmpty()) {
+            b = true;//Si se satisface todas las condiciones, la variables es true
+
+        } else if (ClienteDAO.buscarCliente((String) vaadinRequest.getAttribute("dni")) == null) {
             b = true;//Si se satisface todas las condiciones, la variables es true
 
         } else {

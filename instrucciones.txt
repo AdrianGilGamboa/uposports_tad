@@ -6,3 +6,4 @@
 	-Abrir linea de comandos y ejecutar la linea "docker-compose up".
 	-Cuando se visualice en la ventana de comandos "Started Jetty Server"
 	-Abrir en el navegador y dirigirse a la URL localhost:8080
+	-Acceder con el DNI 28983187K

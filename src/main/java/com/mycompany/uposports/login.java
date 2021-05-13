@@ -174,7 +174,6 @@ public class login extends UI implements Broadcaster.BroadcastListener {
         empleado.setApellidos("Gil Gamboa");
         empleado.setDni("28983187K");
         empleado.setTelefono(695525878);
-        
         try {
             if (EmpleadoDAO.buscarEmpleado(empleado.getDni()) == null) {
                 EmpleadoDAO.insertarEmpleado(empleado);
@@ -193,6 +192,7 @@ public class login extends UI implements Broadcaster.BroadcastListener {
                 ReservaDAO.creaReserva(reserva);
                 Anunciante anunciante = new Anunciante("Industrias Manolo", 465.95, inicioReserva, finReserva);
                 AnuncianteDAO.insertarAnunciante(anunciante);
+
             }
         } catch (UnknownHostException ex) {
             Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);

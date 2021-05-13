@@ -333,7 +333,11 @@ public class EmpleadoUI extends UI {
     //Comprobar ID es único
     protected boolean comprobarId(VaadinRequest vaadinRequest) throws UnknownHostException {
         boolean b = false;
-        if (EmpleadoDAO.buscarEmpleado((String) vaadinRequest.getAttribute("dni")) == null) {
+        ArrayList<Empleado> listaE = EmpleadoDAO.mostrarEmpleados();
+        if (listaE.isEmpty()) {
+            b = true;//Si se satisface todas las condiciones, la variables es true
+
+        } else if (EmpleadoDAO.buscarEmpleado((String) vaadinRequest.getAttribute("dni")) == null) {
             b = true;//Si se satisface todas las condiciones, la variables es true
 
         } else {
