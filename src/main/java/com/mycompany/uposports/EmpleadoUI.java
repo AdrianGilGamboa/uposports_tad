@@ -47,9 +47,9 @@ public class EmpleadoUI extends UI {
             getUI().getPage().setLocation("/login");
         }
 
-        Button crearEmpleado = new Button("Crear Empleado", FontAwesome.PLUS_CIRCLE);//Botón para crear abono
+        Button crearEmpleado = new Button("Crear Empleado", FontAwesome.PLUS_CIRCLE);//Botón para crear empleado
         crearEmpleado.addClickListener(e -> {//Acción del botón
-            crearEmpleado(vaadinRequest);//Accedemos al método crearAbono
+            crearEmpleado(vaadinRequest);//Accedemos al método crearEmpleado
         });
 
         //MENU
@@ -188,7 +188,7 @@ public class EmpleadoUI extends UI {
                 if (comprobarId(vaadinRequest) == true && validarDNI(vaadinRequest.getAttribute("dni").toString())) {
                     if (comprobarDatos(vaadinRequest) == true) {
 
-                        crearEmpleado(vaadinRequest);//Se lanza el método modificar abono
+                        registrarEmpleado(vaadinRequest);//Se lanza el método modificar abono
 
                         init(vaadinRequest);
                         //Notificacion de tipo bandeja para notificar la correcta operación.
