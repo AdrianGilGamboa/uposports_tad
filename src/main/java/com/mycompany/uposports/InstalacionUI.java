@@ -108,13 +108,14 @@ public class InstalacionUI extends UI {
             layoutH2.setMargin(true);
             layoutH2.setSpacing(true);
             layoutH2.addComponents(labelEntidad, crearAbono);
-            layoutMostrarInstalaciones.addComponents(layoutH, layoutH2, label);
+            layoutMostrarInstalaciones.addComponents(layoutH, layoutH2);
         }
         Table table = new Table();//Creamos la tabla donde meteremos las instancias
         table.setSizeFull();
 
         try {
             if (!InstalacionDAO.mostrarInstalaciones().isEmpty()) {//Si hay elementos en la lista de instalaciones
+                layoutMostrarInstalaciones.addComponent(label);
                 //Añadimos las columnas de la tabla
                 table.addContainerProperty("Nombre", String.class, "");
                 table.addContainerProperty("Descripcion", String.class, "");

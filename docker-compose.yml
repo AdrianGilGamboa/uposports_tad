@@ -1,0 +1,22 @@
+services:
+  maven:
+    image: maven:3.5.0-jdk-8
+    volumes:
+      - .:/apps
+    working_dir: /apps
+    ports:
+      - "8080:8080"
+    command: mvn clean package jetty:run
+    links:
+      - mongodb
+
+  mongodb:
+    image: mongo:latest
+
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data_container:/data/db
+
+volumes:
+        mongodb_data_container:

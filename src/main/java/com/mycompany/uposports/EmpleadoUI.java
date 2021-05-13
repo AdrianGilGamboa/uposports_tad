@@ -108,13 +108,14 @@ public class EmpleadoUI extends UI {
             layoutH2.setMargin(true);
             layoutH2.setSpacing(true);
             layoutH2.addComponents(labelEntidad, crearEmpleado);
-            layoutMostrarEmpleados.addComponents(layoutH, layoutH2, label);
+            layoutMostrarEmpleados.addComponents(layoutH, layoutH2);
         }
         Table table = new Table();//Creamos la tabla donde meteremos las instancias
         table.setSizeFull();
 
         try {
             if (!EmpleadoDAO.mostrarEmpleados().isEmpty()) {//Si hay elementos en la lista de abonos
+                layoutMostrarEmpleados.addComponent(label);
                 //Añadimos las columnas de la tabla
                 table.addContainerProperty("DNI", String.class, "");
                 table.addContainerProperty("Nombre", String.class, "");

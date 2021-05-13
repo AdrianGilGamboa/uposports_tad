@@ -1,6 +1,8 @@
 package com.mycompany.uposports;
 
+import bbdd.AbonoDAO;
 import bbdd.EmpleadoDAO;
+import clases.Abono;
 import clases.Empleado;
 import log.Broadcaster;
 import com.vaadin.annotations.Push;
@@ -39,6 +41,7 @@ public class login extends UI implements Broadcaster.BroadcastListener {
         if (session.getAttribute("nombreUsuario") != null) {//Si ya tenemos una sesión en el navegador
             mostrarEntidades(session);//mostramos el menú de las entidades
         } else {//Si no hay sesión en el navegador, se muestra el campo para acceder
+            cargarDatos();
             final VerticalLayout layout = new VerticalLayout();//Layout vertical
 
             final TextField name = new TextField();//TextField para introducir nombre de usuario
@@ -145,6 +148,27 @@ public class login extends UI implements Broadcaster.BroadcastListener {
         setContent(layoutVentana);//Mostramos le contenido del layout
 
     }
+    
+    public void cargarDatos(){
+            Empleado empleado = new Empleado();
+            empleado.setNombre("Adrian");
+            empleado.setApellidos("Gil Gamboa");
+            empleado.setDni("28983187K");
+            empleado.setTelefono(695525878);          
+            try {
+                if(EmpleadoDAO.buscarEmpleado(empleado.getDni())==null)
+                EmpleadoDAO.insertarEmpleado(empleado);
+                Abono abono = new Abono();
+                abono.setTipo("Mensual");
+                abono.setDuracion(1);
+                abono.setPrecio(20.0);
+                AbonoDAO.insertarAbono(abono);
+                
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    } 
+    
 
     //Se ejecuta el método access para el log que recibe el push (en este caso no realiza nada, se realiza en el log)
     @Override

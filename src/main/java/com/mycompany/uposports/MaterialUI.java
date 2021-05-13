@@ -113,7 +113,7 @@ public class MaterialUI extends UI {
             layoutH2.setMargin(true);
             layoutH2.setSpacing(true);
             layoutH2.addComponents(labelEntidad, crearMaterial);
-            layoutMostrarMateriales.addComponents(layoutH, layoutH2, label);
+            layoutMostrarMateriales.addComponents(layoutH, layoutH2);
         }
 
         Table table = new Table();//Creamos la tabla donde meteremos las instancias
@@ -121,6 +121,7 @@ public class MaterialUI extends UI {
 
         try {
             if (!MaterialDAO.consultaMateriales().isEmpty()) {//Si hay elementos en la lista de abonos
+                layoutMostrarMateriales.addComponent(label);
                 //Añadimos las columnas de la tabla
                 table.addContainerProperty("Nombre", String.class, "");
                 table.addContainerProperty("Descripción", String.class, "");

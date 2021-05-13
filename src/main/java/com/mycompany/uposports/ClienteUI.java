@@ -115,7 +115,7 @@ public class ClienteUI extends UI {
             layoutH2.setMargin(true);
             layoutH2.setSpacing(true);
             layoutH2.addComponents(labelEntidad, botonAdd);
-            layout.addComponents(layoutH, layoutH2, label);//Añadimos los componentes al layout horizontal
+            layout.addComponents(layoutH, layoutH2);//Añadimos los componentes al layout horizontal
 
             //CREAMOS UNA TABLA DONDE APARECERÁ LA LISTA DE CLIENTES
             Table tabla = new Table();
@@ -135,6 +135,7 @@ public class ClienteUI extends UI {
             int i = 0;
             //BUCLE PARA AÑADIR TODOS LOS CLIENTES A LA TABLA
             if (!clientes.isEmpty()) {
+                layout.addComponent(label);
                 while (it.hasNext()) {
                     Button eliminar = new Button("Eliminar", FontAwesome.CLOSE);
                     Button editar = new Button("Modificar", FontAwesome.EDIT);

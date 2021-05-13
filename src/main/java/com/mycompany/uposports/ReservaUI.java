@@ -156,7 +156,7 @@ public class ReservaUI extends UI {
         layoutH2.addComponents(labelEntidad, botonAdd);
         layoutH3.addComponents(label, labelFiltros, buttonReservasHoy, buttonReservasFuturas, buttonReservasEnCurso, buttonTodasReservas);
         layoutH3.setSpacing(true);
-        layout.addComponents(layoutH, layoutH2, layoutH3);//Añadimos los componentes al layout horizontal
+        layout.addComponents(layoutH, layoutH2);//Añadimos los componentes al layout horizontal
 
         //Mostrar las reservas
         mostrarReservas(tabla, request);
@@ -166,15 +166,16 @@ public class ReservaUI extends UI {
     //Muestra todas las reservas
     public void mostrarReservas(Table tabla, VaadinRequest request) {
         try {
-            layoutH3.removeComponent(label);
-            label = new Label("<h2 style='margin-top:0'> Reservas Registradas </h2>", ContentMode.HTML);
-            layoutH3.addComponentAsFirst(label);
-            Iterator it;
-            it = ReservaDAO.consultaReservas().iterator();
 
             int i = 0;
             //BUCLE PARA AÑADIR TODAS LAS RESERVA A LA TABLA
             if (!ReservaDAO.consultaReservas().isEmpty()) {
+                layoutH3.removeComponent(label);
+                label = new Label("<h2 style='margin-top:0'> Reservas Registradas </h2>", ContentMode.HTML);
+                layoutH3.addComponentAsFirst(label);
+                layout.addComponent(layoutH3);
+                Iterator it;
+                it = ReservaDAO.consultaReservas().iterator();
                 tabla.removeAllItems();
                 while (it.hasNext()) {
                     Button eliminar = new Button("Eliminar", FontAwesome.CLOSE);
