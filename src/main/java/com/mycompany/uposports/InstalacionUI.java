@@ -320,7 +320,11 @@ public class InstalacionUI extends UI {
     //Comprobar ID es único
     protected boolean comprobarId(VaadinRequest vaadinRequest) throws UnknownHostException {
         boolean b = false;
-        if (InstalacionDAO.buscarInstalacion((String) vaadinRequest.getAttribute("nombre")) == null) {
+               ArrayList<Instalacion> listaI = InstalacionDAO.mostrarInstalaciones();
+        if (listaI.isEmpty()) {
+            b = true;//Si se satisface todas las condiciones, la variables es true
+
+        }else if (InstalacionDAO.buscarInstalacion((String) vaadinRequest.getAttribute("nombre")) == null) {
             b = true;//Si se satisface todas las condiciones, la variables es true
 
         } else {

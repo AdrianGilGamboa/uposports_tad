@@ -136,7 +136,7 @@ public class login extends UI implements Broadcaster.BroadcastListener {
             getUI().getPage().setLocation("/");//Página principal (login)
         });
         //FIN MENU INICIO
-        
+
         //Añadimos los componentes al layout y le ponemos margen y espaciado
         layoutEntidades.addComponents(buttonReserva, buttonClientes, buttonAbonos, buttonInstalaciones, buttonMaterial, buttonEmpleado, buttonAnunciantes, buttonLogout);
         layoutVentana.addComponents(saludo, layoutEntidades);
@@ -148,27 +148,27 @@ public class login extends UI implements Broadcaster.BroadcastListener {
         setContent(layoutVentana);//Mostramos le contenido del layout
 
     }
-    
-    public void cargarDatos(){
-            Empleado empleado = new Empleado();
-            empleado.setNombre("Adrian");
-            empleado.setApellidos("Gil Gamboa");
-            empleado.setDni("28983187K");
-            empleado.setTelefono(695525878);          
-            try {
-                if(EmpleadoDAO.buscarEmpleado(empleado.getDni())==null)
+
+    public void cargarDatos() {
+        Empleado empleado = new Empleado();
+        empleado.setNombre("Adrian");
+        empleado.setApellidos("Gil Gamboa");
+        empleado.setDni("28983187K");
+        empleado.setTelefono(695525878);
+        try {
+            if (EmpleadoDAO.buscarEmpleado(empleado.getDni()) == null) {
                 EmpleadoDAO.insertarEmpleado(empleado);
                 Abono abono = new Abono();
                 abono.setTipo("Mensual");
                 abono.setDuracion(1);
                 abono.setPrecio(20.0);
                 AbonoDAO.insertarAbono(abono);
-                
-            } catch (UnknownHostException ex) {
-                Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+
             }
-    } 
-    
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     //Se ejecuta el método access para el log que recibe el push (en este caso no realiza nada, se realiza en el log)
     @Override

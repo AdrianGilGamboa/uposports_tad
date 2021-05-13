@@ -23,6 +23,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -323,7 +324,11 @@ public class AbonoUI extends UI {
     //Comprueba que el ID sea único
     protected boolean comprobarId(VaadinRequest vaadinRequest) throws UnknownHostException {
         boolean b = false;
-        if (AbonoDAO.buscarAbono((String) vaadinRequest.getAttribute("tipo")) == null) {
+        ArrayList<Abono> listaA = AbonoDAO.mostrarAbonos();
+        if (listaA.isEmpty()) {
+            b = true;//Si se satisface todas las condiciones, la variables es true
+
+        } else if (AbonoDAO.buscarAbono((String) vaadinRequest.getAttribute("tipo")) == null) {
             b = true;//Si se satisface todas las condiciones, la variables es true
 
         } else {

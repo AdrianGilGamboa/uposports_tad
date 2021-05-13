@@ -33,7 +33,6 @@ import javax.servlet.annotation.WebServlet;
 @Title("Material")
 public class MaterialUI extends UI {
 
-
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layoutMostrarMateriales = new VerticalLayout();//Creamos un layout vertical
@@ -102,9 +101,8 @@ public class MaterialUI extends UI {
         buttonAnunciantes.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Anunciante");//Accedemos a la entidad abono
         });
-        
-        //FIN MENU
 
+        //FIN MENU
         Label label = new Label("<h2 style='margin-top:0'> Materiales Registrados </h2>", ContentMode.HTML);
 
         if (layoutMostrarMateriales.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
@@ -156,11 +154,12 @@ public class MaterialUI extends UI {
                     });
                     //Añadimos la fila a la tabla
                     String ins;
-                    if(material.getInstalacion() != null)
-                        ins=material.getInstalacion().getNombre();
-                    else
-                        ins="-";
-                    table.addItem(new Object[]{material.getNombre(), material.getDescripcion(), material.getUnidades(),ins, buttonModificar, buttonEliminar}, i);
+                    if (material.getInstalacion() != null) {
+                        ins = material.getInstalacion().getNombre();
+                    } else {
+                        ins = "-";
+                    }
+                    table.addItem(new Object[]{material.getNombre(), material.getDescripcion(), material.getUnidades(), ins, buttonModificar, buttonEliminar}, i);
 
                     layoutMostrarMateriales.addComponent(table);//Lo añadimos al layout vertical
                 }
@@ -266,8 +265,9 @@ public class MaterialUI extends UI {
             System.out.println(listaInstalaciones.get(i).getNombre());
             instalacion.addItems(listaInstalaciones.get(i).getNombre());
         }
-        if(material.getInstalacion() != null)
+        if (material.getInstalacion() != null) {
             instalacion.setValue(material.getInstalacion().getNombre());
+        }
 
         buttonRegistrar.addClickListener(e -> {
             vaadinRequest.setAttribute("instalacion", instalacion.getValue());//Añadimos en la petición el valor del campo instalacion
@@ -354,6 +354,11 @@ public class MaterialUI extends UI {
     //Comprobar ID es único
     protected boolean comprobarId(VaadinRequest vaadinRequest) throws UnknownHostException {
         boolean b = false;
+        ArrayList<Material> listaM = MaterialDAO.consultaMateriales();
+        if (listaM.isEmpty()) {
+            b = true;//Si se satisface todas las condiciones, la variables es true
+
+        }
         if (MaterialDAO.buscarMaterial((String) vaadinRequest.getAttribute("nombre")) == null) {
             b = true;//Si se satisface todas las condiciones, la variables es true
 
