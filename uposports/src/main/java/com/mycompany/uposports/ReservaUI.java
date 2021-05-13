@@ -37,7 +37,6 @@ import java.util.logging.Logger;
 @Title("Reserva")
 public class ReservaUI extends UI {
 
-    public static ArrayList<Reserva> listaReservas = new ArrayList(); //LISTA DONDE ESTARÁN ALMACENADOS TODAS LAS RESERVAS QUE CREEMOS
     public VerticalLayout layout = new VerticalLayout(); //LAYOUT PRINCIPAL
     final HorizontalLayout layoutHLabelabelTitulo = new HorizontalLayout();//Creamos un layout horizontal
     final HorizontalLayout layoutH2 = new HorizontalLayout();//Creamos un layout horizontal
@@ -58,6 +57,7 @@ public class ReservaUI extends UI {
             getUI().getPage().setLocation("/inicioSesion");
         }
 
+        //MENU
         Label l = new Label("<h1 style='text-weight:bold;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
         Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Reservas - </h2>", ContentMode.HTML);
 
@@ -101,6 +101,7 @@ public class ReservaUI extends UI {
         buttonAnunciantes.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Anunciante");//Accedemos a la entidad abono
         });
+        //FIN MENU
 
         Button botonAdd = new Button("Crear Reserva", FontAwesome.PLUS_CIRCLE); //BOTÓN PARA AÑADIR CLIENTES
         botonAdd.addClickListener(e -> {
@@ -111,7 +112,7 @@ public class ReservaUI extends UI {
             }
         });
 
-        //CREAMOS UNA TABLA DONDE APARECERÁ LA LISTA DE CLIENTES
+        //CREAMOS UNA TABLA DONDE APARECERÁ LA LISTA DE RESERVAS
         Table tabla = new Table();
         tabla.setSizeFull();
         tabla.addContainerProperty("Fecha Reserva", String.class, null);
@@ -123,6 +124,7 @@ public class ReservaUI extends UI {
         tabla.addContainerProperty("Modificar", Button.class, null);
         tabla.addContainerProperty("Eliminar", Button.class, null);
 
+        //MENU FILTROS
         Label labelFiltros = new Label("<h2 style='text-weight:bold;margin:0 0 0 100px;'>Filtros:  </h2>", ContentMode.HTML);
 
         Button buttonReservasHoy = new Button("Reservas para hoy");//Botón para acceder a la entidad abono
@@ -144,7 +146,9 @@ public class ReservaUI extends UI {
         buttonTodasReservas.addClickListener(e -> {//Acción del botón
             mostrarReservas(tabla, request);
         });
+        //FIN MENU FILTROS
 
+        //Estilo
         layoutHLabelabelTitulo.addComponent(l);
         layoutH.addComponents(layoutHLabelabelTitulo, buttonReservas, buttonCliente, buttonAbonos, buttonInstalacion, buttonMateriales, buttonEmpleados, buttonAnunciantes, buttonLogout);//Añadimos los componentes al layout horizontal
         layoutH2.setMargin(true);
@@ -154,10 +158,12 @@ public class ReservaUI extends UI {
         layoutH3.setSpacing(true);
         layout.addComponents(layoutH, layoutH2, layoutH3);//Añadimos los componentes al layout horizontal
 
+        //Mostrar las reservas
         mostrarReservas(tabla, request);
 
     }
 
+    //Muestra todas las reservas
     public void mostrarReservas(Table tabla, VaadinRequest request) {
         try {
             layoutH3.removeComponent(label);
@@ -209,6 +215,7 @@ public class ReservaUI extends UI {
         }
     }
 
+    //Muestra las reservas con fecha de hoy
     public void mostrarReservasHoy(Table tabla, VaadinRequest request) {
         try {
             layoutH3.removeComponent(label);
@@ -218,7 +225,7 @@ public class ReservaUI extends UI {
             it = ReservaDAO.consultaReservas().iterator();
 
             int i = 0;
-            //BUCLE PARA AÑADIR TODAS LAS RESERVA A LA TABLA
+            //BUCLE PARA AÑADIR RESERVAS
             if (!ReservaDAO.consultaReservas().isEmpty()) {
                 tabla.removeAllItems();
                 while (it.hasNext()) {
@@ -263,6 +270,7 @@ public class ReservaUI extends UI {
         }
     }
 
+    //Muestras las reservas que aún no han comenzado
     public void mostrarReservasFuturas(Table tabla, VaadinRequest request) {
         layoutH3.removeComponent(label);
         label = new Label("<h2 style='margin-top:0'> Reservas Registradas - Próximas </h2>", ContentMode.HTML);
@@ -272,7 +280,7 @@ public class ReservaUI extends UI {
             it = ReservaDAO.consultaReservas().iterator();
 
             int i = 0;
-            //BUCLE PARA AÑADIR TODAS LAS RESERVA A LA TABLA
+            //BUCLE PARA AÑADIR RESERVAS
             if (!ReservaDAO.consultaReservas().isEmpty()) {
                 tabla.removeAllItems();
                 while (it.hasNext()) {
@@ -318,6 +326,7 @@ public class ReservaUI extends UI {
         }
     }
 
+    //Muestra las reservas que han comenzado pero no han finalizado
     public void mostrarReservasEnCurso(Table tabla, VaadinRequest request) {
         layoutH3.removeComponent(label);
         label = new Label("<h2 style='margin-top:0'> Reservas Registradas - En curso </h2>", ContentMode.HTML);
@@ -327,7 +336,7 @@ public class ReservaUI extends UI {
             it = ReservaDAO.consultaReservas().iterator();
 
             int i = 0;
-            //BUCLE PARA AÑADIR TODAS LAS RESERVA A LA TABLA
+            //BUCLE PARA AÑADIR RESERVAS
             if (!ReservaDAO.consultaReservas().isEmpty()) {
                 tabla.removeAllItems();
                 while (it.hasNext()) {
@@ -469,7 +478,7 @@ public class ReservaUI extends UI {
         datos.setMargin(true);
         datos.setSpacing(true);
         Button enviar = new Button("Modificar", FontAwesome.EDIT);
-        //EDITAMOS TODOS LOS CAMPOS QUE HAYA MODIFICADO EL USUARIO Y VOLVEMOS A INSERTAR EL CLIENTE EN LA LISTA
+        //EDITAMOS TODOS LOS CAMPOS QUE HAYA MODIFICADO EL USUARIO Y VOLVEMOS A INSERTAR LA RESERVA
         enviar.addClickListener(e -> {
             try {
                 if (comprobarDatos((Date) inicioReserva.getValue(), (Date) finReserva.getValue()) == true && comprobarCliente(dni.getValue())) {
@@ -489,7 +498,7 @@ public class ReservaUI extends UI {
             }
         });
         Button volver = new Button("Cancelar", FontAwesome.CLOSE);
-        //REDIRECCIONA A LA CLASE ReservaUI
+        //REDIRECCIONA AL MÉTODO PRINCIPAL
         volver.addClickListener(e -> {
             init(request);
         });
@@ -513,7 +522,7 @@ public class ReservaUI extends UI {
             if ((dateFormat.format(ini).equals(dateFormat.format(fin)))) {
                 b = true;
 
-            } else {//En caso de campo vacío, mostramos 2 tipos de error uno fijo y otro interactivo (para el proyecto final debatiremos este aspecto)
+            } else {
                 //Notificacion de tipo Warning interactiva para el usuario.
                 Notification.show("Error Fechas", "La fecha de inicio y fin deben ser iguales",
                         Notification.Type.WARNING_MESSAGE);
@@ -527,6 +536,7 @@ public class ReservaUI extends UI {
         return b;
     }
 
+    //COMPROBAR QUE EL CLIENTE EXISTE
     protected boolean comprobarCliente(String dni) throws UnknownHostException {
         if (ClienteDAO.buscarCliente(dni) == null) {
             Notification.show("Cliente no encontrado", "El dni no corresponde con ningún cliente registrado",

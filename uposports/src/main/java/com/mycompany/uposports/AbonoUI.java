@@ -51,6 +51,7 @@ public class AbonoUI extends UI {
             crearAbono(vaadinRequest);//Accedemos al método crearAbono
         });
 
+        //MENU
         Label l = new Label("<h1 style='text-weight:bold;margin:auto;padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
         Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Abonos - </h2>", ContentMode.HTML);
         layoutHLabelabelTitulo.addComponent(l);
@@ -95,6 +96,7 @@ public class AbonoUI extends UI {
             VaadinSession.getCurrent().getSession().invalidate();//Eliminamos la sesión
             getUI().getPage().setLocation("/");//Accedemos a la página principal
         });
+        //FIN MENU
 
         if (layoutMostrarAbonos.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
             layoutH.addComponents(layoutHLabelabelTitulo, buttonReservas, buttonCliente, buttonAbonos, buttonInstalacion, buttonMateriales, buttonEmpleados, buttonAnunciantes, buttonLogout);//Añadimos los componentes al layout horizontal
@@ -107,8 +109,10 @@ public class AbonoUI extends UI {
 
         Table table = new Table();//Creamos la tabla donde meteremos las instancias
         table.setSizeFull();
+
         Label label = new Label("<h2 style='margin-top:0'> Abonos Registrados </h2>", ContentMode.HTML);
 
+        //Mostrar los abonos
         List<Abono> listaAbonos;
         try {
             listaAbonos = AbonoDAO.mostrarAbonos();
@@ -184,7 +188,7 @@ public class AbonoUI extends UI {
             vaadinRequest.setAttribute("duracion", duracion.getValue());//Añadimos en la petición el valor del campo duración
             vaadinRequest.setAttribute("precio", precio.getValue());//Añadimos en la petición el valor del campo precio
             try {
-                if (comprobarId(vaadinRequest)) {
+                if (comprobarId(vaadinRequest)) {//Si el id es único
                     if (comprobarDatos(vaadinRequest) == true) {
                         //Se comprueban los datos, y si son correctos...
                         registrarAbono(vaadinRequest);//Se envían los datos a registro de abono
@@ -308,7 +312,7 @@ public class AbonoUI extends UI {
                 Notification.show("Error Datos Introducidos", "La duración y el precio deben ser numéricos",
                         Notification.Type.WARNING_MESSAGE);
             }
-        } else {//En caso de campo vacío, mostramos 2 tipos de error uno fijo y otro interactivo (para el proyecto final debatiremos este aspecto)
+        } else {
             //Notificacion de tipo Warning interactiva para el usuario.
             Notification.show("Campo vacío", "Debe rellenar todos los campos",
                     Notification.Type.WARNING_MESSAGE);
@@ -316,6 +320,7 @@ public class AbonoUI extends UI {
         return b;
     }
 
+    //Comprueba que el ID sea único
     protected boolean comprobarId(VaadinRequest vaadinRequest) throws UnknownHostException {
         boolean b = false;
         if (AbonoDAO.buscarAbono((String) vaadinRequest.getAttribute("tipo")) == null) {

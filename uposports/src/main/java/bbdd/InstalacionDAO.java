@@ -22,13 +22,13 @@ public class InstalacionDAO {
         // Conectar a la base de datos
         DB db = mongoClient.getDB("uposports");
 
-        //Acceder coleccion "Abonos"*/
+        //Acceder coleccion "Instalaciones"*/
         DBCollection collection = db.getCollection("Instalaciones");
 
         return collection;
     }
 
-    //Método para añadir un documento nuevo a la colección InstalacionDAO
+    //Método para añadir un documento nuevo a la colección Instalacion
     public static void insertarInstalacion(Instalacion i) throws UnknownHostException {
         BasicDBObject document = new BasicDBObject();//Instanciamos el nuevo documento
         //Insertamos los 3 atributos del nuevo documento Instalacion
@@ -40,12 +40,12 @@ public class InstalacionDAO {
         System.out.println("Documento Instalacion insertado: " + document + "\n");
     }
 
-    //Método para mostrar todos los documentos de la colección InstalacionDAO
+    //Método para mostrar todos los documentos de la colección Instalacion
     public static ArrayList<Instalacion> mostrarInstalaciones() throws UnknownHostException {
         DBCursor cursor = instalacionesInit().find();// Obtenemos todos los documentos de la coleccion Instalacion
         DBObject elemento;
         ArrayList<Instalacion> listaInstalaciones = new ArrayList();
-        //Recorrido de todos los elementos de la coleccion InstalacionDAO
+        //Recorrido de todos los elementos de la coleccion Instalacion
         System.out.println("Recorriendo la colección Instalaciones:");
         int i = 0;//Variable iteradora
         while (cursor.hasNext()) {
@@ -58,22 +58,13 @@ public class InstalacionDAO {
             listaInstalaciones.add(aux);
             System.out.println(String.format("Documento Instalacion_%d leido: %s", i, elemento));
         }
-        System.out.println("Fin de la colección Abonos\n");
+        System.out.println("Fin de la colección Instalación\n");
         return listaInstalaciones;
 
     }
 
-    /*
-    //Método para actualizar un campo de tipo String de la colección InstalacionDAO
-    public static void actualizarInstalacion(DBCollection collection, DBObject instalacion, String campo, String nuevoValor) {
-        BasicDBObject newDocument = new BasicDBObject();//Instanciamos un nuevo documento
-        newDocument.append("$set", new BasicDBObject().append(campo, nuevoValor));//Actualizamos el campo con el nuevoValor (ambos atributos se reciben por parámetro)
-        collection.update(instalacion, newDocument);//Actualizamos el documento "instalacion" recibido por parámetro con el nuevo campo del documento creado
-        System.out.println("Documento Abono actualizado correctamente\n");
-    }
 
-     */
-    //Método para actualizar un campo de tipo int de la colección InstalacionDAO (método sobrecargado)
+    //Método para actualizar documento Instalación
     public static void actualizarInstalacion(Instalacion nueva, Instalacion vieja) throws UnknownHostException {
         BasicDBObject newDocument = new BasicDBObject();
         BasicDBObject aux = new BasicDBObject();
@@ -81,6 +72,7 @@ public class InstalacionDAO {
         newDocument.append("$set", aux.append("nombre", nueva.getNombre()));
         newDocument.append("$set", aux.append("descripcion", nueva.getDescripcion()));
         newDocument.append("$set", aux.append("capacidad", nueva.getCapacidad()));
+        //Si se ha modificado el nombre de la instalación, se recorre las reservas y materiales para modificar ese valor a los documenos que contengan la instalación
         if (!vieja.getNombre().equals(nueva.getNombre())) {
             ArrayList<Reserva> listaReservas = ReservaDAO.consultaReservas();
             ArrayList<Material> listaMateriales = MaterialDAO.consultaMateriales();
@@ -107,10 +99,10 @@ public class InstalacionDAO {
     public static void eliminarInstalacion(Instalacion i) throws UnknownHostException {
         System.out.println(String.format("Buscando documento Instalacion nombre %s para eliminar...", i.getNombre()));
         instalacionesInit().remove(new BasicDBObject("nombre", i.getNombre()));//Elimina el documento que recibe del método buscarInstalacion, pasándole la colección y el tipo de Instalacion.
-        System.out.println("Documento Abono eliminado\n");
+        System.out.println("Documento Instalación eliminado\n");
     }
 
-    //Método para buscar un documento abono en la colección Instalacion
+    //Método para buscar un documento Instalación en la colección Instalacion por su nombre
     public static Instalacion buscarInstalacion(String nombre) throws UnknownHostException {
         BasicDBObject searchQuery = new BasicDBObject().append("nombre", nombre);//Creamos la query que será los documentos que contengan como atributo "nombre" el que recibe como parámetro el método
         DBCursor cursor = instalacionesInit().find(searchQuery);//Los elementos que cumplan la condicion de searchQuery se introducen en cursor

@@ -1,6 +1,5 @@
 package clases;
 
-//Clase para la instancia de Instalacion, con su constructor, toString y getters y setters.
 public class Instalacion {
 
     private String nombre;

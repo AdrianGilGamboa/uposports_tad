@@ -2,7 +2,7 @@ package clases;
 
 public class Cliente {
 
-    //CREAMOS LOS ATRIBUTOS DE LA CLASE CLIENTE SUS GETTER Y SETTER
+    
     private String dni;
     private String nombre;
     private String apellidos;

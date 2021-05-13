@@ -66,7 +66,7 @@ public class AnuncianteDAO {
 
     }
 
-    //Método para actualizar un campo de tipo String de la colección Anunciante
+    //Método para actualizar un Anunciante
     public static void actualizarAnunciante(Anunciante nuevo, Anunciante viejo) throws UnknownHostException {
         BasicDBObject newDocument = new BasicDBObject();//Instanciamos un nuevo documento
         BasicDBObject aux = new BasicDBObject();
@@ -86,10 +86,10 @@ public class AnuncianteDAO {
         System.out.println("Documento Anunciante eliminado\n");
     }
 
-    //Método para buscar un documento abono en la colección Anunciante
+    //Método para buscar un documento Anunciante en la colección Anunciante
     public static Anunciante buscarAnunciante(String anunciante) throws UnknownHostException {
         DBCollection collection = anuncianteInit();
-        BasicDBObject searchQuery = new BasicDBObject().append("anunciante", anunciante);//Creamos la query que será los documentos que contengan como atributo "tipo" el que recibe como parámetro el método
+        BasicDBObject searchQuery = new BasicDBObject().append("anunciante", anunciante);//Creamos la query que será los documentos que contengan como atributo "anunciante" el que recibe como parámetro el método
         DBCursor cursor = collection.find(searchQuery);//Los elementos que cumplan la condicion de searchQuery se introducen en cursor
         DBObject elemento = cursor.next();//Solamente debemos tener uno, ya que le pasamos el tipo que es nuestro ID.
         System.out.println(String.format("Documento Anunciante encontrado: %s", elemento));
@@ -98,7 +98,7 @@ public class AnuncianteDAO {
         aux.setPrecioContrato((double) elemento.get("precioContrato"));
         aux.setFechaIni((Date) elemento.get("fechaIni"));
         aux.setFechaFin((Date) elemento.get("fechaFin"));
-        return aux; //Devolvemos el abono
+        return aux; //Devolvemos el Anunciante
 
     }
 }

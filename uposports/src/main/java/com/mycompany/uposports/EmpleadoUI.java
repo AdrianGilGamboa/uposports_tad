@@ -32,8 +32,6 @@ import javax.servlet.annotation.WebServlet;
 @PreserveOnRefresh
 public class EmpleadoUI extends UI {
 
-    final static List<Empleado> listaEmpleados = new ArrayList<>();//Creamos una lista de abonos, donde se irán guardando y será compartida por todos los usuarios, necesario recargar la pag para ver cambios de otros usuarios
-
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         //Empezamos obteniendo la sesión y creando una lista de empleados para
@@ -53,6 +51,8 @@ public class EmpleadoUI extends UI {
         crearEmpleado.addClickListener(e -> {//Acción del botón
             crearEmpleado(vaadinRequest);//Accedemos al método crearAbono
         });
+
+        //MENU
         Label l = new Label("<h1 style='text-weight:bold;margin:auto;padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
         Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Empleados - </h2>", ContentMode.HTML);
         layoutHLabelabelTitulo.addComponent(l);
@@ -97,6 +97,7 @@ public class EmpleadoUI extends UI {
         buttonAnunciantes.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Anunciante");//Accedemos a la entidad abono
         });
+        //FIN MENU
 
         Label label = new Label("<h2 style='margin-top:0'> Empleados Registrados </h2>", ContentMode.HTML);
 
@@ -122,19 +123,19 @@ public class EmpleadoUI extends UI {
 
                 table.addContainerProperty("Modificar", Button.class, "");
                 table.addContainerProperty("Eliminar", Button.class, "");
+
                 for (int i = 0; i < EmpleadoDAO.mostrarEmpleados().size(); i++) {//Mientras haya elementos por recorrer
                     Empleado empleado = EmpleadoDAO.mostrarEmpleados().get(i);//Obtenemos el objeto de la lista
 
                     Button buttonModificar = new Button("Modificar", FontAwesome.EDIT);//Creamos el botón modificar
                     buttonModificar.addClickListener(e -> {//Acción del botón
-                        editarEmpleado(vaadinRequest, empleado);//Método para editar la instalación
+                        editarEmpleado(vaadinRequest, empleado);//Método para editar el Empleado
                     });
 
                     Button buttonEliminar = new Button("Eliminar", FontAwesome.CLOSE);//Creamos el botón eliminar
                     buttonEliminar.addClickListener(e -> {
                         try {
                             //Acción del botón
-                            //listaEmpleados.remove(empleado);
                             EmpleadoDAO.eliminarEmpleados(empleado);//Eliminamos el objeto de la BBDD
                         } catch (UnknownHostException ex) {
                             Logger.getLogger(EmpleadoUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -158,22 +159,22 @@ public class EmpleadoUI extends UI {
 
     }
 
-    protected void crearEmpleado(VaadinRequest vaadinRequest) {//Método para crear abonos
+    protected void crearEmpleado(VaadinRequest vaadinRequest) {//Método para crear Empleados
         final VerticalLayout layout = new VerticalLayout();//Creamos un vertical layout
         final HorizontalLayout layoutBotones = new HorizontalLayout();
         final HorizontalLayout layoutTextField = new HorizontalLayout();
         Label l = new Label("<h2>Nuevo Empleado</h2>", ContentMode.HTML);
         layout.addComponent(l);
-        final TextField dni = new TextField();//Campo para insertar el tipo
+        final TextField dni = new TextField();//Campo para insertar el DNI
         dni.setCaption("DNI:");//Texto que se muestra en dicho campo
         dni.setIcon(FontAwesome.KEY);//Icono
-        final TextField nombre = new TextField();//Campo para insertar la duracion
+        final TextField nombre = new TextField();//Campo para insertar el nombre
         nombre.setCaption("Nombre:");//Texto que se muestra en dicho campo
         nombre.setIcon(FontAwesome.USER);
-        final TextField apellidos = new TextField();//Campo para insertar el coste
+        final TextField apellidos = new TextField();//Campo para insertar los apellidos
         apellidos.setCaption("Apellidos:");//Texto que se muestra en dicho campo
         apellidos.setIcon(FontAwesome.USER);
-        final TextField telefono = new TextField();//Campo para insertar el coste
+        final TextField telefono = new TextField();//Campo para insertar el teléfono
         telefono.setCaption("Telefono:");//Texto que se muestra en dicho campo
         telefono.setIcon(FontAwesome.PHONE);
         Button buttonRegistrar = new Button("Registrar", FontAwesome.CHECK);//Creamo el botón para registrar 
@@ -286,6 +287,7 @@ public class EmpleadoUI extends UI {
         setContent(layout);
     }
 
+    //Se modifica el empleado llamando al método de la BD
     protected void modificarEmpleado(VaadinRequest vaadinRequest, Empleado empleado) throws UnknownHostException {//Método para guardar los datos modificados en memoria, no hay persistencia de momento
         Empleado aux = new Empleado();
         aux.setDni((String) vaadinRequest.getAttribute("dni"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
@@ -309,16 +311,16 @@ public class EmpleadoUI extends UI {
         boolean b = false;//Variable booleana inicializada a false
         //Comprobamos si algún campo está vacío
         if ((String) vaadinRequest.getAttribute("dni") != "" && (String) vaadinRequest.getAttribute("nombre") != "" && (String) vaadinRequest.getAttribute("apellidos") != "" && (String) vaadinRequest.getAttribute("telefono") != "") {
-            //Comprobamos si la capacidad es numérica llamando al métdo isInteger
+            //Comprobamos si el teléfono es numérico llamando al métdo isInteger
             if (isInteger((String) vaadinRequest.getAttribute("telefono")) == true && vaadinRequest.getAttribute("telefono").toString().length() == 9) {
 
                 b = true;//Si se satisface todas las condiciones, la variables es true
-            } else {//Si la duración o el coste no es numérica
+            } else {//Si el teléfono no es numérico
                 //Notificacion de tipo Warning interactiva para el usuario.
                 Notification.show("Error Datos Introducidos", "El teléfono debe ser numérico y tener 9 dígitos",
                         Notification.Type.WARNING_MESSAGE);
             }
-        } else {//En caso de campo vacío, mostramos 2 tipos de error uno fijo y otro interactivo (para el proyecto final debatiremos este aspecto)
+        } else {
 
             //Notificacion de tipo Warning interactiva para el usuario.
             Notification.show("Campo vacío", "Debe rellenar todos los campos",
@@ -327,6 +329,7 @@ public class EmpleadoUI extends UI {
         return b;
     }
 
+    //Comprobar ID es único
     protected boolean comprobarId(VaadinRequest vaadinRequest) throws UnknownHostException {
         boolean b = false;
         if (EmpleadoDAO.buscarEmpleado((String) vaadinRequest.getAttribute("dni")) == null) {
@@ -339,6 +342,7 @@ public class EmpleadoUI extends UI {
         return b;
     }
 
+    //Validación formato DNI
     private boolean validarDNI(String itDNI) {
         try {
             String dniChars = "TRWAGMYFPDXBNJZSQVHLCKE";

@@ -39,6 +39,7 @@ public class ClienteDAO {
         System.out.println("Cliente insertado: " + document);
     }
 
+    //Método para mostrar todos los documentos de la colección Clientes
     public static ArrayList<Cliente> consultaClientes() throws UnknownHostException {
         ArrayList listaClientes = new ArrayList();
         DBCursor cursor = null;
@@ -63,6 +64,7 @@ public class ClienteDAO {
         return listaClientes;
     }
 
+    //Eliminar el documento Cliente que recibe como parámetro
     public static void eliminaCliente(Cliente c) throws UnknownHostException {
         DBCursor cursor = null;
         DBObject elemento;
@@ -72,6 +74,7 @@ public class ClienteDAO {
         }
     }
 
+    //Actualiza el documento cliente que recibe como parámetro
     public static void actualizaCliente(Cliente c, Cliente viejo) throws UnknownHostException {
         //Actualizacion del valor de un campo
         BasicDBObject newDocument = new BasicDBObject();
@@ -86,6 +89,7 @@ public class ClienteDAO {
         newDocument.append("$set", aux.append("abono", c.getAbono().getTipo()));
         // Indica el filtro a usar para aplicar la modificacion
         DBObject searchQuery = new BasicDBObject().append("dni", viejo.getDni());
+        //Si existe alguna reserva para este cliente, se le modifica el dni de la reserva
         if (!viejo.getDni().equals(c.getDni())) {
             ArrayList<Reserva> listaReservas = ReservaDAO.consultaReservas();
             if (listaReservas.size() > 0) {
@@ -100,6 +104,7 @@ public class ClienteDAO {
         System.out.println("Nombre del cliente actualizado correctamente");
     }
 
+    //Actualizar el tipo de los abonos de los clientes, cuando se modifique el tipo de un abono
     public static void actualizaClienteAbono(String abono, Cliente viejo) throws UnknownHostException {
         //Actualizacion del valor de un campo
         BasicDBObject newDocument = new BasicDBObject();
@@ -118,7 +123,7 @@ public class ClienteDAO {
         System.out.println("Nombre del cliente actualizado correctamente");
     }
 
-    //Método para buscar un documento abono en la colección ClienteDAO
+    //Método para comprobar si un cliente tiene un abono
     public static boolean clientesConAbono(Abono a) throws UnknownHostException {
         BasicDBObject searchQuery = new BasicDBObject().append("abono", a.getTipo());//Creamos la query que será los documentos que contengan como atributo "dni" el que recibe como parámetro el método
         DBCursor cursor = clienteInit().find(searchQuery);//Los elementos que cumplan la condicion de searchQuery se introducen en cursor        
@@ -129,6 +134,7 @@ public class ClienteDAO {
         }
     }
 
+    //Método para buscar un Cliente por su dni
     public static Cliente buscarCliente(String dni) throws UnknownHostException {
         DBCollection collection = clienteInit();
         BasicDBObject searchQuery = new BasicDBObject().append("dni", dni);//Creamos la query que será los documentos que contengan como atributo "dni" el que recibe como parámetro el método

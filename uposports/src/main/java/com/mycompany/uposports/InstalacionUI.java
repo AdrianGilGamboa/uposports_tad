@@ -35,8 +35,6 @@ import java.util.logging.Logger;
 
 public class InstalacionUI extends UI {
 
-    final static List<Instalacion> listaInstalaciones = new ArrayList<>();//Creamos una lista de abonos, donde se irán guardando y será compartida por todos los usuarios, necesario recargar la pag para ver cambios de otros usuarios
-
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layoutMostrarInstalaciones = new VerticalLayout();//Creamos un layout vertical
@@ -52,13 +50,14 @@ public class InstalacionUI extends UI {
 
         Button crearAbono = new Button("Crear Instalacion", FontAwesome.PLUS_CIRCLE);//Botón para crear abono
         crearAbono.addClickListener(e -> {//Acción del botón
-            crearInstalacion(vaadinRequest);//Accedemos al método crearAbono
+            crearInstalacion(vaadinRequest);//Accedemos al método crearInstalacion
         });
 
         Label l = new Label("<h1 style='text-weight:bold;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
         Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Instalaciones - </h2>", ContentMode.HTML);
         layoutHLabelabelTitulo.addComponent(l);
 
+        //MENU
         Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);//Botón para acceder a la entidad abono
         buttonAbonos.addClickListener(e -> {//Acción del botón
             getUI().getPage().setLocation("/Abono");//Accedemos a la entidad abono
@@ -100,6 +99,7 @@ public class InstalacionUI extends UI {
             getUI().getPage().setLocation("/Anunciante");//Accedemos a la entidad abono
         });
 
+        //FIN MENU
         Label label = new Label("<h2 style='margin-top:0'> Instalaciones Registradas </h2>", ContentMode.HTML);
 
         if (layoutMostrarInstalaciones.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
@@ -112,6 +112,7 @@ public class InstalacionUI extends UI {
         }
         Table table = new Table();//Creamos la tabla donde meteremos las instancias
         table.setSizeFull();
+
         try {
             if (!InstalacionDAO.mostrarInstalaciones().isEmpty()) {//Si hay elementos en la lista de instalaciones
                 //Añadimos las columnas de la tabla
@@ -120,7 +121,6 @@ public class InstalacionUI extends UI {
                 table.addContainerProperty("Capacidad", Integer.class, "");
                 table.addContainerProperty("Modificar", Button.class, "");
                 table.addContainerProperty("Eliminar", Button.class, "");
-
                 for (int i = 0; i < InstalacionDAO.mostrarInstalaciones().size(); i++) {//Mientras haya elementos por recorrer
 
                     Instalacion instalacion = InstalacionDAO.mostrarInstalaciones().get(i);//Obtenemos el objeto de la lista
@@ -133,8 +133,7 @@ public class InstalacionUI extends UI {
                     Button buttonEliminar = new Button("Eliminar", FontAwesome.CLOSE);//Creamos el botón eliminar
                     buttonEliminar.addClickListener(e -> {
                         try {
-                            //Acción del botón
-                            //listaInstalaciones.remove(instalacion);
+
                             ReservaDAO.eliminaReservasInstalacion(instalacion);
                             InstalacionDAO.eliminarInstalacion(instalacion);     //Eliminamos el objeto de la BBDD
                         } catch (UnknownHostException ex) {
@@ -317,6 +316,7 @@ public class InstalacionUI extends UI {
         return b;
     }
 
+    //Comprobar ID es único
     protected boolean comprobarId(VaadinRequest vaadinRequest) throws UnknownHostException {
         boolean b = false;
         if (InstalacionDAO.buscarInstalacion((String) vaadinRequest.getAttribute("nombre")) == null) {

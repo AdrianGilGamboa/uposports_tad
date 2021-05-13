@@ -39,7 +39,6 @@ import java.util.logging.Logger;
 @Title("Cliente")
 public class ClienteUI extends UI {
 
-    public static ArrayList<Cliente> listaClientes = new ArrayList(); //LISTA DONDE ESTARÁN ALMACENADOS TODOS LOS CLIENTES QUE CREEMOS
     public VerticalLayout layout = new VerticalLayout(); //LAYOUT PRINCIPAL
     final HorizontalLayout layoutH = new HorizontalLayout();//Creamos un layout horizontal
     final HorizontalLayout layoutHLabelabelTitulo = new HorizontalLayout();//Creamos un layout horizontal
@@ -61,6 +60,7 @@ public class ClienteUI extends UI {
             Label l = new Label("<h1 style='text-weight:bold;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
             Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Clientes - </h2>", ContentMode.HTML);
 
+            //MENU
             Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);//Botón para acceder a la entidad abono
             buttonAbonos.addClickListener(e -> {//Acción del botón
                 getUI().getPage().setLocation("/Abono");//Accedemos a la entidad abono
@@ -101,7 +101,8 @@ public class ClienteUI extends UI {
                 VaadinSession.getCurrent().getSession().invalidate();//Eliminamos la sesión
                 getUI().getPage().setLocation("/");//Accedemos a la página principal
             });
-
+            //FIN MENU
+            
             Button botonAdd = new Button("Crear Cliente", FontAwesome.PLUS_CIRCLE); //BOTÓN PARA AÑADIR CLIENTES
             Label label = new Label("<h2 style='margin-top:0'> Clientes Registrados </h2>", ContentMode.HTML);
 
@@ -215,7 +216,7 @@ public class ClienteUI extends UI {
         });
         enviar.addClickListener(e -> {
             try {
-                //UNA VEZ PULSADO EL BOTÓN SE CREA EL CLIENTE Y LO AÑADIMOS A LA LISTA
+                //ACCEDEREMOS AL PAGO SI SE COMPRUEBAN LOS DATOS Y SON CORRECTOS
                 if (comprobarId(request) && validarDNI(dni.getValue())) {
                     if (comprobarDatos(nombre.getValue(), apellidos.getValue(), dni.getValue(), telef.getValue(), cp.getValue(), (String) abono.getValue()) == false) {
 
@@ -230,8 +231,7 @@ public class ClienteUI extends UI {
                         aux.setCodigoPostal(cp.getValue());
                         try {
                             aux.setAbono(AbonoDAO.buscarAbono(tipoAbono));
-                            // System.out.println("Abono:" + abono.getValue());
-                            //listaClientes.add(aux);
+
 
                             //Inicio proceso Pago
                             Label label1 = new Label("<h3> Seleccione una opción: </h3>", ContentMode.HTML);
@@ -239,14 +239,14 @@ public class ClienteUI extends UI {
                                     + "<br/><br/><h3>Importe a abonar: " + "<b>" + aux.getAbono().getPrecio() + " €</b></h3><br/>", ContentMode.HTML);
                             final VerticalLayout form = new VerticalLayout();
                             final HorizontalLayout layH = new HorizontalLayout();
-                            //Añadimos el Label de bienvenida
-                            //Creamos el boton "Crear empleado" donde implementaremos la funcion de crear un empleado
+
+                            //PAGO EN EFECTIVO
                             Button bEfectivo = new Button("Pago en efectivo");
 
                             bEfectivo.addClickListener(b -> {
                                 form.removeAllComponents();
                                 layH.removeAllComponents();
-                                //Añadimos por cada atributo del empleado su textfield
+
                                 final TextField tf = new TextField("Importe Abonado:");
                                 final Label devolucion = new Label("", ContentMode.HTML);
                                 tf.addTextChangeListener(new FieldEvents.TextChangeListener() {
@@ -281,14 +281,13 @@ public class ClienteUI extends UI {
                                 });
                                 layH.addComponents(buttonCancelar, bFinalizar);
                                 layH.setSpacing(true);
-                                //layH.setMargin(true);
                                 form.addComponents(label2, tf, devolucion, layH);
                                 form.setMargin(true);
                                 form.setSpacing(true);
                                 setContent(form);
-                                //getUI().getPage().setLocation("/Cliente");
                             });
 
+                            //PAGO CON TARJETA
                             Button bTarjeta = new Button("Pago con tarjeta");
                             bTarjeta.addClickListener(a -> {
                                 Pago pago = new Pago();
@@ -314,7 +313,6 @@ public class ClienteUI extends UI {
                             });
                             layH.addComponents(buttonCancelar, bEfectivo, bTarjeta);
                             layH.setSpacing(true);
-                            //layH.setMargin(true);
                             form.addComponents(label2, label1, layH);
                             form.setMargin(true);
                             form.setSpacing(true);
@@ -332,6 +330,7 @@ public class ClienteUI extends UI {
             }
         });
 
+        //Estilo
         HorizontalLayout horiz = new HorizontalLayout();
         horiz.addComponents(cancelar, enviar);
         horiz.setSpacing(true);
@@ -343,6 +342,7 @@ public class ClienteUI extends UI {
 
     }
 
+    //Modificar los datos de un cliente
     public void editarCliente(VaadinRequest request, Cliente cliente) throws UnknownHostException {
         layout.removeAllComponents();
         //CREAMOS UN FORMULARIO PARA PODER EDITAR EL CLIENTE
@@ -386,7 +386,7 @@ public class ClienteUI extends UI {
         datos.setSpacing(true);
         Button enviar = new Button("Modificar", FontAwesome.EDIT);
         //EDITAMOS TODOS LOS CAMPOS QUE HAYA MODIFICADO EL USUARIO Y VOLVEMOS A INSERTAR EL CLIENTE EN LA LISTA
-        enviar.addClickListener(e -> { //UNA VEZ PULSADO EL BOTÓN SE CREA EL CLIENTE Y LO AÑADIMOS A LA LISTA
+        enviar.addClickListener(e -> { 
             if (comprobarDatos(nombre.getValue(), apellidos.getValue(), dni.getValue(), telef.getValue(), cp.getValue(), (String) abono.getValue()) == false) {
 
             } else {
@@ -401,29 +401,25 @@ public class ClienteUI extends UI {
                     aux.setCodigoPostal(cp.getValue());
                     try {
                         aux.setAbono(AbonoDAO.buscarAbono(tipoAbono));
-                        // System.out.println("Abono:" + abono.getValue());
-                        //listaClientes.add(aux);
+
                         if (aux.getAbono().getTipo().equals(cliente.getAbono().getTipo())) {
                             ClienteDAO.actualizaCliente(aux, cliente);
                             Notification.show("Cliente - DNI: " + aux.getDni(), "Modificado con éxito",
                                     Notification.Type.TRAY_NOTIFICATION);
                             init(request);
                         } else {
-                            //Inicio proceso Pago
+                            //Inicio proceso Pago, solamente si se ha modificado el Abono que ya tenía el Cliente
 
                             Label label1 = new Label("<h3> Seleccione una opción: </h3>", ContentMode.HTML);
                             Label label2 = new Label("<h1 style='text-weight:bold;margin:0'>UPOSports</h1>"
                                     + "<br/><br/><h3>Importe a abonar: " + "<b>" + aux.getAbono().getPrecio() + " €</b></h3><br/>", ContentMode.HTML);
                             final VerticalLayout form = new VerticalLayout();
                             final HorizontalLayout layH = new HorizontalLayout();
-                            //Añadimos el Label de bienvenida
-                            //Creamos el boton "Crear empleado" donde implementaremos la funcion de crear un empleado
                             Button bEfectivo = new Button("Pago en efectivo");
 
                             bEfectivo.addClickListener(b -> {
                                 form.removeAllComponents();
                                 layH.removeAllComponents();
-                                //Añadimos por cada atributo del empleado su textfield
                                 final TextField tf = new TextField("Importe Abonado:");
                                 final Label devolucion = new Label("", ContentMode.HTML);
                                 tf.addTextChangeListener(new FieldEvents.TextChangeListener() {
@@ -522,8 +518,9 @@ public class ClienteUI extends UI {
         //Comprobamos si algún campo está vacío
         if (nombre != "" && apellidos != "" && dni != "" && telef != "" && cp != "") {
             if (abono != null) {
-                //Comprobamos si la capacidad es numérica llamando al métdo isInteger
+                //Comprobamos si el teléfono y el cp es numérico llamando al métdo isInteger
                 if (isInteger(telef) == true && isInteger(cp) == true) {
+                    //Comprobamos la longitud de teléfono y cp
                     if (telef.length() == 9 && cp.length() == 5) {
                         b = true;//Si se satisface todas las condiciones, la variables es true
 
@@ -542,7 +539,7 @@ public class ClienteUI extends UI {
                         Notification.Type.WARNING_MESSAGE);
             }
 
-        } else {//En caso de campo vacío, mostramos 2 tipos de error uno fijo y otro interactivo (para el proyecto final debatiremos este aspecto)
+        } else {
             //Notificacion de tipo Warning interactiva para el usuario.
             Notification.show("Campo vacío", "Debe rellenar todos los campos",
                     Notification.Type.WARNING_MESSAGE);
@@ -551,6 +548,7 @@ public class ClienteUI extends UI {
         return b;
     }
 
+    //Comprobar ID es único
     protected boolean comprobarId(VaadinRequest vaadinRequest) throws UnknownHostException {
         boolean b = false;
         if (ClienteDAO.buscarCliente((String) vaadinRequest.getAttribute("dni")) == null) {
@@ -563,6 +561,7 @@ public class ClienteUI extends UI {
         return b;
     }
 
+    //Validación formato DNI
     private boolean validarDNI(String itDNI) {
         try {
             String dniChars = "TRWAGMYFPDXBNJZSQVHLCKE";

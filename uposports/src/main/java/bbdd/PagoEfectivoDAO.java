@@ -26,12 +26,12 @@ public class PagoEfectivoDAO {
 
         DBCollection collection = pagosInit();
         BasicDBObject document = new BasicDBObject();//Instanciamos el nuevo documento
-        //Insertamos los 3 atributos del nuevo documento PagoEfectivo
+        //Insertamos los 2 atributos del nuevo documento PagoEfectivo
         document.append("fechaHora", pago.getFecha());
         document.append("cantidad", pago.getCantidad());
         //Insertamos el documento en la colección PagoEfectivo
         collection.insert(document);
-        System.out.println("Documento Pago insertado: " + document + "\n");
+        System.out.println("Documento Pago Efectivo insertado: " + document + "\n");
     }
 
 }

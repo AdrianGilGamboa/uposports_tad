@@ -52,48 +52,49 @@ public class AnuncianteUI extends UI {
             getUI().getPage().setLocation("/login");
         }
 
-        Button crearAnunciante = new Button("Crear Anunciante", FontAwesome.PLUS_CIRCLE);//Botón para crear abono
+        Button crearAnunciante = new Button("Crear Anunciante", FontAwesome.PLUS_CIRCLE);//Botón para crear anunciante
         crearAnunciante.addClickListener(e -> {//Acción del botón
             crearAnunciante(vaadinRequest);//Accedemos al método crearAbono
         });
 
+        //MENU
         Label l = new Label("<h1 style='text-weight:bold;margin:auto;    padding-right: 100px;'>UPOSports</h2>", ContentMode.HTML);
         Label labelEntidad = new Label("<h2 style='text-weight:bold;margin:0'>Anunciantes - </h2>", ContentMode.HTML);
         layoutHLabelabelTitulo.addComponent(l);
 
-        Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);//Botón para acceder a la entidad abono
+        Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);//Botón para acceder a la entidad anunciante
         buttonAbonos.addClickListener(e -> {//Acción del botón
-            getUI().getPage().setLocation("/Abono");//Accedemos a la entidad abono
+            getUI().getPage().setLocation("/Abono");//Accedemos a la entidad anunciante
         });
 
         Button buttonCliente = new Button("Clientes", FontAwesome.MALE);//Botón para acceder a la entidad instalaciones
         buttonCliente.addClickListener(e -> {//Acción del botón
-            getUI().getPage().setLocation("/Cliente");//Accedemos a la entidad abono
+            getUI().getPage().setLocation("/Cliente");//Accedemos a la entidad anunciante
         });
 
         Button buttonInstalacion = new Button("Instalaciones", FontAwesome.BUILDING);//Botón para acceder a la entidad instalaciones
         buttonInstalacion.addClickListener(e -> {//Acción del botón
-            getUI().getPage().setLocation("/Instalacion");//Accedemos a la entidad abono
+            getUI().getPage().setLocation("/Instalacion");//Accedemos a la entidad anunciante
         });
 
         Button buttonEmpleados = new Button("Empleados", FontAwesome.USERS);//Botón para acceder a la entidad instalaciones
         buttonEmpleados.addClickListener(e -> {//Acción del botón
-            getUI().getPage().setLocation("/Empleado");//Accedemos a la entidad abono
+            getUI().getPage().setLocation("/Empleado");//Accedemos a la entidad anunciante
         });
 
         Button buttonMateriales = new Button("Materiales", FontAwesome.ARCHIVE);//Botón para acceder a la entidad instalaciones
         buttonMateriales.addClickListener(e -> {//Acción del botón
-            getUI().getPage().setLocation("/Material");//Accedemos a la entidad abono
+            getUI().getPage().setLocation("/Material");//Accedemos a la entidad anunciante
         });
 
         Button buttonReservas = new Button("Reservas", FontAwesome.CALENDAR);//Botón para acceder a la entidad instalaciones
         buttonReservas.addClickListener(e -> {//Acción del botón
-            getUI().getPage().setLocation("/Reserva");//Accedemos a la entidad abono
+            getUI().getPage().setLocation("/Reserva");//Accedemos a la entidad anunciante
         });
 
         Button buttonAnunciantes = new Button("Anunciantes", FontAwesome.BELL);//Botón para acceder a la entidad instalaciones
         buttonAnunciantes.addClickListener(e -> {//Acción del botón
-            getUI().getPage().setLocation("/Anunciante");//Accedemos a la entidad abono
+            getUI().getPage().setLocation("/Anunciante");//Accedemos a la entidad anunciante
         });
 
         Button buttonLogout = new Button("Cerrar Sesión", FontAwesome.SIGN_OUT);//Botón para cerrar sesión
@@ -101,6 +102,7 @@ public class AnuncianteUI extends UI {
             VaadinSession.getCurrent().getSession().invalidate();//Eliminamos la sesión
             getUI().getPage().setLocation("/");//Accedemos a la página principal
         });
+        //FIN MENU
 
         if (layoutMostrarAnunciantes.getComponentIndex(layoutH) == -1) {//Si el layout horizontal que contiene los botones no se ha añadido, se añaden
             layoutH.addComponents(layoutHLabelabelTitulo, buttonReservas, buttonCliente, buttonAbonos, buttonInstalacion, buttonMateriales, buttonEmpleados, buttonAnunciantes, buttonLogout);//Añadimos los componentes al layout horizontal
@@ -113,12 +115,14 @@ public class AnuncianteUI extends UI {
 
         Table table = new Table();//Creamos la tabla donde meteremos las instancias
         table.setSizeFull();
+
         Label label = new Label("<h2 style='margin-top:0'> Anunciantes Registrados </h2>", ContentMode.HTML);
 
+        //Mostramos los anunciantes
         List<Anunciante> listaAnunciantes;
         try {
             listaAnunciantes = AnuncianteDAO.mostrarAnunciantes();
-            if (listaAnunciantes.size() > 0) {//Si hay elementos en la lista de abonos
+            if (listaAnunciantes.size() > 0) {//Si hay elementos en la lista de anunciantes
                 layoutMostrarAnunciantes.addComponent(label);
                 //Añadimos las columnas de la tabla
                 table.addContainerProperty("Anunciante", String.class, "");
@@ -162,7 +166,7 @@ public class AnuncianteUI extends UI {
 
     }
 
-    protected void crearAnunciante(VaadinRequest vaadinRequest) {//Método para crear abonos
+    protected void crearAnunciante(VaadinRequest vaadinRequest) {//Método para crear Anunciantes
         final VerticalLayout layout = new VerticalLayout();
         final HorizontalLayout layoutTextField = new HorizontalLayout();
         final HorizontalLayout layoutBotones = new HorizontalLayout();//Creamos un vertical layout
@@ -188,7 +192,7 @@ public class AnuncianteUI extends UI {
             try {
                 if (comprobarId(vaadinRequest)) {
                     if (comprobarDatos(vaadinRequest) == true) {
-                        registrarAnunciante(vaadinRequest);//Se lanza el método modificar abono
+                        registrarAnunciante(vaadinRequest);//Se lanza el método modificar anunciante
                         init(vaadinRequest);
                         //Notificacion de tipo bandeja para notificar la correcta operación.
                         Notification.show("Anunciante - Nombre: " + anunciante.getValue(), "Creado con éxito",
@@ -205,6 +209,7 @@ public class AnuncianteUI extends UI {
             init(vaadinRequest);
         });
 
+        //Estilo
         layoutBotones.addComponents(buttonCancelar, buttonRegistrar);
         layoutBotones.setSpacing(true);
         layoutBotones.setMargin(true);
@@ -221,8 +226,7 @@ public class AnuncianteUI extends UI {
 
     }
 
-    //Exactamente igual que el método de crear abono, con la peculiaridad de que a este se le pasa el objeto abono y se prerellenan los campos con sus valores actuales.
-    //Ya se ha comentado en el método anterior que realiza cada línea de código.
+    //Exactamente igual que el método de crear Anunciante, con la peculiaridad de que a este se le pasa el objeto anun y se prerellenan los campos con sus valores actuales.
     protected void editarAnunciante(VaadinRequest vaadinRequest, Anunciante anun) {
         final VerticalLayout layout = new VerticalLayout();
         final HorizontalLayout layoutTextField = new HorizontalLayout();
@@ -231,18 +235,18 @@ public class AnuncianteUI extends UI {
         Label l = new Label("<h2>Modificar Anunciante</h2>", ContentMode.HTML);
         layout.addComponent(l);
         anunciante.setCaption("Nombre anunciante:");
-        anunciante.setValue(anun.getAnunciante());//Insertamos en el campo el valor del atributo tipo
+        anunciante.setValue(anun.getAnunciante());//Insertamos en el campo el valor del atributo anunciante
         anunciante.setIcon(FontAwesome.TAG);//Icono
         final TextField precioContrato = new TextField();
         precioContrato.setCaption("Precio del contrato (€):");
-        precioContrato.setValue(anun.getPrecioContrato().toString());//Insertamos en el campo el valor del atributo duración
+        precioContrato.setValue(anun.getPrecioContrato().toString());//Insertamos en el campo el valor del atributo precio
         precioContrato.setIcon(FontAwesome.CALENDAR);
         DateField fechaIni = new DateField("Fecha inicio del contrato:");
-        fechaIni.setValue(anun.getFechaIni());//Insertamos en el campo el valor del atributo coste
+        fechaIni.setValue(anun.getFechaIni());//Insertamos en el campo el valor del atributo fecha inicio
         fechaIni.setIcon(FontAwesome.HOURGLASS_START);
         DateField fechaFin = new DateField("Fecha fin del contrato:");
         fechaIni.setIcon(FontAwesome.HOURGLASS_END);
-        fechaFin.setValue(anun.getFechaFin());//Insertamos en el campo el valor del atributo coste;
+        fechaFin.setValue(anun.getFechaFin());//Insertamos en el campo el valor del atributo fecha fin;
         Button buttonRegistrar = new Button("Modificar", FontAwesome.EDIT);
 
         buttonRegistrar.addClickListener(e -> {
@@ -253,7 +257,7 @@ public class AnuncianteUI extends UI {
             try {
                 if (comprobarId(vaadinRequest)) {
                     if (comprobarDatos(vaadinRequest) == true) {
-                        modificarAnunciante(vaadinRequest, anun);//Se lanza el método modificar abono
+                        modificarAnunciante(vaadinRequest, anun);//Se lanza el método modificar anunciante
                         init(vaadinRequest);
                         //Notificacion de tipo bandeja para notificar la correcta operación.
                         Notification.show("Anunciante - Nombre: " + anunciante.getValue(), "Modificado con éxito",
@@ -286,19 +290,19 @@ public class AnuncianteUI extends UI {
 
     protected void modificarAnunciante(VaadinRequest vaadinRequest, Anunciante anunciante) throws UnknownHostException {//Método para guardar los datos modificados en memoria, no hay persistencia de momento
         Anunciante aux = new Anunciante();
-        aux.setAnunciante((String) vaadinRequest.getAttribute("anunciante"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
-        aux.setPrecioContrato(Double.parseDouble((String) vaadinRequest.getAttribute("precioContrato")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
-        aux.setFechaIni((Date) vaadinRequest.getAttribute("fechaIni"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
-        aux.setFechaFin((Date) vaadinRequest.getAttribute("fechaFin"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
+        aux.setAnunciante((String) vaadinRequest.getAttribute("anunciante"));//Obtenemos de la petición el tipo de anunciante y lo introducimos en el campo anunciante del objeto anunciante
+        aux.setPrecioContrato(Double.parseDouble((String) vaadinRequest.getAttribute("precioContrato")));//Obtenemos de la petición el tipo de anunciante y lo introducimos en el campo precio del objeto anunciante
+        aux.setFechaIni((Date) vaadinRequest.getAttribute("fechaIni"));//Obtenemos de la petición el tipo de anunciante y lo introducimos en el campo fecha ini del objeto anunciante
+        aux.setFechaFin((Date) vaadinRequest.getAttribute("fechaFin"));//Obtenemos de la petición el tipo de anunciante y lo introducimos en el campo fecha fin del objeto anunciante
         AnuncianteDAO.actualizarAnunciante(aux, anunciante);
     }
 
     protected void registrarAnunciante(VaadinRequest vaadinRequest) throws UnknownHostException, ParseException {//Método para registrar los datos en memoria, no hay persistencia de momento
-        Anunciante aux = new Anunciante();//Creamos un nuevo objeto abono
-        aux.setAnunciante((String) vaadinRequest.getAttribute("anunciante"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo tipo del objeto abono
-        aux.setPrecioContrato(Double.parseDouble((String) vaadinRequest.getAttribute("precioContrato")));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo duración del objeto abono
-        aux.setFechaIni((Date) vaadinRequest.getAttribute("fechaIni"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
-        aux.setFechaFin((Date) vaadinRequest.getAttribute("fechaFin"));//Obtenemos de la petición el tipo de abono y lo introducimos en el campo coste del objeto abono
+        Anunciante aux = new Anunciante();//Creamos un nuevo objeto anunciante
+        aux.setAnunciante((String) vaadinRequest.getAttribute("anunciante"));//Obtenemos de la petición el tipo de anunciante y lo introducimos en el campo anunciante del objeto anunciante
+        aux.setPrecioContrato(Double.parseDouble((String) vaadinRequest.getAttribute("precioContrato")));//Obtenemos de la petición el tipo de anunciante y lo introducimos en el campo precio del objeto anunciante
+        aux.setFechaIni((Date) vaadinRequest.getAttribute("fechaIni"));//Obtenemos de la petición el tipo de anunciante y lo introducimos en el campo fecha ini del objeto anunciante
+        aux.setFechaFin((Date) vaadinRequest.getAttribute("fechaFin"));//Obtenemos de la petición el tipo de anunciante y lo introducimos en el campo fecha fin  del objeto anunciante
         AnuncianteDAO.insertarAnunciante(aux);
 
     }
@@ -310,7 +314,7 @@ public class AnuncianteUI extends UI {
         try {
             //Comprobamos si algún campo está vacío
             if ((String) vaadinRequest.getAttribute("anunciante") != "" && (String) vaadinRequest.getAttribute("precioContrato") != "") {
-                //Comprobamos si la capacidad es numérica llamando al métdo isInteger
+                //Comprobamos si el precio es numérico llamando al métdo isDouble
                 if (isDouble((String) vaadinRequest.getAttribute("precioContrato")) == true) {
                     if (dateFormat.format((Date) vaadinRequest.getAttribute("fechaIni")).compareTo(dateFormat.format((Date) vaadinRequest.getAttribute("fechaFin"))) < 0) {
                         b = true;//Si se satisface todas las condiciones, la variables es true
@@ -323,7 +327,7 @@ public class AnuncianteUI extends UI {
                     Notification.show("Error Datos Introducidos", "El precio del contrato debe ser numéricos",
                             Notification.Type.WARNING_MESSAGE);
                 }
-            } else {//En caso de campo vacío, mostramos 2 tipos de error uno fijo y otro interactivo (para el proyecto final debatiremos este aspecto)
+            } else {
                 //Notificacion de tipo Warning interactiva para el usuario.
                 Notification.show("Campo vacío", "Debe rellenar todos los campos",
                         Notification.Type.WARNING_MESSAGE);
@@ -336,6 +340,7 @@ public class AnuncianteUI extends UI {
         return b;
     }
 
+    //Comprobar que el ID es único
     protected boolean comprobarId(VaadinRequest vaadinRequest) throws UnknownHostException {
         boolean b = false;
         if (AnuncianteDAO.buscarAnunciante((String) vaadinRequest.getAttribute("anunciante")) == null) {

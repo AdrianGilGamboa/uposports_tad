@@ -45,14 +45,13 @@ public class login extends UI implements Broadcaster.BroadcastListener {
             name.setCaption("Inserte su DNI para acceder al sistema:");
             name.setIcon(FontAwesome.KEY);//Icono
 
-            Button button = new Button("Acceder", FontAwesome.SIGN_IN);//Botón para guardar el nombre de usuario
-            button.addClickListener(e -> {//Acción que realiza el botón de guardar
-                if (name.getValue() != "") {
+            Button button = new Button("Acceder", FontAwesome.SIGN_IN);//Botón para acceder al sistema
+            button.addClickListener(e -> {//Acción que accede al sistema
+                if (name.getValue() != "") {//Si el dni no es vacio
                     try {
                         Empleado emp = EmpleadoDAO.buscarEmpleado(name.getValue());
-                        if (emp != null) {
+                        if (emp != null) {//El empleado existe
                             session.setAttribute("nombreUsuario", emp.getNombre() + " " + emp.getApellidos());//Incorporamos el nombre de usuario como atributo de la sesion
-                            //Broadcaster.register(this);
                             Broadcaster.broadcast(name.getValue() + " - " + emp.getNombre() + " " + emp.getApellidos());//mandamos como mensaje el nombre de usuario
                             mostrarEntidades(session);//Lanzamos el metodo mostrarEntidades
                         } else {
@@ -65,7 +64,7 @@ public class login extends UI implements Broadcaster.BroadcastListener {
                         Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
-                } else {//En caso de campo vacío, mostramos 2 tipos de error uno fijo y otro interactivo (para el proyecto final debatiremos este aspecto)
+                } else {
                     //Notificacion de tipo Warning interactiva para el usuario.
                     Notification.show("Campo vacío", "Inserte su DNI",
                             Notification.Type.WARNING_MESSAGE);
@@ -89,7 +88,8 @@ public class login extends UI implements Broadcaster.BroadcastListener {
 
         Label saludo = new Label("<h1 style='text-weight:bold;margin:0'>UPOSports - Bienvenido/a " + session.getAttribute("nombreUsuario") + " </h1>"
                 + "<br/><br/><h3> Seleccione una opción: </h3>", ContentMode.HTML);
-//Creamos 3 botones
+
+        //MENU INICIO
         Button buttonAbonos = new Button("Abonos", FontAwesome.MONEY);
         Button buttonInstalaciones = new Button("Instalaciones", FontAwesome.BUILDING);
         Button buttonClientes = new Button("Clientes", FontAwesome.MALE); //Boton para ir a la página de gestión de clientes
@@ -132,7 +132,8 @@ public class login extends UI implements Broadcaster.BroadcastListener {
             session.invalidate();//Se destruye la sesion
             getUI().getPage().setLocation("/");//Página principal (login)
         });
-
+        //FIN MENU INICIO
+        
         //Añadimos los componentes al layout y le ponemos margen y espaciado
         layoutEntidades.addComponents(buttonReserva, buttonClientes, buttonAbonos, buttonInstalaciones, buttonMaterial, buttonEmpleado, buttonAnunciantes, buttonLogout);
         layoutVentana.addComponents(saludo, layoutEntidades);

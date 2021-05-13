@@ -25,6 +25,7 @@ public class MaterialDAO {
         return collection;
     }
 
+    //Crea un documento Material 
     public static void creaMaterial(Material material) throws UnknownHostException {
         //Crea documento
         DBCollection collection = materialInit();
@@ -36,12 +37,12 @@ public class MaterialDAO {
         document.append("unidades", material.getUnidades());
         document.append("instalacion", material.getInstalacion().getNombre());
 
-        //Obtencion coleccion "Material"
         collection.insert(document);
         System.out.println("Documento Material insertado: " + document + "\n");
         System.out.println("Material insertado: " + document);
     }
 
+    //Obtenemos todos los documentos de la colección Material
     public static ArrayList<Material> consultaMateriales() throws UnknownHostException {
         DBCursor cursor = materialInit().find();// Obtenemos todos los documentos de la coleccion
         ArrayList<Material> listaMateriales = new ArrayList();
@@ -63,12 +64,14 @@ public class MaterialDAO {
         return listaMateriales;
     }
 
+    //Elimina un documento Material
     public static void eliminaMaterial(Material m) throws UnknownHostException {
         System.out.println(String.format("Buscando documento Empleado dni %s para eliminar...", m.getNombre()));
         materialInit().remove(new BasicDBObject().append("nombre", m.getNombre()));//Elimina el documento que recibe del método buscarMaterial, pasándole la colección y el tipo de Material.
         System.out.println("Documento Material eliminado\n");
     }
 
+    //Busca un Material por su nombre
     public static Material buscarMaterial(String nombre) throws UnknownHostException {
         BasicDBObject searchQuery = new BasicDBObject().append("nombre", nombre);//Creamos la query que será los documentos que contengan como atributo "nombre" el que recibe como parámetro el método
         DBCursor cursor = materialInit().find(searchQuery);//Los elementos que cumplan la condicion de searchQuery se introducen en cursor
@@ -86,15 +89,9 @@ public class MaterialDAO {
         }
     }
 
-    /*
-    public static void actualizarMaterial(DBCollection collection, DBObject material, String campo, String nuevoValor) {
-        BasicDBObject newDocument = new BasicDBObject();//Instanciamos un nuevo documento
-        newDocument.append("$set", new BasicDBObject().append(campo, nuevoValor));//Actualizamos el campo con el nuevoValor (ambos atributos se reciben por parámetro)
-        collection.update(material, newDocument);//Actualizamos el documento "abono" recibido por parámetro con el nuevo campo del documento creado
-        System.out.println("Documento Empleado actualizado correctamente\n");
-    } */
 
-    //Método para actualizar un campo de tipo int de la colección MaterialDAO (método sobrecargado)
+
+    //Método para actualizar un documento Material
     public static void actualizarMaterial(Material nuevo, Material viejo) throws UnknownHostException {
         BasicDBObject newDocument = new BasicDBObject();
         BasicDBObject searchQuery = new BasicDBObject().append("nombre", viejo.getNombre());
@@ -104,9 +101,10 @@ public class MaterialDAO {
         newDocument.append("$set", aux.append("unidades", nuevo.getUnidades()));
         newDocument.append("$set", aux.append("instalacion", nuevo.getInstalacion().getNombre()));
         materialInit().update(searchQuery, newDocument);
-        System.out.println("Documento Empleados actualizado correctamente\n");
+        System.out.println("Documento Material actualizado correctamente\n");
     }
 
+    //Actualiza el nombre de la Instalación de los documentos Materiales
     public static void actualizarMaterialInstalacion(String instalacion, Material viejo) throws UnknownHostException {
         BasicDBObject newDocument = new BasicDBObject();
         BasicDBObject searchQuery = new BasicDBObject().append("nombre", viejo.getNombre());
@@ -116,6 +114,6 @@ public class MaterialDAO {
         newDocument.append("$set", aux.append("unidades", viejo.getUnidades()));
         newDocument.append("$set", aux.append("instalacion", instalacion));
         materialInit().update(searchQuery, newDocument);
-        System.out.println("Documento Empleados actualizado correctamente\n");
+        System.out.println("Documento Material actualizado correctamente\n");
     }
 }

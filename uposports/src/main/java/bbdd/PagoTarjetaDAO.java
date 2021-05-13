@@ -31,7 +31,7 @@ public class PagoTarjetaDAO {
         document.append("cantidad", pago.getCantidad());
         //Insertamos el documento en la colección PagarTarjeta
         collection.insert(document);
-        System.out.println("Documento Pago insertado: " + document + "\n");
+        System.out.println("Documento Pago Tarjeta insertado: " + document + "\n");
     }
 
 }

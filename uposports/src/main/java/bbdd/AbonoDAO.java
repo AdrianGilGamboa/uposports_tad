@@ -26,7 +26,7 @@ public class AbonoDAO {
         return collection;
     }
 
-    //Método para añadir un documento nuevo a la colección AbonoDAO
+    //Método para añadir un documento nuevo a la colección Abonos
     public static void insertarAbono(Abono abono) throws UnknownHostException {
 
         DBCollection collection = abonoInit();
@@ -65,7 +65,7 @@ public class AbonoDAO {
 
     }
 
-    //Método para actualizar un campo de tipo int de la colección AbonoDAO (método sobrecargado)
+    //Método para actualizar un campo de tipo int de la colección Abonos
     public static void actualizarAbono(Abono nuevo, Abono viejo) throws UnknownHostException {
         BasicDBObject newDocument = new BasicDBObject();
         BasicDBObject aux = new BasicDBObject();
@@ -74,6 +74,7 @@ public class AbonoDAO {
         newDocument.append("$set", aux.append("duracion", nuevo.getDuracion()));
         // Indica el filtro a usar para aplicar la modificacion
         DBObject searchQuery = new BasicDBObject().append("tipo", viejo.getTipo());
+        //Si existen clientes con este abono se le modifica el tipo
         if (!viejo.getTipo().equals(nuevo.getTipo())) {
             ArrayList<Cliente> listaClientes = ClienteDAO.consultaClientes();
             if (listaClientes.size() > 0) {
@@ -88,7 +89,7 @@ public class AbonoDAO {
         System.out.println("Documento Abono actualizado correctamente\n");
     }
 
-    //Método para eliminar un documento de la colección AbonoDAO
+    //Método para eliminar un documento de la colección Abonos
     public static boolean eliminarAbono(Abono abono) throws UnknownHostException {
         System.out.println(String.format("Buscando documento Abono tipo %s para eliminar...", abono.getTipo()));
         if (ClienteDAO.clientesConAbono(abono)) {
@@ -100,7 +101,7 @@ public class AbonoDAO {
         }
     }
 
-    //Método para buscar un documento abono en la colección AbonoDAO
+    //Método para buscar un documento abono en la colección Abonos
     public static Abono buscarAbono(String tipo) throws UnknownHostException {
         DBCollection collection = abonoInit();
         BasicDBObject searchQuery = new BasicDBObject().append("tipo", tipo);//Creamos la query que será los documentos que contengan como atributo "tipo" el que recibe como parámetro el método

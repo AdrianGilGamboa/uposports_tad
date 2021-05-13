@@ -28,6 +28,7 @@ public class ReservaDAO {
         return collection;
     }
 
+    //Creamos un documento Reserva nuevo
     public static void creaReserva(Reserva r) throws UnknownHostException {
         //Crea documento
         BasicDBObject document; //CREAMOS un documento tipo BasicDBObject
@@ -44,6 +45,7 @@ public class ReservaDAO {
         System.out.println("Reserva insertada: " + document);
     }
 
+    //Muestra todos los documentos de la colección Reservas
     public static ArrayList<Reserva> consultaReservas() throws UnknownHostException {
         // Obtenemos todos los documentos de la coleccion
         DBCursor cursor = reservasInit().find().sort(new BasicDBObject("inicio", 1));
@@ -67,9 +69,10 @@ public class ReservaDAO {
         return listaReserva;
     }
 
+    //Muestra las reservas con fecha de hoy
     public static ArrayList<Reserva> consultaReservasHoy() throws UnknownHostException {
         // Obtenemos todos los documentos de la coleccion
-        BasicDBObject searchQuery = new BasicDBObject().append("inicio", new Date("yyyy-MM-dd"));//Creamos la query que será los documentos que contengan como atributo "tipo" el que recibe como parámetro el método
+        BasicDBObject searchQuery = new BasicDBObject().append("inicio", new Date("yyyy-MM-dd"));
         DBCursor cursor = reservasInit().find(searchQuery);
         ArrayList<Reserva> listaReserva = new ArrayList();
         //Recorrido de todos los elementos de la coleccion
@@ -91,11 +94,13 @@ public class ReservaDAO {
         return listaReserva;
     }
 
+    //Eliminamos un documento Reserva
     public static void eliminaReserva(Reserva r) throws UnknownHostException {
         //Creamos el documento que queremos buscar para eliminarlo con el nombre pasado por parámetro
         reservasInit().remove(new BasicDBObject().append("id", r.getId_reserva()));//Elimina el documento que recibe del método buscarAbono, pasándole la colección y el anunciante.
     }
 
+    //Actualiza un documento Reserva
     public static void actualizaReserva(Reserva nueva, Reserva vieja) throws UnknownHostException {
         //Actualizacion del valor de un campo
         BasicDBObject newDocument = new BasicDBObject();
@@ -111,6 +116,7 @@ public class ReservaDAO {
         reservasInit().update(searchQuery, newDocument);
     }
 
+    //Actualiza el DNI del documento Reserva 
     public static void actualizaReservaDNI(String dni, Reserva vieja) throws UnknownHostException {
         //Actualizacion del valor de un campo
         BasicDBObject newDocument = new BasicDBObject();
@@ -126,6 +132,7 @@ public class ReservaDAO {
         reservasInit().update(searchQuery, newDocument);
     }
 
+    //Actualiza el nombre de la instalación del documento Reserva
     public static void actualizaReservaInstalacion(String instalacion, Reserva vieja) throws UnknownHostException {
         //Actualizacion del valor de un campo
         BasicDBObject newDocument = new BasicDBObject();
@@ -141,6 +148,7 @@ public class ReservaDAO {
         reservasInit().update(searchQuery, newDocument);
     }
 
+    //Busca un documento Reserva por su ID
     public static Reserva buscarReserva(int id) throws UnknownHostException {
         BasicDBObject searchQuery = new BasicDBObject().append("id", id);
         DBCursor cursor = reservasInit().find(searchQuery);//Los elementos que cumplan la condicion de searchQuery se introducen en cursor
@@ -158,6 +166,7 @@ public class ReservaDAO {
         }
     }
 
+    //Incrementar el ID en 1
     public static int siguienteID() throws UnknownHostException {
         // Obtenemos todos los documentos de la coleccion
         DBCursor cursor = reservasInit().find();
