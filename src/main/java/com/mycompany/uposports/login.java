@@ -170,8 +170,8 @@ public class login extends UI implements Broadcaster.BroadcastListener {
     
     public void cargarDatos() throws ParseException {
         Empleado empleado = new Empleado();
-        empleado.setNombre("Adrian");
-        empleado.setApellidos("Gil Gamboa");
+        empleado.setNombre("Alberto");
+        empleado.setApellidos("González Rivas");
         empleado.setDni("28983187K");
         empleado.setTelefono(695525878);
         try {

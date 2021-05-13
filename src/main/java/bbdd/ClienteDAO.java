@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class ClienteDAO {
 
     private static DBCollection clienteInit() throws UnknownHostException {
-        MongoClient mongoClient = new MongoClient("localhost", 27017);
+        MongoClient mongoClient = new MongoClient("mongodb", 27017);
         // Conectar a la base de datos
         DB db = mongoClient.getDB("uposports");
         DBCollection collection = db.getCollection("Clientes");

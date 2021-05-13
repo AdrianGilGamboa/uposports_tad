@@ -17,7 +17,7 @@ public class ReservaDAO {
 
     private static DBCollection reservasInit() throws UnknownHostException {
         // Conectar al servidor MongoDB
-        MongoClient mongoClient = new MongoClient("localhost", 27017);
+        MongoClient mongoClient = new MongoClient("mongodb", 27017);
 
         // Conectar a la base de datos
         DB db = mongoClient.getDB("uposports");

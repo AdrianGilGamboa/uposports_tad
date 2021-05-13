@@ -11,7 +11,7 @@ public class PagoTarjetaDAO {
 
     private static DBCollection pagosInit() throws UnknownHostException {
         // Conectar al servidor MongoDB
-        MongoClient mongoClient = new MongoClient("localhost", 27017);
+        MongoClient mongoClient = new MongoClient("mongodb", 27017);
 
         // Conectar a la base de datos
         DB db = mongoClient.getDB("uposports");
